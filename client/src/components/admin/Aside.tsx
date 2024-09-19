@@ -24,7 +24,7 @@ export default function Aside(){
     };
 
     return (
-        <aside className="w-[75px] min-h-screen bg-gray-900 shadow-lg">
+        <aside className="w-[75px] h-[91vh] bg-gray-900 shadow-lg">
             <section className="text-white pt-[3em] w-full">
                 <ul className="flex flex-col justify-evenly items-center gap-6 text-white">
                     {/* Dashboard Icon */}

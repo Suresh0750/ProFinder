@@ -36,6 +36,8 @@ const AddCategoryForm = () => {
     try {
       const formData: FormData = new FormData();
 
+      if(isLoading) return // * prevent the multiple click
+
       formData.append("CategoryName", data.CategoryName);
       formData.append("Description", data.Description);
       if (data.CategoryImage) {
@@ -46,16 +48,20 @@ const AddCategoryForm = () => {
       console.log(`Responce addcategory from server side \n`, res);
       console.log(res?.success);
       if (res?.success) {
-        toast.success("Category successfully added");
+        toast.success(res?.message);
         setTimeout(() => {
           Router.push("/admin/category");
         }, 3000);
       } else {
+        console.log(res)
         toast.error(`Something went wrong, try again`);
       }
-    } catch (error) {
+    } catch (error:any) {
       console.log(`Error from add category form \n`, error);
-      toast.error("Server error");
+      {
+        error?.data?.message ? toast.error(error?.data?.message) : toast.error("Server error");
+      }
+      
     }
   }
 

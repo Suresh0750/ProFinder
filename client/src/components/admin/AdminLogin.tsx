@@ -34,12 +34,16 @@ const AdminLogin = () => {
         setTimeout(()=>{
           Router.push('/admin/dashboard')
         },2000)
+      }else{
+        const {error}:any = result
+        console.log(error)
+        toast.error(error?.data?.message)
       }
 
-    }catch(error:unknown){
+    }catch(error:any){
       console.log(error)
       {
-        error?.error?.data?.errorMessage  ? toast.error(error?.data?.error?.errorMessage) : toast.error('something wron try again')
+        error?.error?.data?.errorMessage  ? toast.error(error?.error?.data?.errorMessage) : toast.error('something wron try again')
       } 
     }
    
