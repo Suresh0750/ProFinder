@@ -43,5 +43,14 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->getAllCategoryQuery->\n`,error)
             throw error
         }
+    },
+    deleteProductQuery : async(_id:string)=>{
+        try{
+            console.log(`Request reached deleteProduct query ${_id}`)
+            await CategoryModel.findByIdAndDelete({_id})
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->deleteProductQuery->\n`,error)
+            throw error
+        }
     }
 })

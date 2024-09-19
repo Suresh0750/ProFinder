@@ -4,7 +4,7 @@ import {AdminVerifyUseCases} from '../../../app/useCases/admin/AdminVerify'
 import Jwt from 'jsonwebtoken'
 // * useCases
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
-import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases} from "../../../app/useCases/admin/Category"
+import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases} from "../../../app/useCases/admin/Category"
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
@@ -100,6 +100,19 @@ export const verifyListController = async(req:Request,res:Response,next:NextFunc
         
     } catch (error) {
         console.log(`Error from verifyListController\n${error}`)
+        next(error)
+    }
+}
+
+export const deleteProductController = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Req reached deleteProductController`)
+        console.log(req.query.id)
+        console.log(req.query)
+        // await deleteProductUsecases(req?.query?.id)
+        return res.status(StatusCode.Success).json({success:true,message:'Product has been deleted'})
+    } catch (error) {
+        console.log(`Error from deleteProductController\n${error}`)
         next(error)
     }
 }

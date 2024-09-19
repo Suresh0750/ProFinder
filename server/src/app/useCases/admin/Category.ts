@@ -61,3 +61,12 @@ export const isListedProductUsecases = async (_id:string,isListed:boolean)=>{
         throw error
     }
 }
+
+export const deleteProductUsecases = async(_id:string)=>{
+    try{
+        return await AdminMongoose().deleteProductQuery(_id)
+    }catch(error){
+        console.log(`Error from useCases->admin->deleteProductUsecases\n`,error)
+        throw error
+    }
+}
