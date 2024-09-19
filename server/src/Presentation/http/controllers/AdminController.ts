@@ -4,7 +4,7 @@ import {AdminVerifyUseCases} from '../../../app/useCases/admin/AdminVerify'
 import Jwt from 'jsonwebtoken'
 // * useCases
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
-import {AddCategoryUseCases} from "../../../app/useCases/admin/AddCategory"
+import {AddCategoryUseCases,CheckExistCategory} from "../../../app/useCases/admin/AddCategory"
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
@@ -14,16 +14,17 @@ import { StatusCode } from "../../../domain/entities/commonTypes"
 export const addCategoryController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(`req reached addCategory controller`) 
+
+        const ExistCategory = await CheckExistCategory(req?.body?.CategoryName)
+
+        console.log(ExistCategory)
+        if(ExistCategory) return res.status(StatusCode.Conflict).json({success:false,message:'Producet already exist'})
+
         const file: IMulterFile |any = req.file
         const imageUrl = await uploadImage(file)    // * call uploadImage usecases
-  
-        // console.log(`image url and data\n`)
-        // console.log(imageUrl)
-        // console.log(req.body)
-
         req.body.categoryImage = imageUrl
-        const categoryDetails = AddCategoryUseCases(req.body)  // * call usecases
-        res.status(200).json({success:true})
+        await AddCategoryUseCases(req.body)  // * call usecases
+        return res.status(200).json({success:true,message:'Product has been added'})
           
     } catch (error) {
         console.log(`Error from addCategoryController\n${error}`)

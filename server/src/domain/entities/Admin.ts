@@ -33,9 +33,16 @@ export interface AddCategory{
 }
 
 
+export interface addCategoryData{
+    CategoryName:string,
+    Description: string,
+    categoryImage:string
+}
+
 // * Admin verify data
 
 export interface AdminCredentials {
     adminEmail : string,
     adminPass : string
 }
+
