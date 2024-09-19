@@ -1,0 +1,11 @@
+
+import {PersonalInformation,WorkerInformation} from '../entities/Worker'
+
+export interface WorkerRepository{
+    createWorker (workerData:PersonalInformation) : Promise<PersonalInformation | null>
+    findWorker(workerEmail:string) : Promise<PersonalInformation | null>
+    ischeckEmail(userEmail:string): Promise<string | undefined>
+    setNewPassWord(customerId:string,newPass:string) :Promise<void>
+    loginVerifyQuery(userEmail:string):Promise<WorkerInformation | null>
+    getWorkerData(workerId:string):Promise<WorkerInformation | null>
+}
