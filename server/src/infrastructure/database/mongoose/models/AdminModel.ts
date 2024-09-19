@@ -11,6 +11,10 @@ const categorySchema = new Schema({
     categoryName : String,
     categoryDescription : String,
     categoryImage : String,
+    isListed :{
+        type :Boolean,
+        default : true
+    }
 },{ timestamps: true })
 
 

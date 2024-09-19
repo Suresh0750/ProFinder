@@ -41,3 +41,23 @@ export const CheckExistCategory =  async(categoryName:string)=>{
     }
     
 }
+
+export const getAllCategoryUseCases = async()=>{
+    try {
+
+        return await AdminMongoose().getAllCategoryQuery()   // * Query call for
+    } catch (error) {
+        console.log(`Error from useCases->admin->getAllCategoryUseCases\n`,error)
+        throw error
+    }
+}
+
+export const isListedProductUsecases = async (_id:string,isListed:boolean)=>{
+    try {
+        return await AdminMongoose().IsListedQuery(_id,(isListed ? false : true))
+        
+    } catch (error) {
+        console.log(`Error from useCases->admin->isListedProductUsecases\n`,error)
+        throw error
+    }
+}

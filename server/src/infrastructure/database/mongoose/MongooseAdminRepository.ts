@@ -27,5 +27,21 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->AddCategoryQuery->\n`,error)
             throw error
         }
+    },
+    getAllCategoryQuery : async()=>{
+        try {
+            return await CategoryModel.find({})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getAllCategoryQuery->\n`,error)
+            throw error
+        }
+    },
+    IsListedQuery: async(_id:string,isListed:Boolean)=>{
+        try {
+            await CategoryModel.updateOne({_id},{$set:{isListed}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getAllCategoryQuery->\n`,error)
+            throw error
+        }
     }
 })

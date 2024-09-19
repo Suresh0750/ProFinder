@@ -79,7 +79,6 @@ export const CustomerOtpController = async(req:Request,res:Response,next:NextFun
 
 export const ResentOTP = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(req.body)
         const resendOtp = await customerResentOTP(req.body)
         if(resendOtp) res.status(200).json({user:req.body.customerID,success:true,message:'OTP resent successfully'})
         else res.status(500).json({user:req.body.customerID,success:false,message:'Failed to resend OTP. Please try again.'})

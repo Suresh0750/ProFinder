@@ -28,6 +28,7 @@ export interface AddCategory{
     categoryName : String,
     categoryDescription : String,
     categoryImage : String,
+    isListed ? : Boolean,
     createAt? : string,
     updateAt? : string
 }

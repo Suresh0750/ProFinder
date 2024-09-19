@@ -4,7 +4,7 @@ import {AdminVerifyUseCases} from '../../../app/useCases/admin/AdminVerify'
 import Jwt from 'jsonwebtoken'
 // * useCases
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
-import {AddCategoryUseCases,CheckExistCategory} from "../../../app/useCases/admin/AddCategory"
+import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases} from "../../../app/useCases/admin/Category"
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
@@ -33,11 +33,12 @@ export const addCategoryController = async(req:Request,res:Response,next:NextFun
 }
 
 
-export const AdminVerify = (req:Request,res:Response,next:NextFunction)=>{
+export const AdminVerify = async (req:Request,res:Response,next:NextFunction)=>{
     try{
-
-        if(AdminVerifyUseCases( req.body)){
-            const refreshToken =  Jwt.sign({adminEmail: req.body.adminEmail},String(process.env.ACCESS_TOKEN_SECRET),{expiresIn:'7d'})
+        console.log('req entered AdminVerify controller')
+        console.log(AdminVerifyUseCases(req.body))
+        if(AdminVerifyUseCases(req.body)){
+            const refreshToken =  Jwt.sign({adminEmail: req.body.adminEmail},String(process.env.REFRESH_TOKEN_SECRET),{expiresIn:'7d'})
             const accessToken = Jwt.sign({adminEmail:req.body.adminEmail},String(process.env.ACCESS_TOKEN_SECRET), { expiresIn:'15m' }); 
             res.cookie('adminToken',refreshToken,{
                 httpOnly:true,
@@ -50,11 +51,55 @@ export const AdminVerify = (req:Request,res:Response,next:NextFunction)=>{
             })
             res.status(StatusCode.Success).json({success:true,message:'login verify successful'})
         }
-
+        console.log('admin verify')
         res.status(StatusCode.Unauthorized).json({success:false,message:'Invalid credentials'})
 
     }catch(error){
         console.log(`Error from addCategoryController\n${error}`)
+        next(error)
+    }
+}
+
+export const getAllCategory =async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const totalCategory = await getAllCategoryUseCases()
+        console.log(JSON.stringify(totalCategory))
+        res.status(StatusCode.Success).json({success:true,message:'Successfully data fetched',totalCategory})
+    } catch (error) {
+        console.log(`Error from getAllCategory\n${error}`)
+        next(error)
+    }
+}
+
+
+export const editCategory = async (req:Request,res:Response,next:NextFunction)=>{
+    try{
+        console.log(req.body)
+        console.log(req.file)
+        if(req.body.newImage){
+            const file: IMulterFile |any = req.file
+            const imageUrl = await uploadImage(file)  
+            req.body.categoryImage = imageUrl
+        }
+
+      
+
+    }catch(error){
+        console.log(`Error from EditCategory\n${error}`)
+        next(error)
+    }
+
+}
+
+export const verifyListController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.body)
+
+        isListedProductUsecases(req.body._id,req.body.isListed)
+        return res.status(StatusCode.Success).json({success:true,message:'List has been updated'})
+        
+    } catch (error) {
+        console.log(`Error from verifyListController\n${error}`)
         next(error)
     }
 }
