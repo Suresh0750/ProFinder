@@ -44,11 +44,19 @@ export const adminApi = createApi({
                 method : 'POST',
                 body : data
             })
+        }),
+        deleteProductAPI : builder.mutation({
+            query : (data:string)=>({
+                url :`/admin/deleteProduct/${data}`,
+                method : 'POST',
+                body : data
+            })
         })
     })
 })
 
+// 
 
 
 
-export const {useAddCategoryFormMutation,useAdminVeriyAPIMutation,useFetchCategoryDataQuery,useEditCategoryAPIMutation,useListUnlistAPIMutation} = adminApi
+export const {useAddCategoryFormMutation,useAdminVeriyAPIMutation,useFetchCategoryDataQuery,useEditCategoryAPIMutation,useListUnlistAPIMutation,useDeleteProductAPIMutation} = adminApi

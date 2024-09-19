@@ -6,14 +6,17 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Input, Typography } from "@mui/material";
 
+// Import SweetAlert2
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 // * API call
-import { useFetchCategoryDataQuery,useEditCategoryAPIMutation,useListUnlistAPIMutation } from "../../../lib/features/api/adminApiSlice";
+import { useFetchCategoryDataQuery, useEditCategoryAPIMutation, useListUnlistAPIMutation, useDeleteProductAPIMutation } from "../../../lib/features/api/adminApiSlice";
 
 export default function Table() {
-  // Fetch category data
   const { data: categoryData, error, isLoading } = useFetchCategoryDataQuery(undefined);
   const [allCategory, setAllCategory] = useState<any[]>([]);
-  
+
   // States for edit modal
   const [open, setOpen] = useState(false);
   const [editCategory, setEditCategory] = useState<any>(null);
@@ -23,11 +26,14 @@ export default function Table() {
   const [newImage, setNewImage] = useState(false);  // Track if a new image is selected
   const [errorMessage, setErrorMessage] = useState<string | null>(null);  // Validation message
   const [successMessage, setSuccessMessage] = useState<string | null>(null);  // Success feedback
-  const [categoryId,setCategoryId] = useState<string>('')
+  const [categoryId, setCategoryId] = useState<string>('')
 
-  // * API call | RTK Query 
-  const [EditCategoryAPI] = useEditCategoryAPIMutation()
-  const [ListUnlistAPI] = useListUnlistAPIMutation()
+  const MySwal = withReactContent(Swal); // Initialize SweetAlert with React
+
+  // * API calls | RTK Query 
+  const [EditCategoryAPI] = useEditCategoryAPIMutation();
+  const [ListUnlistAPI] = useListUnlistAPIMutation();
+  const [deleteProductAPI, { isLoading: deleteLoading }] = useDeleteProductAPIMutation();
 
   useEffect(() => {
     if (categoryData) {
@@ -35,21 +41,19 @@ export default function Table() {
     }
   }, [categoryData]);
 
-  // *  Open the modal with category data to edit
+  // *  Open modal with category data for editing
   const handleEditClick = (category: any) => {
     setEditedName(category.categoryName);
     setEditedDescription(category.categoryDescription);
     setEditedImage(category.categoryImage);
     setEditCategory(category);
-    setCategoryId(category._id)
+    setCategoryId(category._id);
     setNewImage(false);  // Reset image change tracking
     setErrorMessage(null);  // Clear previous validation errors
     setOpen(true);
   };
 
-  
-
-  // *  Close the modal
+  // *  Close modal
   const handleClose = () => {
     setOpen(false);
     setEditCategory(null);
@@ -64,62 +68,70 @@ export default function Table() {
       return;
     }
 
-    // Perform the save/update functionality (e.g., API call to update category)
-    console.log("Saving the category:", { editedName, editedDescription, editedImage, newImage ,categoryId});
-
-  
-    const result = await EditCategoryAPI({categoryName:editedName,categoryDescription:editedDescription,categoryImage:editedImage,newImage,_id:categoryId}) 
-    // *  Update the category data locally for testing
+    // Save/update functionality (e.g., API call)
+    const result = await EditCategoryAPI({ categoryName: editedName, categoryDescription: editedDescription, categoryImage: editedImage, newImage, _id: categoryId });
 
     setAllCategory(prevCategories =>
       prevCategories.map(category =>
-        category._id === editCategory._id 
+        category._id === editCategory._id
           ? { ...category, categoryName: editedName, categoryDescription: editedDescription, categoryImage: editedImage }
           : category
       )
     );
 
-    // * Show success feedback
     setSuccessMessage("Category updated successfully!");
 
-    // * Close the modal after saving with a delay
     setTimeout(() => {
       handleClose();
     }, 1000);
   };
 
-  // *  Handle new image selection
+  // * Handle image selection
   const handleImageChange = (e: any) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setEditedImage(imageUrl);
-      setNewImage(true); // * Mark that a new image has been selected
+      setNewImage(true);  // New image selected
     }
   };
 
-  // *  Handle delete confirmation
-  const handleDeleteClick = (category: any) => {
-    const confirmed = window.confirm(`Are you sure you want to delete category "${category.categoryName}"?`);
-    if (confirmed) {
-      console.log("Deleting category:", category._id);
+  // * Handle delete with SweetAlert confirmation
+  const handleDeleteClick =async (category: any) => {
+    try{
 
-      // Perform the delete functionality (e.g., API call to delete category)
-
-      // Update local state for testing
-      setAllCategory(prevCategories => prevCategories.filter(item => item._id !== category._id));
+      MySwal.fire({
+        title: `Delete category "${category.categoryName}"?`,
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          if (deleteLoading) return; // Prevent multiple clicks
+  
+          // API call to delete
+          
+          const result = await deleteProductAPI(category._id)
+          console.log(result)
+          if(result.data.success){
+            setAllCategory(prevCategories => prevCategories.filter(item => item._id !== category._id));
+            MySwal.fire("Deleted!", `${category.categoryName} has been deleted.`, "success");
+          }
+        }
+      });
+    }catch(error){
+      console.log(error)
     }
   };
 
-  // Handle list/unlist toggle
+  // * Toggle list/unlist
   const handleToggleList = (category: any) => {
-    console.log(category)
-
     const updatedStatus = category.isListed ? "unlisted" : "listed";
-    console.log(`Category "${category.categoryName}" is now ${updatedStatus}.`);
+    ListUnlistAPI({ _id: category._id, isListed: category?.isListed });
 
-    // const result = ListUnlistAPI(category._id,category.isListed)
-    // Toggle status in the local state for testing
     setAllCategory(prevCategories =>
       prevCategories.map(item =>
         item._id === category._id
@@ -193,29 +205,46 @@ export default function Table() {
             onChange={(e) => setEditedName(e.target.value)}
             required
             error={!editedName.trim()}
+            sx={{ marginBottom: '1.5rem' }}
           />
           <TextField
             margin="dense"
             label="Category Description"
             fullWidth
+            multiline
+            rows={3}
             value={editedDescription}
             onChange={(e) => setEditedDescription(e.target.value)}
             required
             error={!editedDescription.trim()}
+            sx={{ marginBottom: '1.5rem' }}
           />
-          
-          {/* Show image preview and allow user to select a new image */}
-          <Box mt={2} display="flex" alignItems="center">
-            <img src={editedImage} alt="Category" width={100} height={100} style={{ marginRight: "1rem" }} />
-            <Input type="file" onChange={handleImageChange} inputProps={{ accept: "image/*" }} />
+
+          {/* Image upload */}
+          <Box className="flex flex-col justify-center items-center gap-4">
+            <Typography>Category Image</Typography>
+            {editedImage && <img src={editedImage} alt="Category" width="150" />}
+            <Input type="file" accept="image/*" onChange={handleImageChange} />
           </Box>
 
-          {errorMessage && <Typography color="error" variant="body2">{errorMessage}</Typography>}
-          {successMessage && <Typography color="primary" variant="body2">{successMessage}</Typography>}
+          {errorMessage && (
+            <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+              {errorMessage}
+            </Typography>
+          )}
+          {successMessage && (
+            <Typography color="primary" variant="body2" sx={{ mt: 2 }}>
+              {successMessage}
+            </Typography>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="secondary">Cancel</Button>
-          <Button onClick={handleSave} color="primary">Save</Button>
+          <Button onClick={handleClose} color="error">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} color="primary">
+            Save Changes
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
