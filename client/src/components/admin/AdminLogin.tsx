@@ -27,13 +27,13 @@ const AdminLogin = () => {
     try{
       if(isLoading) return 
       console.log("Form Data: ", data);
-      const result = await AdminVeriyAPI(data)
+      const result = await AdminVeriyAPI(data).unwrap()
       console.log(result)
-      if(result?.data?.success){
-        toast.success(result.data.message)
+      if(result?.success){
+        toast.success(result.message)
         setTimeout(()=>{
           Router.push('/admin/dashboard')
-        },2000)
+        })
       }else{
         const {error}:any = result
         console.log(error)

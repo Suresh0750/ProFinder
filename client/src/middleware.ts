@@ -20,6 +20,24 @@ export async function middleware(req:NextRequest){
   const workerVerifyToken = await verifyToken("workerToken",req)
   const userVerifyToken = await verifyToken("userToken",req)
 
+  // * product admin router
+  console.log('pathname',pathname)
+  console.log(pathname.includes('/admin'))
+  if(pathname.includes('/admin')){
+    const adminVerifyToken = await AdminVerifyToken("adminToken",req)
+    console.log(adminVerifyToken)
+  if (!adminVerifyToken && pathname!='/admin/login'){
+      const loginUrl = new URL("/admin/login",req.url)
+      return NextResponse.redirect(loginUrl)
+    }else if(adminVerifyToken&& pathname=='/admin/login'){
+      const loginUrl = new URL("/admin/dashboard",req.url)
+      return NextResponse.redirect(loginUrl)
+    }
+   
+    return NextResponse.next()
+  }
+
+
   console.log("workerVerifyToken\n",workerVerifyToken)
   console.log("workerVerifyToken\n",userVerifyToken)
   if(req.url=='/'){
@@ -82,6 +100,41 @@ async function verifyToken(
       return Boolean(payload);
     } catch (err: any) {
       console.log(`failed to verify ${workerToken}`, err.message);
+      return false;
+    }
+}
+
+
+async function AdminVerifyToken(AdminToken:string,req:NextRequest){
+  const token = req.cookies.get(AdminToken);
+    
+    console.log("admintoken\n",token)
+    if (!token?.value) {
+      return false;
+    }
+  
+    const secret = process.env.REFRESH_TOKEN_SECRET;
+    console.log("secret",secret)
+    
+    if (!secret) {
+      console.log("JWT secret not found in env");
+      return false;
+    }
+  
+    try {
+      const { payload } = await jwtVerify(
+        token.value,
+        new TextEncoder().encode(secret)
+      );
+  
+      if (payload) {
+        console.log(payload);
+        
+      } else {
+      }
+      return Boolean(payload);
+    } catch (err: any) {
+      console.log(`failed to verify ${AdminToken}`, err.message);
       return false;
     }
 }

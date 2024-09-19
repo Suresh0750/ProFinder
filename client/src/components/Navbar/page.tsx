@@ -8,7 +8,7 @@ import { useCustomerLogoutMutation } from '@/lib/features/api/customerApiSlice'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { updateCustomerLogin, updateRole } from '@/lib/features/slices/customerSlice'
-import { deleteCookie } from '@/lib/utils'
+
 
 
 export const DropDownDashboard = ()=>{

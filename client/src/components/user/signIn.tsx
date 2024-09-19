@@ -61,10 +61,10 @@ export function LoginForm() {
       console.log(values)
       const res = await Login(values).unwrap()
       if (res.success) {
-        console.log(res)
-        dispatch(updateCustomerLogin(true))   // * customer after login
-        dispatch(updateRole('user'))   
-        // localStorage.setItem("login",'user')
+        // console.log(res)
+        // dispatch(updateCustomerLogin(true))   // * customer after login
+        // dispatch(updateRole('user'))   
+        localStorage.setItem("customerData",JSON.stringify(res.customerData))
 
         toast.success(res.message)
         setTimeout(() => {

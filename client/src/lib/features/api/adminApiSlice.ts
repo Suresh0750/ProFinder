@@ -1,15 +1,12 @@
-// 
-
 
 
 import { createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
-import {addCategoryType,AdminCredentials} from '../../../types/AdminTypes'
-import AddCategoryForm from "@/components/admin/AddCategoryForm"
-// import { register } from "module"
+import {addCategoryType,AdminCredentials,EditCategoryType} from '../../../types/AdminTypes'
 
-console.log('back url',process.env.NEXT_NODE_SERVER_URL)
+// * baseQuery
 const baseQuery = fetchBaseQuery({
-    baseUrl : `http://localhost:3001`
+    baseUrl : `http://localhost:3001`,
+    credentials: 'include',  // for include cookies
 })
 
 
@@ -30,9 +27,28 @@ export const adminApi = createApi({
                 method : 'POST',
                 body : data
             })
+        }),
+        FetchCategoryData : builder.query({
+            query : ()=>'/admin/fetchCategoryData',
+        }),
+        EditCategoryAPI : builder.mutation({
+            query:(data:EditCategoryType)=>({
+                url :`/admin/editCategory`,
+                method : 'POST',
+                body : data
+            })
+        }),
+        ListUnlistAPI : builder.mutation({
+            query : (data:{_id:string,isListed:boolean})=>({
+                url :`/admin/isListVerify`,
+                method : 'POST',
+                body : data
+            })
         })
     })
 })
 
 
-export const {useAddCategoryFormMutation,useAdminVeriyAPIMutation} = adminApi
+
+
+export const {useAddCategoryFormMutation,useAdminVeriyAPIMutation,useFetchCategoryDataQuery,useEditCategoryAPIMutation,useListUnlistAPIMutation} = adminApi
