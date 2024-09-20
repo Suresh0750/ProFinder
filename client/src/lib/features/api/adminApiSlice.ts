@@ -47,7 +47,7 @@ export const adminApi = createApi({
         }),
         deleteProductAPI : builder.mutation({
             query : (data:string)=>({
-                url :`/admin/deleteProduct/${data}`,
+                url :`/admin/deleteProduct${data}`,
                 method : 'POST',
                 body : data
             })

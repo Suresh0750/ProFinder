@@ -45,6 +45,8 @@ const AddCategoryForm = () => {
         formData.append("CategoryImage", data.CategoryImage);
       }
 
+      console.log(formData)
+
       const res = await AddCategoryForm(formData).unwrap();
       console.log(`Responce addcategory from server side \n`, res);
       console.log(res?.success);

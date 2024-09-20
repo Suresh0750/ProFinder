@@ -10,6 +10,7 @@ export interface EditCategoryType {
     categoryName :string,
     categoryDescription : string,    
     categoryImage : any,
+    newImageData : any,
     _id : string,
     newImage : boolean
 }

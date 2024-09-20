@@ -27,6 +27,7 @@ export default function Table() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);  // Validation message
   const [successMessage, setSuccessMessage] = useState<string | null>(null);  // Success feedback
   const [categoryId, setCategoryId] = useState<string>('')
+  const [newImageData,setNewImageData] = useState<any>(null)
 
   const MySwal = withReactContent(Swal); // Initialize SweetAlert with React
 
@@ -68,8 +69,22 @@ export default function Table() {
       return;
     }
 
+    const formData = new FormData()
+
+    formData.append("categoryName",editedName);
+    formData.append("categoryDescription",editedDescription);
+    formData.append("categoryImage",editedImage);
+    if(newImage){
+      formData.append("newImage",newImage);
+    }
+    formData.append("_id",categoryId);
+    if(newImageData){
+
+      formData.append("newImageData",newImageData);
+    }
+
     // Save/update functionality (e.g., API call)
-    const result = await EditCategoryAPI({ categoryName: editedName, categoryDescription: editedDescription, categoryImage: editedImage, newImage, _id: categoryId });
+    const result = await EditCategoryAPI(formData);
 
     setAllCategory(prevCategories =>
       prevCategories.map(category =>
@@ -93,6 +108,7 @@ export default function Table() {
       const imageUrl = URL.createObjectURL(file);
       setEditedImage(imageUrl);
       setNewImage(true);  // New image selected
+      setNewImageData(e.target.files[0])
     }
   };
 
