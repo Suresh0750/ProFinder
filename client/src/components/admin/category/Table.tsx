@@ -8,12 +8,22 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, B
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import {useRouter} from 'next/navigation'
+import {toast,Toaster} from 'sonner'
 
 // * API call
 import { useFetchCategoryDataQuery, useEditCategoryAPIMutation, useListUnlistAPIMutation, useDeleteProductAPIMutation } from "../../../lib/features/api/adminApiSlice";
 
 export default function Table() {
   const { data: categoryData, error, isLoading } = useFetchCategoryDataQuery(undefined);
+
+  console.log(error)
+  if(error && error.status==401){
+    toast.error(error?.data?.message)
+    setTimeout(()=>{
+      Router.push('/admin/login')
+    },1000)
+  }
+
   const [allCategory, setAllCategory] = useState<any[]>([]);
 
   // * States for edit modal
@@ -272,6 +282,7 @@ export default function Table() {
           </Button>
         </DialogActions>
       </Dialog>
+      <Toaster richColors position="top-center" />
     </div>
   );
 }

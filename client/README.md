@@ -57,3 +57,23 @@ Tailwind css 👍
 
 ## RTK-toolkit
    RTk Toolkit is a popular and efficient way to manage state in React applications. It simplifies the setup and usage of Redux by providing a set of tools and best practies. RTK helpss reduce boilerplate code and offers a better development experience with features like 'createSlice', 'configureStore' and build-in support for immutability using immer.
+
+
+
+
+
+
+# git 
+
+
+# show all git branch 
+
+   - git branch
+
+# create new branch 
+
+   - git checkout -b branch
+
+# show untragged file
+
+   - git status
