@@ -6,8 +6,13 @@ import {AddCategory,addCategoryData} from '../../../domain/entities/Admin'
 import {AdminMongoose} from "../../../infrastructure/database/mongoose/MongooseAdminRepository"
 
 
-export const EditCategoryUseCases = async()=>{
+export const EditCategoryUseCases = async(categoryData:AddCategory)=>{
     try {
+        console.log(`Req reached in EditCategoryUseCases`)
+        console.log(categoryData)
+        delete categoryData.newImage 
+        console.log(categoryData)
+        return await AdminMongoose().EditeCategoryQuery(categoryData)
         
     } catch (error) {
         console.log(`Error from useCases->admin->EditCategoryUseCases\n`,error)

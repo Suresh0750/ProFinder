@@ -1,4 +1,4 @@
-import { AddCategory } from "../entities/Admin";
+import { AddCategory,addCategoryData } from "../entities/Admin";
 
 
 
@@ -9,4 +9,5 @@ export interface IAdminRepository{
     getAllCategoryQuery() : Promise<AddCategory[]>
     IsListedQuery(_id:string,isListed:boolean):Promise<void>
     deleteProductQuery(_id:string) : Promise<void>;
+    EditeCategoryQuery(categoryData:AddCategory) : Promise<void>
 }

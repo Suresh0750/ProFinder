@@ -4,7 +4,7 @@ import {AdminVerifyUseCases} from '../../../app/useCases/admin/AdminVerify'
 import Jwt from 'jsonwebtoken'
 // * useCases
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
-import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases} from "../../../app/useCases/admin/Category"
+import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
@@ -18,13 +18,13 @@ export const addCategoryController = async(req:Request,res:Response,next:NextFun
         const ExistCategory = await CheckExistCategory(req?.body?.CategoryName)
 
         console.log(ExistCategory)
-        if(ExistCategory) return res.status(StatusCode.Conflict).json({success:false,message:'Producet already exist'})
+        if(ExistCategory){ return res.status(StatusCode.Conflict).json({success:false,message:'Producet already exist'})}
 
         const file: IMulterFile |any = req.file
         const imageUrl = await uploadImage(file)    // * call uploadImage usecases
         req.body.categoryImage = imageUrl
         await AddCategoryUseCases(req.body)  // * call usecases
-        return res.status(200).json({success:true,message:'Product has been added'})
+        return res.status(StatusCode.Success).json({success:true,message:'Product has been added'})
           
     } catch (error) {
         console.log(`Error from addCategoryController\n${error}`)
@@ -84,8 +84,8 @@ export const editCategory = async (req:Request,res:Response,next:NextFunction)=>
             req.body.categoryImage = imageUrl
         }
         console.log(req.body.categoryImage)
-      
-
+        await EditCategoryUseCases(req.body)
+        return res.status(StatusCode.Success).json({success: true,message:'Product has been successfully edit'})
     }catch(error){
         console.log(`Error from EditCategory\n${error}`)
         next(error)

@@ -31,10 +31,12 @@ export interface AddCategory{
     isListed ? : Boolean,
     createAt? : string,
     updateAt? : string
+    newImage ?: Boolean
 }
 
 
 export interface addCategoryData{
+    _id ?: string,
     CategoryName:string,
     Description: string,
     categoryImage:string

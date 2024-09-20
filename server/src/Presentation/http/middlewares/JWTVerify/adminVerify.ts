@@ -1,10 +1,16 @@
 import {Request,Response,NextFunction} from 'express'
 import jwt from 'jsonwebtoken'
-import { StatusCode } from '../../../../domain/entities/commonTypes'
+import { StatusCode,AdminDetails } from '../../../../domain/entities/commonTypes'
 // JWT
 
 
 
+declare module 'express-session' {
+    interface SessionData {
+      AdminData: AdminDetails;
+    }
+  }
+  
 export const verify = (req:Request,res:Response,next:NextFunction)=>{
     try{
         
@@ -19,17 +25,10 @@ export const verify = (req:Request,res:Response,next:NextFunction)=>{
            const AdminData =  jwt.verify(adminAccessToken,String(process.env.ACCESS_TOKEN_SECRET))
            console.log(AdminData)
            if(AdminData){
-            req.body.AdminData = AdminData
+            req.session.AdminData = AdminData as AdminDetails
             next()
            }
-            // jwt.varify(adminAccessToken,'secret_key',(err,decode)=>{
-            //     if(err){
-            //     return res.json({valide:false,message:'Invalid Token'})
-            //     }else{
-            //         req.email = decode.email
-            //         next()
-            //     }
-            // })
+          
         }
         
     }catch (err){

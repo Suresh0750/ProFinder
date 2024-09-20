@@ -26,3 +26,14 @@ export enum StatusCode {
     Worker = "workerToken",
     User = "userToken",
  }
+
+
+ // * JWT 
+
+ export interface AdminDetails {
+   adminEmail : string,
+   iat : number,
+   exp : number
+ }
+
+

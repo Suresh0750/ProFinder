@@ -4,7 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import session from 'express-session'
-import bodyParser from 'body-parser'
+
 
 
 // * database connection
@@ -35,10 +35,6 @@ dotenv.config(); // * config the dotenv for accessing the value inside the file.
 app.use(express.json()); //* using for parse the body data in json format
 app.use(cookieParser()); // * cookie parser use to access the cookie from client side
 
-
-// * it is used to parse the body data and access the data from the query
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 
 app.use(morgan("dev")); // *
 

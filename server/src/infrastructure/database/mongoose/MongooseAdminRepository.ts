@@ -1,6 +1,6 @@
 
 // * Object types
-import { AddCategory } from "../../../domain/entities/Admin"
+import { AddCategory,addCategoryData } from "../../../domain/entities/Admin"
 
 // * Repository types
 import {IAdminRepository} from "../../../domain/repositories/AdminRepository"
@@ -12,8 +12,8 @@ export const AdminMongoose = () : IAdminRepository =>({
     AddCategoryQuery: async (categoryDetails:AddCategory)=>{
         try {
             console.log(`req reched adminMongoose`)
-            const categoryDetail = new CategoryModel(categoryDetails)
-            return categoryDetail.save()
+            const categoryDetail =  new CategoryModel(categoryDetails)
+            return await categoryDetail.save()
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->AddCategoryQuery->\n`,error)
             throw error
@@ -50,6 +50,16 @@ export const AdminMongoose = () : IAdminRepository =>({
             await CategoryModel.findByIdAndDelete({_id})
         }catch(error){
             console.log(`Error from infrastructure->database->mongoose->deleteProductQuery->\n`,error)
+            throw error
+        }
+    },
+    EditeCategoryQuery : async(categoryData:AddCategory)=>{
+        try {
+            console.log(`Req entered EditeCategory query`)
+            console.log(categoryData)
+            await CategoryModel.findByIdAndUpdate({_id:categoryData._id},{$set:{categoryName:categoryData.categoryName,categoryDescription:categoryData.categoryDescription,categoryImage:categoryData.categoryImage}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->EditeCategoryQuery->\n`,error)
             throw error
         }
     }
