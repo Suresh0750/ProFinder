@@ -5,10 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Input, Typography } from "@mui/material";
-
-// Import SweetAlert2
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import {useRouter} from 'next/navigation'
 
 // * API call
 import { useFetchCategoryDataQuery, useEditCategoryAPIMutation, useListUnlistAPIMutation, useDeleteProductAPIMutation } from "../../../lib/features/api/adminApiSlice";
@@ -17,7 +16,7 @@ export default function Table() {
   const { data: categoryData, error, isLoading } = useFetchCategoryDataQuery(undefined);
   const [allCategory, setAllCategory] = useState<any[]>([]);
 
-  // States for edit modal
+  // * States for edit modal
   const [open, setOpen] = useState(false);
   const [editCategory, setEditCategory] = useState<any>(null);
   const [editedName, setEditedName] = useState('');
@@ -35,6 +34,9 @@ export default function Table() {
   const [EditCategoryAPI] = useEditCategoryAPIMutation();
   const [ListUnlistAPI] = useListUnlistAPIMutation();
   const [deleteProductAPI, { isLoading: deleteLoading }] = useDeleteProductAPIMutation();
+
+  // * router
+  const Router =useRouter()
 
   useEffect(() => {
     if (categoryData) {
@@ -99,6 +101,9 @@ export default function Table() {
     setTimeout(() => {
       handleClose();
     }, 1000);
+    setTimeout(() => {
+      Router.push(`/admin/category`);
+    }, 3000);
   };
 
   // * Handle image selection
@@ -155,6 +160,10 @@ export default function Table() {
           : item
       )
     );
+    setTimeout(() => {
+      Router.push(`/admin/category`);
+    }, 3000);
+
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -173,7 +182,7 @@ export default function Table() {
             <th className="w-2/12 px-4 py-2">Delete</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-white">
           {allCategory.map((val, i) => (
             <tr key={val._id} className="border-b">
               <td className="text-center">{i + 1}</td>
