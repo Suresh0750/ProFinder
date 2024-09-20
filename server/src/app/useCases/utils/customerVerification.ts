@@ -112,6 +112,9 @@ export const GoogleLoginUseCases = async (customerData:GoogleLogintypes)=>{
             await UserGoogleLogin(UserData)             // * create the user if already there means it won't create. Used Upsert
             const {findUserByEmail} = getUserRepository()
             return findUserByEmail(customerData.EmailAddress)
+        }else if(customerData.role=='worker'){
+            console.log(`Request reached custome useCase`)
+            console.log(customerData)
         }
     } catch (error) {
         console.log(`Error from app->usecase->utils->GoogleLoginUseCases\n${error}`)

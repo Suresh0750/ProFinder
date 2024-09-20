@@ -112,10 +112,9 @@ export const GoogleLogin = async (req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(req.body)
         
+        const customerData = await GoogleLoginUseCases(req.body)
         if(req.body.role == "user"){
-            const customerData = await GoogleLoginUseCases(req.body)
             if(customerData?._id){
-
                 const  {refreshToken,accessToken} = JwtService((customerData?._id).toString(),'','',(req.body.role || "worker"))  
                 // * JWT referesh token setUp
                 res.cookie(Cookie.Worker,refreshToken,{
@@ -132,6 +131,9 @@ export const GoogleLogin = async (req:Request,res:Response,next:NextFunction)=>{
                 console.log("Google login controller",customerData)
                 res.status(StatusCode.Success).json({success:true,message:"successfully login"})
             }
+        }else if(req.body.role=='worker'){
+            console.log(`Req entered worker controller`)
+            console.log(req.body)
         }
         res.status(StatusCode.InternalServerError).json({success:false,message:'Server error'})
         
@@ -170,3 +172,5 @@ export const customerLogIn = async (req:Request,res:Response,next:NextFunction)=
         next(error)
     }
 }
+
+
