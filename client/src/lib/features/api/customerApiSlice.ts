@@ -11,6 +11,10 @@ const baseQuery = fetchBaseQuery({
     credentials: 'include',  // for include cookies
 })
 
+// Function to get headers
+const getHeaders = (role :string[]) => ({
+    'Role': role, 
+});
 
 export const customerApi = createApi({
     reducerPath : "CustomerOtp",
