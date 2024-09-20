@@ -115,3 +115,30 @@ export const deleteProductController = async (req:Request,res:Response,next:Next
         next(error)
     }
 }
+
+
+export const adminLogoutController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`req reached adminLogout`)
+        console.log(req.cookies)
+        res.clearCookie('accessToken'); // * Clear the accessToken
+         
+        res.clearCookie('adminToken', {  // * Clear the refresh token cookie
+            httpOnly: true,
+            secure: true, 
+            sameSite: 'strict'
+        });
+        req.session.destroy((err)=>{
+            if(err){
+                console.log('Error destroying session:', err);
+                return res.status(StatusCode.InternalServerError).json({sucess:true,message: 'Logout failed' });
+            }
+             // * Successfully logged out
+             return res.status(StatusCode.Success).json({success:true, message: 'Logged out successfully' });
+        })
+       
+    } catch (error) {
+        console.log(`Error from adminLogout\n${error}`)
+        next(error)
+    }
+}
