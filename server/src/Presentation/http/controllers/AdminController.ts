@@ -76,12 +76,14 @@ export const editCategory = async (req:Request,res:Response,next:NextFunction)=>
     try{
         console.log(req.body)
         console.log(req.file)
+        console.log(req.body.categoryImage)
         if(req.body.newImage){
             const file: IMulterFile |any = req.file
             const imageUrl = await uploadImage(file)  
+            console.log(imageUrl)
             req.body.categoryImage = imageUrl
         }
-
+        console.log(req.body.categoryImage)
       
 
     }catch(error){
@@ -93,9 +95,7 @@ export const editCategory = async (req:Request,res:Response,next:NextFunction)=>
 
 export const verifyListController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(req.body)
-
-        isListedProductUsecases(req.body._id,req.body.isListed)
+        await isListedProductUsecases(req.body._id,req.body.isListed)
         return res.status(StatusCode.Success).json({success:true,message:'List has been updated'})
         
     } catch (error) {
@@ -107,9 +107,8 @@ export const verifyListController = async(req:Request,res:Response,next:NextFunc
 export const deleteProductController = async (req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(`Req reached deleteProductController`)
-        console.log(req.query.id)
-        console.log(req.query)
-        // await deleteProductUsecases(req?.query?.id)
+       
+        await deleteProductUsecases(req?.params?.id)
         return res.status(StatusCode.Success).json({success:true,message:'Product has been deleted'})
     } catch (error) {
         console.log(`Error from deleteProductController\n${error}`)

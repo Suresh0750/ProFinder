@@ -6,6 +6,15 @@ import {AddCategory,addCategoryData} from '../../../domain/entities/Admin'
 import {AdminMongoose} from "../../../infrastructure/database/mongoose/MongooseAdminRepository"
 
 
+export const EditCategoryUseCases = async()=>{
+    try {
+        
+    } catch (error) {
+        console.log(`Error from useCases->admin->EditCategoryUseCases\n`,error)
+        throw error
+    }
+}
+
 export const AddCategoryUseCases = async(categoryDetails:addCategoryData)=>{
     try {
         // * call mongoose query

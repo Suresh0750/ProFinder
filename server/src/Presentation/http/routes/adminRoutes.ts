@@ -11,9 +11,10 @@ adminRoutes.post("/addCategory",upload.single('CategoryImage'),addCategoryContro
 adminRoutes.post("/adminVerify",AdminVerify)
 
 adminRoutes.get('/fetchCategoryData',verify,getAllCategory)
-adminRoutes.post('/editCategory',upload.single('categoryImage'),verify,editCategory)
+adminRoutes.post('/editCategory',upload.single('newImageData'),verify,editCategory)
 adminRoutes.post('/isListVerify',verify,verifyListController)
 adminRoutes.post('/deleteProduct:id',verify,deleteProductController)
+
 
 export default adminRoutes
 
