@@ -61,6 +61,7 @@ const Page = () => {
   
   // const getRole = useSelector((state:any)=>state.CustomerData.role)
   // const CustomerData = useSelector((state:any)=>state.CustomerData)
+  const router = useRouter();
 
   useEffect(()=>{
     
