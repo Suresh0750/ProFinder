@@ -60,9 +60,7 @@ const Page = () => {
   const [role,setRole] = useState('')
   
 
-  const dispatch = useDispatch()
-
-
+const router = useRouter()
   useEffect(()=>{
     let customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
     setRole(customerRole?.role)
@@ -81,14 +79,11 @@ const Page = () => {
       console.log(result)
       if(result.data.success){
         console.log(`is logout`)
-        // dispatch(updateCustomerLogin(false))   // * customer after login
-        
-        localStorage.setItem("customerData",'')
-     
-        setTimeout(()=>{
-          router.push('/homePage')
-        },2000)
-      }
+        localStorage.setItem("customerData",'') 
+    setTimeout(()=>{
+              router.push('/homePage')
+            },2000)
+          }
       
     } catch (error) {
       console.log(error)

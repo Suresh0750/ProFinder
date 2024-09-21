@@ -11,6 +11,7 @@ import { hashPassword } from '../../../shared/utils/encrptionUtils'
 
 // * types
 import {forgetPasswordDataType} from '../../../domain/entities/CustomerOTP'
+import { WorkerInformation } from '../../../domain/entities/Worker'
 
 // * here verified the worker and user data. check whether they are verified OTP 
 
@@ -94,10 +95,26 @@ export const ForgetPassWordUseCase = async (forgetPasswordData:forgetPasswordDat
     }
 }
 
-// * Google Login UseCases 
-export const GoogleLoginUseCases = async (customerData:GoogleLogintypes)=>{
+// * if customer is a worker after verification of email is not there means here we create an account for them
+export const GoogleLoginWorkerRegister = async(customerData:WorkerInformation)=>{
     try {
         
+        console.log(`Req reached GoogleLoginWorker`)
+       
+        delete customerData.role
+     
+        await getWorkerRepository().insertWorker(customerData)
+        return getWorkerRepository().findWorker(customerData.EmailAddress)
+    } catch (error) {
+        
+    }
+}
+
+// * Google Login UseCases 
+export const GoogleLoginUseCases = async (customerData:GoogleLogintypes )=>{
+    try {
+        console.log(`Reques reached Google LoginUsecase`)
+        console.log(customerData)
         if(customerData.role=='user'){
             const {UserGoogleLogin} = CustomerQueryRepository()     // * user
             console.log(customerData)
@@ -115,6 +132,21 @@ export const GoogleLoginUseCases = async (customerData:GoogleLogintypes)=>{
         }
     } catch (error) {
         console.log(`Error from app->usecase->utils->GoogleLoginUseCases\n${error}`)
+        throw error
+    }
+}
+
+
+// * worker verification while worker login through google
+export const workerGoogleVerification = async (workerEmail:any)=>{
+    try {
+
+        console.log(`Request reached workerGoogleVerification`)
+   
+        return await CustomerQueryRepository().WorkerGoogleLoginVerification(workerEmail)
+        
+    } catch (error) {
+        console.log(`Error from app->usecase->utils->workerGoogleVerification\n${error}`)
         throw error
     }
 }

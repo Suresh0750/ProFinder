@@ -47,3 +47,4 @@ export interface GoogleLogintypes {
     EmailAddress : string,
     role? : string
 }
+

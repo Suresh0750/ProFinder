@@ -11,6 +11,10 @@ const baseQuery = fetchBaseQuery({
     credentials: 'include',  // for include cookies
 })
 
+// Function to get headers
+const getHeaders = (role :string) => ({
+    'Role': role, 
+});
 
 export const customerApi = createApi({
     reducerPath : "CustomerOtp",
@@ -20,46 +24,62 @@ export const customerApi = createApi({
             query : (data:OTPData)=>({
                 url:`/customer/verifyOTP`,
                 method:"POST",
-                body : data
+                body : data,
+                headers : getHeaders('customer')
             })
         }),
         CustomerResend : builder.mutation({
             query : (data:OTPData)=>({
                 url : `/customer/resentOTP`,
                 method:"POST",
-                body:data
+                body:data,
+                headers : getHeaders('customer')
             })
         }), 
         ForgetPassword : builder.mutation({          // * Forget password page API
             query : (data )=>({
                 url : `/customer/setForgotPassword`,
                 method : "POST",
-                body :data
+                body :data,
+                headers : getHeaders('customer')
             })
         }),
         CustomerGoogleLogin : builder.mutation({
             query : (data )=>({
                 url : `/customer/CustomerGoogleLogin`,
                 method : "POST",
-                body :data
+                body :data,
+                headers : getHeaders('customer')
             })
         }),
         CustomerLogout : builder.mutation({
             query : (data )=>({
                 url : `/customer/cutomerLogout`,
                 method : "POST",
-                body :data
+                body :data,
+                headers : getHeaders('customer')
             })
         }),
         customerLogIn : builder.mutation({
             query : (data )=>({
                 url : `/customer/customerLogIn`,
                 method : "POST",
-                body :data
+                body :data,
+                headers : getHeaders('customer')
+            })
+        }),
+        customerGoogleVerification : builder.mutation({
+            query : (data)=>({
+                url : `/customer/customerGoogleVerification${data}`,
+                method : "POST",
+                body :data,
+                headers : getHeaders('customer')
             })
         })
     })
 })
 
+// GoogleLogin
 
-export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation} = customerApi
+
+export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation} = customerApi
