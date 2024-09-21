@@ -62,7 +62,7 @@ const Page = () => {
   // const getRole = useSelector((state:any)=>state.CustomerData.role)
   // const CustomerData = useSelector((state:any)=>state.CustomerData)
 
-  const Router = useRouter()
+  const router = useRouter()
   const dispatch = useDispatch()
 
   // console.log('role',getRole)
@@ -88,12 +88,11 @@ const Page = () => {
         console.log(`is logout`)
         // dispatch(updateCustomerLogin(false))   // * customer after login
         // dispatch(updateRole(''))   
-        // deleteCookie('workerToken')
+        // deleteCookie('workerTokeroutern')
         localStorage.setItem("customerData",'')
-     
-        setTimeout(()=>{
-          Router.push('/homePage')
-        },2000)
+
+        router.push('/homePage')
+        
       }
       
     } catch (error) {
