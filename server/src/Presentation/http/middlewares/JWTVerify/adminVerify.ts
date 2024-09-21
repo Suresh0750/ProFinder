@@ -10,11 +10,12 @@ declare module 'express-session' {
       AdminData: AdminDetails;
     }
   }
-  
+
 export const verify = (req:Request,res:Response,next:NextFunction)=>{
     try{
-        
+
         const adminAccessToken = req.cookies.accessToken
+        // const adminAccessToken = null // * checking purpose
         console.log(`Request reached middleware`,adminAccessToken)
         
         if(!adminAccessToken){
@@ -30,6 +31,7 @@ export const verify = (req:Request,res:Response,next:NextFunction)=>{
            }
           
         }
+        return 
         
     }catch (err){
         console.log(err)
@@ -42,8 +44,10 @@ export const renewToken = (req:Request,res:Response,next:NextFunction)=>{
     try{
         console.log(`req Enter renewtoken`)
         const refreshToken = req.cookies.adminToken
+        // const refreshToken = null // * checking purpose
         let exist = false
         if(!refreshToken){
+            ExpireCookie(req,res,next)   // * delete all cookie
             return res.status(StatusCode.Unauthorized).json({valid:false,message:'no refresh Token'})
         }else{
              const AdminRefreshToken = jwt.verify(refreshToken,String(process.env.REFRESH_TOKEN_SECRET)) 
@@ -55,23 +59,40 @@ export const renewToken = (req:Request,res:Response,next:NextFunction)=>{
                 })
                 exist = true
              }else{
+                ExpireCookie(req,res,next)
                 return res.status(StatusCode.Unauthorized).json({valid:false,message:'Invalid refresh token'})
              }
-            // jwt.verify(refreshToken,'secret_key',(err,decode)=>{
-            //     if(err){
-            //         return res.json({valid:false,message:'Invalid refresh token'})
-            //     }else{
-            //         const accessToken = jwt.sign({adminEmail: process.env.ACCESS_TOKEN_SECRET},String(process.env.REFRESH_TOKEN_SECRET), { expiresIn:'15m' })
-            //         res.cookie('accessToken',accessToken,{maxAge:6000})
-            //         exist = true
-            //     }
-            // }
-                
-            // const workerAccessToken = jwt.sign()
+          
         }
         return exist
     }catch(error){
         console.log(error)
+        next(error)
+    }
+}
+
+const ExpireCookie = (req:Request,res:Response,next:NextFunction)=>{
+    try{
+
+        console.log(req.cookies)
+        res.clearCookie('accessToken'); // * Clear the accessToken
+         
+        res.clearCookie('adminToken', {  // * Clear the refresh token cookie
+            httpOnly: true,
+            secure: true, 
+            sameSite: 'strict'
+        });
+     
+        req.session.destroy((err)=>{
+            if(err){
+                console.log('Error destroying session:', err);
+                return res.status(StatusCode.InternalServerError).json({sucess:true,message: 'Internal Server proplem' });
+            }
+
+        })
+        next()
+    }catch(error){
+        console.log(`Error from ExpireCooke`)
         next(error)
     }
 }
