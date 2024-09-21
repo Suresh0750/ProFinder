@@ -5,8 +5,11 @@ import {OtpVerifyUseCases} from "../../../app/useCases/utils/OtpStoreData"
 import {getVerifyOTP} from '../../../domain/entities/CustomerOTP'
 import {JwtService} from '../../../infrastructure/service/JwtService'
 import {Cookie,StatusCode} from '../../../domain/entities/commonTypes'
-import {userVerification,workerVerification,ForgetPassWordUseCase,customerResentOTP,GoogleLoginUseCases} from '../../../app/useCases/utils/customerVerification'
-
+import {WorkerInformation} from '../../../domain/entities/Worker'
+import {userVerification,workerVerification,ForgetPassWordUseCase,customerResentOTP,GoogleLoginUseCases, workerGoogleVerification, GoogleLoginWorkerRegister} from '../../../app/useCases/utils/customerVerification'
+import { uploadImage } from "../../../app/useCases/utils/uploadImage"
+import { IMulterFile } from "../../../domain/entities/Admin"
+import { hashPassword } from "../../../shared/utils/encrptionUtils"
 
 export const CustomerOtpController = async(req:Request,res:Response,next:NextFunction)=>{
     try{
@@ -107,17 +110,48 @@ export const ForgetPassWordController = async(req:Request,res:Response,next:Next
         next(error)
     }
 }
-
+export const WorkerGoogleLoginWithRegistrastion = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log('Request reached WorkerGoogleLoginWithRegistrastion')
+        console.log(req.params)
+        const result :(WorkerInformation | null | undefined)= await workerGoogleVerification(req.params.email)
+        console.log("result",result)
+        if(!result) return res.status(StatusCode.NotFound).json({success:false,message:`Worker has't register`,modal:true})
+        else{
+        const  {refreshToken,accessToken} = JwtService(((result._id)?.toString() || ''),result.FirstName,result.EmailAddress,'worker')
+        // * JWT referesh token setUp
+        res.cookie(Cookie.Worker,refreshToken,{
+            httpOnly:true,
+            secure :true,
+            sameSite:'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+        res.cookie('accessToken',accessToken,{
+            maxAge: 15 * 60 * 1000
+        })
+    }
+    const customerData  = {
+        _id: result._id,
+        customerName : result.FirstName,
+        customerEmail : result.EmailAddress,
+        role : 'worker'
+    }
+        return res.status(StatusCode.Success).json({success:true,message:'Worker successfully login',customerData})
+    } catch (error) {
+        console.log(`Error from WorkerGoogleLoginWithRegistrastion\n${error}`)
+        next(error)
+    }
+}
 export const GoogleLogin = async (req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(req.body)
         
-        const customerData = await GoogleLoginUseCases(req.body)
-        if(req.body.role == "user"){
+        if(req?.body?.role == "user"){
+            const customerData = await GoogleLoginUseCases(req.body)
             if(customerData?._id){
-                const  {refreshToken,accessToken} = JwtService((customerData?._id).toString(),'','',(req.body.role || "worker"))  
+                const  {refreshToken,accessToken} = JwtService((customerData?._id).toString(),customerData.username,customerData.EmailAddress,(req.body.role || "worker"))  
                 // * JWT referesh token setUp
-                res.cookie(Cookie.Worker,refreshToken,{
+                res.cookie(Cookie.User,refreshToken,{
                     httpOnly:true,
                     secure :true,
                     sameSite:'strict',
@@ -129,13 +163,43 @@ export const GoogleLogin = async (req:Request,res:Response,next:NextFunction)=>{
                 })
                 
                 console.log("Google login controller",customerData)
-                res.status(StatusCode.Success).json({success:true,message:"successfully login"})
+            return res.status(StatusCode.Success).json({success:true,message:"successfully login"})
             }
-        }else if(req.body.role=='worker'){
+        }else if(req.body.role ='worker'){
             console.log(`Req entered worker controller`)
-            console.log(req.body)
+          
+            const file: IMulterFile | any = req.file
+            const imageUrl = await uploadImage(file)
+            req.body.Identity = imageUrl
+            req.body.Password = await hashPassword(req.body.Password)
+            const customerDetails = await GoogleLoginWorkerRegister(req.body)
+         
+            if(!customerDetails)  return res.status(StatusCode.NotFound).json({success:false,message:'server error'})
+
+            if(customerDetails?._id){
+                const  {refreshToken,accessToken} = JwtService((customerDetails?._id).toString(),customerDetails.FirstName,customerDetails.EmailAddress, "worker")  
+                // * JWT referesh token setUp
+                res.cookie(Cookie.Worker,refreshToken,{
+                    httpOnly:true,
+                    secure :true,
+                    sameSite:'strict',
+                    maxAge: 7 * 24 * 60 * 60 * 1000
+                })
+                res.cookie('accessToken',accessToken,{
+                    // maxAge: 15 * 60 * 1000
+                    maxAge: 2 * 60 * 1000
+                })
+                const customerData  = {
+                    _id: customerDetails._id,
+                    customerName : customerDetails.FirstName,
+                    customerEmail : customerDetails.EmailAddress,
+                    role : 'worker'
+                }
+
+             return   res.status(StatusCode.Success).json({success:true,message:"successfully login",customerData})
+            }
         }
-        res.status(StatusCode.InternalServerError).json({success:false,message:'Server error'})
+        return res.status(StatusCode.InternalServerError).json({success:false,message:'Server error'})
         
     } catch (error) {
         console.log(`Erron from GoogleLogin`,error)
@@ -166,7 +230,7 @@ export const customerLogIn = async (req:Request,res:Response,next:NextFunction)=
     try {
 
         console.log(req.cookies)
-        
+      
     } catch (error) {
         console.log(`Error from customerLogIn\n${error}`)
         next(error)

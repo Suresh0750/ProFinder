@@ -23,5 +23,14 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
             console.log(`Error from infrastructure->mongoseUser->UserWorkerLogin\n`,error)
             throw error
         }
+    },
+    WorkerGoogleLoginVerification : async(EmailAddress:string)=>{
+        try{
+            console.log(`Req reached workGoogleLoginVerification`)
+            return await WorkerModel.findOne({EmailAddress})
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->UserWorkerLogin\n`,error)
+            throw error
+        }
     }
 })

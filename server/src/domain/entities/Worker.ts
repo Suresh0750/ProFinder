@@ -29,5 +29,6 @@ export interface ProfessionInformation{
 
 export type WorkerInformation = PersonalInformation & ProfessionInformation & {
     _id?: string; 
+    role ? : string
 };
 
