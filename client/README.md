@@ -74,6 +74,15 @@ Tailwind css 👍
 
    - git checkout -b branch
 
+# change branch
+
+   - git checkout branch
+
 # show untragged file
 
    - git status
+
+# unstage the all files
+
+   - git reset HEAD (this opposite of git add .)
+

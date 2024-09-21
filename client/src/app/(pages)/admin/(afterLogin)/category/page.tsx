@@ -1,9 +1,9 @@
 
+
 import ShowCategoryDetails from '../../../../../components/admin/category/category'
 
 export default function Category({form}:{form:React.ReactNode}) {
 
-   
     return (
         <>
             <section className='mt-[3.5em]'>
@@ -11,6 +11,7 @@ export default function Category({form}:{form:React.ReactNode}) {
                 <div className='flex flex-col w-[90%] ml-[113px] mt-[31px] h-[40%] bg-[#2a2b36]'>
                     <ShowCategoryDetails />
                 </div>
+                
             </section>
         </>
     );
