@@ -82,9 +82,9 @@ const Page = () => {
       if(result.data.success){
         console.log(`is logout`)
        
-       
+        localStorage.setItem("customerData",'')
 
-        router.push('/homePage')
+       
         
       }
       
