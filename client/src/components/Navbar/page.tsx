@@ -59,7 +59,7 @@ const Page = () => {
 
   const [role,setRole] = useState('')
   
-  const router = useRouter()
+
   const dispatch = useDispatch()
 
 
