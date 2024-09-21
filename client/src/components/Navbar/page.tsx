@@ -59,7 +59,7 @@ const Page = () => {
 
   const [role,setRole] = useState('')
   
-  const Router = useRouter()
+  const router = useRouter()
   const dispatch = useDispatch()
 
 
@@ -86,7 +86,7 @@ const Page = () => {
         localStorage.setItem("customerData",'')
      
         setTimeout(()=>{
-          Router.push('/homePage')
+          router.push('/homePage')
         },2000)
       }
       
