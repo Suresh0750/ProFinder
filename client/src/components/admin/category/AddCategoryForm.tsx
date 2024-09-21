@@ -17,12 +17,16 @@ import { Button, Input, Tooltip } from "@mui/material";
 import { Textarea } from "@/components/ui/textarea";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {useState} from 'react'
+
+
 
 const AddCategoryForm = () => {
   const Router = useRouter();
 
   // * Admin RTK api
   const [AddCategoryForm, { isError, isLoading }] = useAddCategoryFormMutation();
+  const [page,setPage]= useState(1)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -51,10 +55,9 @@ const AddCategoryForm = () => {
       console.log(`Responce addcategory from server side \n`, res);
       console.log(res?.success);
       if (res?.success) {
-        toast.success(res?.message);
-        setTimeout(() => {
-          Router.push("/admin/category");
-        }, 3000);
+        toast.success(res?.message); 
+        Router.push("/admin/category");
+       
       } else {
         console.log(res)
         toast.error(`Something went wrong, try again`);
