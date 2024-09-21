@@ -62,11 +62,6 @@ const Page = () => {
   // const getRole = useSelector((state:any)=>state.CustomerData.role)
   // const CustomerData = useSelector((state:any)=>state.CustomerData)
 
-  const router = useRouter()
-  const dispatch = useDispatch()
-
-  // console.log('role',getRole)
-  // console.log(CustomerData)
   useEffect(()=>{
     
     let customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
@@ -86,9 +81,7 @@ const Page = () => {
       console.log(result)
       if(result.data.success){
         console.log(`is logout`)
-        // dispatch(updateCustomerLogin(false))   // * customer after login
-        // dispatch(updateRole(''))   
-        // deleteCookie('workerTokeroutern')
+       
         localStorage.setItem("customerData",'')
 
         router.push('/homePage')
