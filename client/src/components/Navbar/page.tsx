@@ -60,7 +60,7 @@ const Page = () => {
   const [role,setRole] = useState('')
   
 
-  const router = useRouter();
+  
 
   useEffect(()=>{
     
@@ -82,7 +82,7 @@ const Page = () => {
       if(result.data.success){
         console.log(`is logout`)
        
-        localStorage.setItem("customerData",'')
+     
 
        
         
