@@ -9,8 +9,8 @@ export const getWorkerRepository = ():WorkerRepository =>({
         try {
             console.log(`Req reached createworker`)
 
-            const workerDetails = await WorkerModel.updateOne({EmailAddress:workerData.EmailAddress},{$set:{workerData}},{upsert:true})
-            
+            const workerDetails = new WorkerModel(workerData); 
+            await workerDetails.save();
            
             return await WorkerModel.findOne({EmailAddress:workerData.EmailAddress})
             
