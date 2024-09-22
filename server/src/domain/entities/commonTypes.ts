@@ -37,3 +37,5 @@ export enum StatusCode {
  }
 
 
+// * category name type
+export type getCategoryName = string[] | any

@@ -10,6 +10,7 @@ import {userVerification,workerVerification,ForgetPassWordUseCase,customerResent
 import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
+import { getCategoryNameUtils } from "../../../app/useCases/utils/customerUtils"
 
 export const CustomerOtpController = async(req:Request,res:Response,next:NextFunction)=>{
     try{
@@ -233,6 +234,16 @@ export const customerLogIn = async (req:Request,res:Response,next:NextFunction)=
       
     } catch (error) {
         console.log(`Error from customerLogIn\n${error}`)
+        next(error)
+    }
+}
+
+export const getCategoryName = async(req:Request,res:Response,next:Function)=>{
+    try {
+        const result = await getCategoryNameUtils()
+        return res.status(StatusCode.Success).json({success:true,message:`Fetch category's name has been success`,result})
+    } catch (error) {
+        console.log(`Error from getCategoryName\n${error}`)
         next(error)
     }
 }
