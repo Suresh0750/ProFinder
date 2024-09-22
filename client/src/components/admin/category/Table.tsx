@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { toast, Toaster } from "sonner";
 import { Pagination } from "@mui/material";
 import Stack from "@mui/material/Stack";
+import {showCategory}  from '../../../types/AdminTypes'
 
 // * API call
 import {
@@ -89,7 +90,7 @@ export default function Table() {
   useEffect(() => {
     let n = page * 5;
     setShowCategory(allCategory.slice(n - 5, n));
-  }, [page]);
+  }, [page,allCategory]);
 
   // *  Open modal with category data for editing
   const handleEditClick = (category: any) => {
@@ -241,16 +242,16 @@ export default function Table() {
             </tr>
           </thead>
           <tbody className="text-white">
-            {showCategory.map((val, i) => (
+            {showCategory.map((val:showCategory, i:number) => (
               <tr key={val._id} className="border-b">
-                <td className="text-center">{i + 1}</td>
+                <td className="text-center">{((page-1)*5)+(i+1)}</td>
                 <td className="text-center flex justify-center items-center">
                   <div className="w-12 h-12">
                     <img
                       loading="lazy"
                       src={val?.categoryImage}
                       alt={val?.categoryName}
-                      className="rounded-full"
+                      className="rounded"
                     />
                   </div>
                 </td>
