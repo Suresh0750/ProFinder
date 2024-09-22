@@ -103,7 +103,11 @@ const router = useRouter()
                Home
               </Link>
             </li>
-            <li className="hover:text-gray-300 cursor-pointer">Service</li>
+            <li className="hover:text-gray-300 cursor-pointer">
+              <Link href={'/service-workerlist'}>
+                Service
+              </Link >
+            </li>
             <li className="hover:text-gray-300 cursor-pointer">Contact</li>
           </ul>
           {

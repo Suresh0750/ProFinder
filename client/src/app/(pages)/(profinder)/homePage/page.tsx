@@ -33,7 +33,7 @@ const Home = () => {
     <div>
       {/* Header Section */}
      
-     <Navbar />
+     {/* <Navbar /> */}
       {/* <header className="bg-gray-800 text-white py-6">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">Profinder</h1>
