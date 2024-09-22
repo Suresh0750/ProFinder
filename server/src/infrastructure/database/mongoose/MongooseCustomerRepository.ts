@@ -2,6 +2,7 @@
 import { User,loginDetails } from "../../../domain/entities/User";
 import { WorkerInformation } from "../../../domain/entities/Worker";
 import { CustomerRepository } from "../../../domain/repositories/CustomerRepository";
+import { CategoryModel } from "./models/AdminModel";
 import {UserModel} from './models/UserModel'
 import {WorkerModel} from './models/workerModel'
 
@@ -31,6 +32,14 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->UserWorkerLogin\n`,error)
             throw error
+        }
+    },
+    getCategoryName : async()=>{
+        try {
+            return await CategoryModel.distinct('categoryName')   // * show all category in worker signup page for select
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->getCategoryName\n`,error)
+            throw error  
         }
     }
 })

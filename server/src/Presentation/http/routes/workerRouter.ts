@@ -5,6 +5,7 @@ import {authorizeRoles} from '../middlewares/authorizeRoles'
 
 const workerRouter = Router()
 
+
 workerRouter.post("/personalinfo",upload.single('profileImage'),PersonalInformationControll)
 workerRouter.post("/ProfessionalInfo",upload.single('Identity'),ProfessionalInfoControll)
 workerRouter.post("/checkEmailForgetPass",isCheckEmail)

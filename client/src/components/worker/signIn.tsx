@@ -171,7 +171,7 @@ export function LoginForm() {
         <h2 className="text-center mt-4">
           Don’t have an account?{" "}
           <span
-            onClick={() => Router.push("/user/signup")}
+            onClick={() => Router.push("/worker/signup")}
             className="text-blue-500 cursor-pointer hover:underline"
           >
             Register
