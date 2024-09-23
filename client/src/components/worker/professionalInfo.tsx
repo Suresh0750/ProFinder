@@ -18,25 +18,37 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PulseLoader } from 'react-spinners';
-import {FormValues} from '../../types/workerTypes'
+import { FormValues } from '../../types/workerTypes';
 import { useSelector } from 'react-redux';
-import { useEffect,useState } from 'react';
-import {useProfessionalInfoMutation} from '@/lib/features/api/workerApiSlice'  // * API call
-import {professionalInfoFormSchema} from '@/lib/formSchema'
-
+import { useEffect, useState } from 'react';
+import { useProfessionalInfoMutation } from '@/lib/features/api/workerApiSlice';  // * API call
+import { professionalInfoFormSchema } from '@/lib/formSchema';
+import { useGetCategoryNameQuery } from '@/lib/features/api/customerApiSlice';
 
 export default function ProfessionalInfo() {
 
-  const [workerSignupDetails,setWorkerSignupDetails] = useState({})
+  const [workerSignupDetails, setWorkerSignupDetails] = useState({});
+  const [categoryName, setCategoryName] = useState<string[]>([]);
 
   // * get value from redux
-  const workersignupData = useSelector((state:any)=>state.WorkerSignupData)
-  useEffect(()=>{
-    setWorkerSignupDetails(workersignupData)
-  },[workersignupData])
+  const workersignupData = useSelector((state: any) => state.WorkerSignupData);
 
-  const [ProfessionalInfo,{isLoading}] = useProfessionalInfoMutation();
+  // * API Calls 
+  const [ProfessionalInfo, { isLoading }] = useProfessionalInfoMutation();
+  const { data } = useGetCategoryNameQuery('');
+  console.log(data)
+
   const Router = useRouter();
+
+  useEffect(() => {
+    setWorkerSignupDetails(workersignupData);
+  }, [workersignupData]);
+
+  useEffect(() => {
+    if (data) {
+      setCategoryName(data.result);
+    }
+  }, [data]);
 
   const form = useForm<z.infer<typeof professionalInfoFormSchema>>({
     resolver: zodResolver(professionalInfoFormSchema),
@@ -55,34 +67,26 @@ export default function ProfessionalInfo() {
   // * Form Handler
   async function onSubmit(values: z.infer<typeof professionalInfoFormSchema>) {
     try {
-      
       if (isLoading) return;
-      console.log(values)
-      // Convert FormData for file uploads
-      const formData  = new FormData();
-      formData.append('Identity', values.Identity);
-      
-      console.log(formData)
-      for (let key in values) {
-        if (key != "Identity") {
-          formData.append(key, values[key]); // Append file
-        } 
-      }
-      console.log(workerSignupDetails.signUpData)
-      const signupData :any = workerSignupDetails.signUpData 
-      console.log(workerSignupDetails)
-      console.log(signupData)
-      for (let key in signupData) {
-        formData.append(key,signupData[key])
-      }
-      
-      console.log("form", formData);
 
-      const res = await ProfessionalInfo(formData).unwrap(); // RTK/query for fetching
-      console.log(`res \n`, res);
+      const formData = new FormData();
+      formData.append('Identity', values.Identity);
+
+      for (let key in values) {
+        if (key !== "Identity") {
+          formData.append(key, values[key]);
+        }
+      }
+
+      const signupData: any = workerSignupDetails.signUpData;
+
+      for (let key in signupData) {
+        formData.append(key, signupData[key]);
+      }
+
+      const res = await ProfessionalInfo(formData).unwrap();
       if (res.success) {
         toast.success(res.message);
-        
         setTimeout(() => {
           Router.push(`/worker/workerOtp/${res.worker}`);
         }, 4000);
@@ -90,7 +94,7 @@ export default function ProfessionalInfo() {
     } catch (err) {
       toast.error('Error: Registration failed. Please check your input and try again.');
       console.log(err);
-    } 
+    }
   }
 
   return (
@@ -107,11 +111,15 @@ export default function ProfessionalInfo() {
                   <FormItem>
                     <FormLabel>Select category</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Select category"
+                      <select
                         {...field}
                         className="p-2 rounded w-full border border-gray-300"
-                      />
+                      >
+                        <option value="" disabled>Select category</option>
+                        {categoryName.map((category, index) => (
+                          <option key={index} value={category}>{category}</option>
+                        ))}
+                      </select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -179,9 +187,9 @@ export default function ProfessionalInfo() {
                     <FormControl>
                       <Input
                         type="file"
-                        onChange={(e:any) => {
+                        onChange={(e: any) => {
                           const file = e.target.files?.[0];
-                          field.onChange(file) // Handle file input
+                          field.onChange(file);
                         }}
                         className="w-full mt-2 p-2 border border-gray-300 rounded"
                       />

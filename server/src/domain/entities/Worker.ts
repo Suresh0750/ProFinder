@@ -23,11 +23,13 @@ export interface ProfessionInformation{
     PostalCode : Number,
     WorkerImage? : string[],
     reviews? : string[],
-    isVerified? : Boolean
+    isVerified? : Boolean,
+    isWorker ? : Boolean
 }
 
 
 export type WorkerInformation = PersonalInformation & ProfessionInformation & {
     _id?: string; 
+    role ? : string
 };
 

@@ -40,7 +40,7 @@ export const WorkerUsecase= async(workerData:PersonalInformation)=>{
 export const getWorkerData = async(token:string)=>{
     try {
         console.log(`req reached WorkrUsecase getWorkerData`)
-        console.log(verifyRefreshToken(token))
+   
         const {customerId} :any = verifyRefreshToken(token) 
         const {getWorkerData} = getWorkerRepository()
         return getWorkerData(customerId)

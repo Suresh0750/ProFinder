@@ -11,7 +11,7 @@ import '../../globals.css'
 export default function ProfinderLayout({children}:{children:React.ReactNode}){
     return(
         <>
-            {/* <Navbar /> */}
+            <Navbar />
             {children}
         </>
     )

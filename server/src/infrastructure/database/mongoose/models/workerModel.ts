@@ -18,9 +18,10 @@ const workerSchema = new Schema<PersonalInformation & ProfessionInformation>({
     PostalCode: { type: String, required: true },  
     WorkerImage: [{ type: String }], 
     reviews: [{ type: String }], 
-    isVerified : {type:Boolean, default:false}
+    isVerified : {type:Boolean, default:false},
+    isWorker : {type:Boolean,default:false}
 }, { timestamps: true });
 
-const WorkerModel = model<PersonalInformation & ProfessionInformation & Document>('WorkerCollection', workerSchema);
+const WorkerModel = model<PersonalInformation & ProfessionInformation & Document>('WorkerDetails', workerSchema);
 
 export { WorkerModel };

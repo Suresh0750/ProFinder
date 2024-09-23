@@ -10,6 +10,7 @@ import Table from '../../admin/category/Table'
 import * as React from 'react';
 import AddCategoryForm from './AddCategoryForm';
 
+
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -41,7 +42,8 @@ export const Category = ()=>{
                 <button className='bg-[#519668] rounded p-2 mr-10' onClick={handleOpen}>Add Category</button>      
             </div>
             <div>
-                <Table/>  
+                <Table/> 
+                
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -66,6 +68,7 @@ export const Category = ()=>{
                     </Box>
                 </Modal>
             </div>
+           
         </>
     )
 }

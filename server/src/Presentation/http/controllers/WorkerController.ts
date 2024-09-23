@@ -74,7 +74,7 @@ export const getWorkerDataController = async (req:Request,res:Response,next:Next
         if(!workerToken) res.status(StatusCode.Forbidden).json({ message: "Unauthenticated" });
         // console.log(req)
         const workerData = await getWorkerData(workerToken)
-        console.log(req.cookies)
+       
         res.status(StatusCode.Success).json({success:true,message:'success',workerData})
 
     } catch (error) {
@@ -115,3 +115,4 @@ export const LoginWorkerController = async (req:Request,res:Response,next:NextFu
         next(error)
     }
 }
+
