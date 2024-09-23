@@ -75,6 +75,13 @@ export const customerApi = createApi({
                 body :data,
                 headers : getHeaders('customer')
             })
+        }),
+        listWorkerDataAPI : builder.mutation({
+            query : ()=>({
+                url : `/customer/getALLVerifiedWorker`,
+                method : "GET",
+                headers : getHeaders('customer')
+            })
         })
     })
 })
