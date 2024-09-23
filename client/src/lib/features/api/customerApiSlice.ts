@@ -89,6 +89,13 @@ export const customerApi = createApi({
                 method : "GET",
                 headers : getHeaders('customer')
             })
+        }),
+        getNearByworkerList : builder.mutation({
+            query : (data)=> ({
+                url : `/customer/getNearByWorkerDetails${data}`,
+                method : "POST",
+                headers : getHeaders('customer')
+            })
         })
     })
 })
@@ -96,4 +103,4 @@ export const customerApi = createApi({
 // GoogleLogin
 
 
-export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation,useGetCategoryNameQuery,useListWorkerDataAPIQuery} = customerApi
+export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation,useGetCategoryNameQuery,useListWorkerDataAPIQuery,useGetNearByworkerListMutation} = customerApi

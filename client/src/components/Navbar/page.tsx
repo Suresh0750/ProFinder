@@ -8,8 +8,8 @@ import { useCustomerLogoutMutation } from '@/lib/features/api/customerApiSlice'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { updateCustomerLogin, updateRole } from '@/lib/features/slices/customerSlice'
-
-
+import Modal from '@/components/Emergency'
+import GoogleMaps from '@/components/googleMap/googleMaps'
 
 export const DropDownDashboard = ()=>{
   const [useDropdown,setUserDropDown] = useState(false)
@@ -53,23 +53,26 @@ export const DropDownDashboard = ()=>{
   )
 }
 
+
+
 const Page = () => {
-
-
-
   const [role,setRole] = useState('')
-  
-
-const router = useRouter()
-  useEffect(()=>{
-    let customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
-    setRole(customerRole?.role)
-  },[role])
-
+  const [isModalOpen,setIsModalOpen] = useState<boolean>(false)
+  const [isOpenMap,setIsOpenMap] = useState<boolean>(false)
   const [openProfile,setOpenProfile] = useState(false)
   console.log(role)
 
   const [CustomerLogout,{isSuccess}] = useCustomerLogoutMutation()
+
+
+  const router = useRouter()
+    useEffect(()=>{
+      let customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
+      setRole(customerRole?.role)
+    },[role])
+
+ 
+  
 
   const handleLogout = async ()=>{
     try {
@@ -119,7 +122,7 @@ const router = useRouter()
                  {/* <Link href={'/worker/dashboard/personalInfo'}> */}
                    Get Started
                  {/* </Link> */}
-               </button>) : role=='user' ? <><button>Emergency</button> Dashboard <button onClick={handleLogout}>Logout</button></> :(<>
+               </button>) : role=='user' ? <><button className='bg-red-700 text-white text-1xl p-2 rounded' onClick={()=>setIsModalOpen((prev)=>!prev)}>Emergency</button> <button onClick={()=>setIsOpenMap((prev)=>!prev)}>Dashboard</button> <button onClick={handleLogout}>Logout</button></> :(<>
                 <Link href={"/worker/dashboard/personalInfo"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
                 </>
                 )
@@ -131,13 +134,12 @@ const router = useRouter()
               }
               
             </>
-            
-            
-           
           }
 
-         
         </nav>
+        {/* Modal component */}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+       
       </>
     );
   }

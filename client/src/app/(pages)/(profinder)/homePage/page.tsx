@@ -109,6 +109,8 @@ const Home = () => {
         </div>
       </section>
 
+   
+
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-12">
         <div className="container mx-auto flex justify-between">
