@@ -10,9 +10,22 @@ import {userVerification,workerVerification,ForgetPassWordUseCase,customerResent
 import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
-import { getCategoryNameUtils, getVerifiedWorkerUtils} from "../../../app/useCases/utils/customerUtils"
+import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils} from "../../../app/useCases/utils/customerUtils"
 
 
+
+// * Get near by worker which around the customer
+
+export const getNearByWorkerDetailsController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.params.categoryName)
+        const result = await getNearByWorkerListUtils(req.params.categoryName)
+        return res.status(StatusCode.Success).json({success:true,message:'successfully fetched near by worker details',result})
+    } catch (error) {
+        console.log(`Error from getNearByWorkerDetailsController\n${error}`)
+        next(error)
+    }
+}
 
 // * Customer( User & Worker) controller
 
@@ -176,14 +189,14 @@ export const WorkerGoogleLoginWithRegistrastion = async (req:Request,res:Respons
         next(error)
     }
 }
+
 export const GoogleLogin = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(req.body)
-        
+     
         if(req?.body?.role == "user"){
-            const customerData = await GoogleLoginUseCases(req.body)
-            if(customerData?._id){
-                const  {refreshToken,accessToken} = JwtService((customerData?._id).toString(),customerData.username,customerData.EmailAddress,(req.body.role || "worker"))  
+            const userData = await GoogleLoginUseCases(req.body)
+            if(userData?._id){
+                const  {refreshToken,accessToken} = JwtService((userData?._id).toString(),userData.username,userData.EmailAddress,(req.body.role || "worker"))  
                 // * JWT referesh token setUp
                 res.cookie(Cookie.User,refreshToken,{
                     httpOnly:true,
@@ -195,9 +208,15 @@ export const GoogleLogin = async (req:Request,res:Response,next:NextFunction)=>{
                     // maxAge: 15 * 60 * 1000
                     maxAge: 2 * 60 * 1000
                 })
-                
-                console.log("Google login controller",customerData)
-            return res.status(StatusCode.Success).json({success:true,message:"successfully login"})
+                const customerData  = {
+                    _id: userData._id,
+                    customerName : userData.username,
+                    customerEmail : userData.EmailAddress,
+                    role : 'user'
+                }
+
+                console.log("Google login controller",userData)
+            return res.status(StatusCode.Success).json({success:true,message:"successfully login",customerData})
             }
         }else if(req.body.role ='worker'){
             console.log(`Req entered worker controller`)
@@ -247,6 +266,12 @@ export const CustomerLogoutController =async (req:Request,res:Response,next:Next
         console.log(`Req reached CustomerLogoutController`)
        
         res.clearCookie(Cookie.Worker, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path : '/'
+        });
+        res.clearCookie(Cookie.User, {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',

@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController} from "../controllers/customerController";
+import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController} from "../controllers/customerController";
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 import upload from '../../../infrastructure/service/multer'
 
@@ -19,7 +19,7 @@ customerRouter.post("/customerGoogleVerification:email",authorizeRoles('customer
 customerRouter.get('/getALLVerifiedWorker',authorizeRoles('customer'),getVerifiedWorkerController)
 
 customerRouter.get('/getCategoryName',authorizeRoles('customer'),getCategoryName)
-
+customerRouter.post('/getNearByWorkerDetails:categoryName',authorizeRoles('customer'),getNearByWorkerDetailsController)
 
 export default customerRouter
 

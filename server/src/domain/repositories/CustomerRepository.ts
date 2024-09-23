@@ -12,4 +12,5 @@ export interface CustomerRepository {
     WorkerGoogleLoginVerification(EmailAddress:string) : Promise<WorkerInformation | undefined | null>
     getVerifiedWorker() : Promise<WorkerInformation[]> 
     getCategoryName () :Promise<getCategoryName>
+    getNearByWorkerListQuery (categoryName:string):Promise<WorkerInformation[]>
 }
