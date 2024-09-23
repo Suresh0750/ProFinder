@@ -78,13 +78,13 @@ const router = useRouter()
       const result = await CustomerLogout(role)
       console.log(result)
       if(result.data.success){
-        console.log(`is logout`)
-        localStorage.setItem("customerData",'') 
-    setTimeout(()=>{
+        console.log(`is logout`)        
+        localStorage.setItem("customerData",'')
+        setTimeout(()=>{
               router.push('/homePage')
             },2000)
+        window.location.reload()
           }
-      
     } catch (error) {
       console.log(error)
     }
@@ -119,7 +119,7 @@ const router = useRouter()
                  {/* <Link href={'/worker/dashboard/personalInfo'}> */}
                    Get Started
                  {/* </Link> */}
-               </button>) : role=='user' ? <>Dashboard <button onClick={handleLogout}>Logout</button></> :(<>
+               </button>) : role=='user' ? <><button>Emergency</button> Dashboard <button onClick={handleLogout}>Logout</button></> :(<>
                 <Link href={"/worker/dashboard/personalInfo"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
                 </>
                 )
