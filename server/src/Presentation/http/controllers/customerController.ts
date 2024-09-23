@@ -29,7 +29,6 @@ export const getVerifiedWorkerController = async(req:Request,res:Response,next:N
 }
 
 
-
 // * getCategory Name for listing while worker signup page 
 
 export const getCategoryName = async(req:Request,res:Response,next:Function)=>{
