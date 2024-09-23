@@ -10,12 +10,40 @@ import {userVerification,workerVerification,ForgetPassWordUseCase,customerResent
 import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
-import { getCategoryNameUtils } from "../../../app/useCases/utils/customerUtils"
+import { getCategoryNameUtils, getVerifiedWorkerUtils} from "../../../app/useCases/utils/customerUtils"
 
 
 
+// * Customer( User & Worker) controller
+
+export const getVerifiedWorkerController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+         const result = await getVerifiedWorkerUtils()
+         if(result) return res.status(StatusCode.Success).json({success:true,message:'Verified worker has been fetched',result})
+        
+        return res.status(StatusCode.InternalServerError).json({success:false,message:'server error trye again'})
+    } catch (error) {
+        console.log(`Error from Customer Resend OTP controller\n ${error}`)
+        next(error)  
+    }
+}
 
 
+
+// * getCategory Name for listing while worker signup page 
+
+export const getCategoryName = async(req:Request,res:Response,next:Function)=>{
+    try {
+        const result = await getCategoryNameUtils()
+        return res.status(StatusCode.Success).json({success:true,message:`Fetch category's name has been success`,result})
+    } catch (error) {
+        console.log(`Error from getCategoryName\n${error}`)
+        next(error)
+    }
+}
+
+
+// * customer comman authendication Part
 export const CustomerOtpController = async(req:Request,res:Response,next:NextFunction)=>{
     try{
         console.log(`req reach customerotp controller`)
@@ -86,7 +114,6 @@ export const CustomerOtpController = async(req:Request,res:Response,next:NextFun
 
 
 
-
 export const ResentOTP = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         const resendOtp = await customerResentOTP(req.body)
@@ -97,6 +124,7 @@ export const ResentOTP = async(req:Request,res:Response,next:NextFunction)=>{
         next(error)
     }
 }
+
 
 
 // * Worker and User ForgetPassword set Controller
@@ -244,14 +272,6 @@ export const customerLogIn = async (req:Request,res:Response,next:NextFunction)=
     }
 }
 
-export const getCategoryName = async(req:Request,res:Response,next:Function)=>{
-    try {
-        const result = await getCategoryNameUtils()
-        return res.status(StatusCode.Success).json({success:true,message:`Fetch category's name has been success`,result})
-    } catch (error) {
-        console.log(`Error from getCategoryName\n${error}`)
-        next(error)
-    }
-}
+
 
 
