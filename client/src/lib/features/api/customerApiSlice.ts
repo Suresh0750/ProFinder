@@ -76,7 +76,7 @@ export const customerApi = createApi({
                 headers : getHeaders('customer')
             })
         }),
-        listWorkerDataAPI : builder.mutation({
+        listWorkerDataAPI : builder.query({
             query : ()=>({
                 url : `/customer/getALLVerifiedWorker`,
                 method : "GET",
@@ -96,4 +96,4 @@ export const customerApi = createApi({
 // GoogleLogin
 
 
-export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation,useGetCategoryNameQuery} = customerApi
+export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation,useGetCategoryNameQuery,useListWorkerDataAPIQuery} = customerApi
