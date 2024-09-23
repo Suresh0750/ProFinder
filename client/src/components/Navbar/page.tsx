@@ -84,7 +84,7 @@ const Page = () => {
         // dispatch(updateCustomerLogin(false))   // * customer after login
         
         localStorage.setItem("customerData",'')
-     
+        window.location.reload()
         setTimeout(()=>{
           Router.push('/homePage')
         },2000)
@@ -120,7 +120,7 @@ const Page = () => {
                  {/* <Link href={'/worker/dashboard/personalInfo'}> */}
                    Get Started
                  {/* </Link> */}
-               </button>) : role=='user' ? <>Dashboard <button onClick={handleLogout}>Logout</button></> :(<>
+               </button>) : role=='user' ? <><button>Emergency</button> Dashboard <button onClick={handleLogout}>Logout</button></> :(<>
                 <Link href={"/worker/dashboard/personalInfo"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
                 </>
                 )
