@@ -11,6 +11,10 @@ import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
 
+
+
+
+
 export const CustomerOtpController = async(req:Request,res:Response,next:NextFunction)=>{
     try{
         console.log(`req reach customerotp controller`)
@@ -78,6 +82,8 @@ export const CustomerOtpController = async(req:Request,res:Response,next:NextFun
     }
 
 }
+
+
 
 
 export const ResentOTP = async(req:Request,res:Response,next:NextFunction)=>{

@@ -23,7 +23,8 @@ export interface ProfessionInformation{
     PostalCode : Number,
     WorkerImage? : string[],
     reviews? : string[],
-    isVerified? : Boolean
+    isVerified? : Boolean,
+    isWorker ? : Boolean
 }
 
 

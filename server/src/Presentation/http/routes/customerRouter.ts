@@ -15,6 +15,7 @@ customerRouter.post('/CustomerGoogleLogin',upload.single('identity'),authorizeRo
 customerRouter.post("/cutomerLogout",authorizeRoles('customer'),CustomerLogoutController)
 customerRouter.post("/customerLogIn",customerLogIn) 
 customerRouter.post("/customerGoogleVerification:email",authorizeRoles('customer'),WorkerGoogleLoginWithRegistrastion)   // * worker login with google
+// customerRouter.get('/getALLVerifiedWorker')
 
 export default customerRouter
 

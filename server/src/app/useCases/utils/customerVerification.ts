@@ -13,9 +13,24 @@ import { hashPassword } from '../../../shared/utils/encrptionUtils'
 import {forgetPasswordDataType} from '../../../domain/entities/CustomerOTP'
 import { WorkerInformation } from '../../../domain/entities/Worker'
 
+
+
+
+
+// * get all verified Worker for list in service page Usecases 
+
+export const getAllWorkerDataUseCases = async ()=>{
+    try {
+        return await CustomerQueryRepository().getVerifiedWorker()
+    } catch (error) {
+        console.log(`Error from app->utils->getAllWorkerDataUseCases \n ${error}`)
+        throw error
+    }
+}
+
 // * here verified the worker and user data. check whether they are verified OTP 
 
-export const userVerification= (customerId:string,role:string)=>{
+export const userVerification= async (customerId:string,role:string)=>{
     try {
         const {verifyUser} = OTPRepository()
         const {getDataFindById} = getUserRepository()

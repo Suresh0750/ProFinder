@@ -32,5 +32,13 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
             console.log(`Error from infrastructure->mongoseUser->UserWorkerLogin\n`,error)
             throw error
         }
+    },
+    getVerifiedWorker : async()=>{
+        try {
+            return await WorkerModel.find({})
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->getVerifiedWorker\n`,error)
+            throw error
+        }
     }
 })
