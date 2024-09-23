@@ -82,6 +82,13 @@ export const customerApi = createApi({
                 method : "GET",
                 headers : getHeaders('customer')
             })
+        }),
+        getCategoryName : builder.query({
+            query : ()=> ({
+                url : `/customer/getCategoryName`,
+                method : "GET",
+                headers : getHeaders('customer')
+            })
         })
     })
 })
@@ -89,4 +96,4 @@ export const customerApi = createApi({
 // GoogleLogin
 
 
-export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation} = customerApi
+export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation,useGetCategoryNameQuery} = customerApi

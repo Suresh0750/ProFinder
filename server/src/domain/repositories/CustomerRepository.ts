@@ -3,6 +3,7 @@
 
 import { User } from "../entities/User";
 import { WorkerInformation } from "../entities/Worker";
+import { getCategoryName } from "../entities/commonTypes";
 
 
 export interface CustomerRepository {
@@ -10,4 +11,5 @@ export interface CustomerRepository {
     UserWorkerLogin(workerData:WorkerInformation): Promise<any>;
     WorkerGoogleLoginVerification(EmailAddress:string) : Promise<WorkerInformation | undefined | null>
     getVerifiedWorker() : Promise<WorkerInformation[]> 
+    getCategoryName () :Promise<getCategoryName>
 }

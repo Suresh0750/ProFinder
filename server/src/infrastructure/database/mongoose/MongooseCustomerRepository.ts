@@ -2,6 +2,7 @@
 import { User,loginDetails } from "../../../domain/entities/User";
 import { WorkerInformation } from "../../../domain/entities/Worker";
 import { CustomerRepository } from "../../../domain/repositories/CustomerRepository";
+import { CategoryModel } from "./models/AdminModel";
 import {UserModel} from './models/UserModel'
 import {WorkerModel} from './models/workerModel'
 
@@ -35,10 +36,18 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
     },
     getVerifiedWorker : async()=>{
         try {
-            return await WorkerModel.find({})
+            return await WorkerModel.find({})  // * replace the query which only fetch verified worker for show the servie page
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->getVerifiedWorker\n`,error)
             throw error
+        }
+    },
+    getCategoryName : async()=>{
+        try {
+            return await CategoryModel.distinct('categoryName')   // * show all category in worker signup page for select
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->getCategoryName\n`,error)
+            throw error  
         }
     }
 })
