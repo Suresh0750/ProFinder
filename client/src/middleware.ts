@@ -50,7 +50,7 @@ export async function middleware(req:NextRequest){
     console.log('req redirect')
     const loginUrl = new URL("/homePage",req.url)
     return NextResponse.redirect(loginUrl)
-  }else if(!workerVerifyToken && !isUserProtectedRoute(pathname) && req.url == '/homePage'){
+  }else if((!workerVerifyToken && !isUserProtectedRoute(pathname) && req.url == '/homePage')||(!workerVerifyToken&& (req.url).includes("/worker/dashboard"))){
     console.log('req redirect')
     const loginUrl = new URL("/homePage",req.url)
     return NextResponse.redirect(loginUrl)
