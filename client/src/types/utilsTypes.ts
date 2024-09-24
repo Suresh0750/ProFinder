@@ -31,3 +31,11 @@ export type GoogleWorkerCredentials = {
     Identity ?: string,
     PostalCode?: number
 }
+
+
+// * Google Maps for emergency
+
+export interface CoordsTypes {
+    latitude : number,
+    longitude : number
+}

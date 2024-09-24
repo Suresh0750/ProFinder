@@ -2,9 +2,13 @@
 
 import { useState } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow } from '@vis.gl/react-google-maps';
+import { CoordsTypes } from '@/types/utilsTypes';
 
-export default function Intro() {
-    const position = { lat: 53.54, lng: 10 };
+export default function Intro({coords}:CoordsTypes) {
+    // const position = { lat: 53.54, lng: 10 };
+    console.log('coords',coords)
+    const {latitude,longitude} = coords
+    const position = { lat: latitude, lng: longitude };
     const [open, setOpen] = useState(false);
 
     return (
