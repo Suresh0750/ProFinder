@@ -49,5 +49,13 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
             console.log(`Error from infrastructure->mongoseUser->getCategoryName\n`,error)
             throw error  
         }
+    },
+    getNearByWorkerListQuery : async(categoryName:string)=>{
+        try {
+            return await WorkerModel.find({Category:categoryName})
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->getNearByWorkerListQuery\n`,error)
+            throw error  
+        }
     }
 })
