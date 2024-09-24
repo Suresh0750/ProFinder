@@ -36,6 +36,17 @@ export enum StatusCode {
    exp : number
  }
 
+ // * user JWT
+
+ export interface customerDetails{
+   customerId : string,
+   customerName :string,
+   customerEmail : string,
+   role : string,
+   iat ? : number,
+   exp ?: number
+ }
+
 
 // * category name type
 export type getCategoryName = string[] | any

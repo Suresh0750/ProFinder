@@ -3,13 +3,14 @@ import { PersonalInformationControll,ProfessionalInfoControll,isCheckEmail,getWo
 import upload from '../../../infrastructure/service/multer'
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 
+
 const workerRouter = Router()
 
 
 workerRouter.post("/personalinfo",upload.single('profileImage'),PersonalInformationControll)
 workerRouter.post("/ProfessionalInfo",upload.single('Identity'),ProfessionalInfoControll)
 workerRouter.post("/checkEmailForgetPass",isCheckEmail)
-workerRouter.get("/getWorkerData",getWorkerDataController)
+workerRouter.get("/getWorkerData",authorizeRoles('worker'),getWorkerDataController)
 workerRouter.post('/loginverify',LoginWorkerController)
 
 
