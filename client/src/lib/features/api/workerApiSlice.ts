@@ -44,10 +44,9 @@ export const workerApi = createApi({
         }),
         getWorkerDetails : builder.query({
             // query:()=> '/worker/getWorkerData'
-            query : (data)=>({
+            query : ()=>({
                 url:`/worker/getWorkerData`,
-                method : 'POST',
-                body : data,
+                method : 'GET',
                 headers : getHeaders('worker')
             })
         }),
