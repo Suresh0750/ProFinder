@@ -27,6 +27,7 @@ export const getNearByWorkerDetailsController = async(req:Request,res:Response,n
     }
 }
 
+
 // * Customer( User & Worker) controller
 
 export const getVerifiedWorkerController = async(req:Request,res:Response,next:NextFunction)=>{
