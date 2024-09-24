@@ -6,7 +6,7 @@ import { MdSearch } from "react-icons/md"; // Importing search icon
 import Image from 'next/image';
 import { Pagination } from "@mui/material";
 import Footer from '@/components/Footer';
-import {useListWorkerDataAPIQuery} from '@/lib/features/api/customerApiSlice'
+import {useGetCategoryNameQuery, useListWorkerDataAPIQuery} from '@/lib/features/api/customerApiSlice'
 import {WorkerDatails} from '@/types/workerTypes'
 
 
@@ -14,12 +14,18 @@ const ServiceWorkerListPage = () => {
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [showCategory,setShowCategory] = useState<WorkerDatails[]>([])
-    const [allCategory,setAllCategory]  = useState<WorkerDatails[]>()
+    const [allCategory,setAllCategory]  = useState<WorkerDatails[]>([])
+    const [categoryName,setCategoryName] = useState<string[]>([])
     // * API call fetch all verified worker
     const {data} = useListWorkerDataAPIQuery('')
+    const {data:GetCategoryName} = useGetCategoryNameQuery('')
 
     useEffect(()=>{
-       
+        setCategoryName(GetCategoryName?.result)
+    
+    },[GetCategoryName])
+
+    useEffect(()=>{
         setAllCategory(data?.result)
         setShowCategory(data?.result)
        
@@ -49,7 +55,7 @@ const ServiceWorkerListPage = () => {
             {/* filter head category wise */}
 
             <ul className='flex justify-between space-x-4 bg-gray-100 p-3 rounded-lg shadow-md'>
-            {['All', 'Electrical', 'Plumbing', 'Carpentry', 'Welding','TileWork','Construction','Centring','Fabrication'].map((category) => (
+            {categoryName && ["All",...categoryName].map((category) => (
                 <li key={category} className='cursor-pointer py-2 px-4 bg-blue-50 rounded-full hover:bg-blue-100 text-gray-700 transition'>
                 {category}
                 </li>
@@ -62,8 +68,8 @@ const ServiceWorkerListPage = () => {
                 {
                    
                    showCategory && showCategory.map((val, i) => (
-                                            <div className='card w-full flex flex-col border border-gray-200 shadow-lg hover:shadow-xl rounded-lg overflow-hidden'>
-                                            <Image src={val?.Profile} width={500} height={256} className=' object-fill' alt='Mechanic' />
+                                            <div className='card w-full flex flex-col border border-gray-200 shadow-lg hover:shadow-xl rounded-lg overflow-hidden' >
+                                            <img src={val?.Profile} width={500} height={256} className=' object-fill' alt='Mechanic' />
                                             <div className='p-4'>
                                                 <h2 className='text-xl font-semibold text-gray-900'>{val?.FirstName}</h2>
                                                 <h2 className='text-sm text-gray-600'>Reviews</h2>
