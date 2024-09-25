@@ -10,4 +10,5 @@ export interface IAdminRepository{
     IsListedQuery(_id:string,isListed:boolean):Promise<void>
     deleteProductQuery(_id:string) : Promise<void>;
     EditeCategoryQuery(categoryData:AddCategory) : Promise<void>
+    getEditCategoryName(_id:string) : Promise<{categoryName:string} |null>
 }
