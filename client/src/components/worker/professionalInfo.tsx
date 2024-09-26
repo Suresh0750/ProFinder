@@ -24,11 +24,13 @@ import { useEffect, useState } from 'react';
 import { useProfessionalInfoMutation } from '@/lib/features/api/workerApiSlice';  // * API call
 import { professionalInfoFormSchema } from '@/lib/formSchema';
 import { useGetCategoryNameQuery } from '@/lib/features/api/customerApiSlice';
+import Select from 'react-select';
+import countryList from 'react-select-country-list';
 
 export default function ProfessionalInfo() {
-
   const [workerSignupDetails, setWorkerSignupDetails] = useState({});
   const [categoryName, setCategoryName] = useState<string[]>([]);
+  const [countryOptions, setCountryOptions] = useState([]);
 
   // * get value from redux
   const workersignupData = useSelector((state: any) => state.WorkerSignupData);
@@ -36,11 +38,13 @@ export default function ProfessionalInfo() {
   // * API Calls 
   const [ProfessionalInfo, { isLoading }] = useProfessionalInfoMutation();
   const { data } = useGetCategoryNameQuery('');
-  console.log(data)
+  console.log(data);
 
   const Router = useRouter();
 
+  // Load the list of countries when the component mounts
   useEffect(() => {
+    setCountryOptions(countryList().getData());
     setWorkerSignupDetails(workersignupData);
   }, [workersignupData]);
 
@@ -57,7 +61,7 @@ export default function ProfessionalInfo() {
       Country: "",
       StreetAddress: "",
       City: "",
-      Identity: undefined, // Changed from `undefined` to `null`
+      Identity: undefined,
       Apt: "",
       State: "",
       PostalCode: "",
@@ -85,6 +89,7 @@ export default function ProfessionalInfo() {
       }
 
       const res = await ProfessionalInfo(formData).unwrap();
+      
       if (res.success) {
         toast.success(res.message);
         setTimeout(() => {
@@ -132,10 +137,14 @@ export default function ProfessionalInfo() {
                   <FormItem>
                     <FormLabel>Select country</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Select country"
+                      <Select
                         {...field}
-                        className="p-2 rounded w-full border border-gray-300"
+                        options={countryOptions}
+                        className="basic-single"
+                        classNamePrefix="select"
+                        placeholder="Select country"
+                        onChange={(selected) => field.onChange(selected?.label)}
+                        isClearable
                       />
                     </FormControl>
                     <FormMessage />
@@ -256,7 +265,7 @@ export default function ProfessionalInfo() {
           </Button>
         </form>
       </Form>
-      <Toaster richColors position="top-right" /> 
+      <Toaster richColors position="top-right" />
     </div>
   );
 }

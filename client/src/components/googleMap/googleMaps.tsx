@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow } from '@vis.gl/react-google-maps';
 
 export default function Intro() {
-    const position = { lat: 53.54, lng: 10 };
+    const position = { lat:11.0018115, lng: 76.9628425 };
     const [open, setOpen] = useState(false);
 
     return (
