@@ -20,6 +20,7 @@ export const getNearByWorkerDetailsController = async(req:Request,res:Response,n
     try {
         console.log(req.params.categoryName)
         const result = await getNearByWorkerListUtils(req.params.categoryName)
+        // console.log(JSON.stringify(result))
         return res.status(StatusCode.Success).json({success:true,message:'successfully fetched near by worker details',result})
     } catch (error) {
         console.log(`Error from getNearByWorkerDetailsController\n${error}`)
