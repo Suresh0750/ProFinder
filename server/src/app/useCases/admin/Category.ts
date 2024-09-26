@@ -9,9 +9,9 @@ import {AdminMongoose} from "../../../infrastructure/database/mongoose/MongooseA
 export const EditCategoryUseCases = async(categoryData:AddCategory)=>{
     try {
         console.log(`Req reached in EditCategoryUseCases`)
-        console.log(categoryData)
+   
         delete categoryData.newImage 
-        console.log(categoryData)
+
         return await AdminMongoose().EditeCategoryQuery(categoryData)
         
     } catch (error) {
@@ -24,7 +24,7 @@ export const AddCategoryUseCases = async(categoryDetails:addCategoryData)=>{
     try {
         // * call mongoose query
         console.log(`req reached AddCategory Usecases`)
-        console.log(categoryDetails)
+        
         const categoryData = {
             categoryName : categoryDetails.CategoryName,
             categoryDescription : categoryDetails.Description,

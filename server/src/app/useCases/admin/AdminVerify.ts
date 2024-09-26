@@ -5,7 +5,7 @@ import {AdminCredentials} from '../../../domain/entities/Admin'
 
 export const AdminVerifyUseCases = (adminData:AdminCredentials)=>{
     try{
-        console.log(adminData)
+
         return (adminData.adminEmail == process.env.ADMIN_EMAIL && adminData.adminPass==process.env.ADMIN_PASS)
 
     }catch(error){

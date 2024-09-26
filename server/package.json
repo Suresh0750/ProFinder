@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "@aws-sdk/client-s3": "^3.637.0",
+    "@esri/arcgis-rest-geocoding": "^4.0.3",
+    "@esri/arcgis-rest-request": "^4.2.3",
     "aws-sdk": "^2.1686.0",
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.6",

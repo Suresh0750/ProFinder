@@ -18,13 +18,18 @@ export const PersonalInformationControll = async (req:Request,res:Response, next
         console.log(checkWorker,'WorkerInformation | undefined')
         if(checkWorker && checkWorker.isVerified) throw new Error('Email already exist')
 
+        console.log(`step 1`)
         const file: IMulterFile |any = req.file
         const imageUrl = await uploadImage(file)    // * call uploadImage usecases
+        console.log(`step 2`)
         req.body.Profile = imageUrl
         const bcyptPass = await hashPassword(req.body.Password)   // * hash the password
+        console.log(`step 3`)
         const workerDetails = req.body
         workerDetails.Password = bcyptPass    // * asign the bcrypt pass
-        res.status(200).json({success:true,workerDetails})
+        console.log(`step 4`)
+        console.log(workerDetails)
+        return res.status(StatusCode.Success).json({success:true,workerDetails})
     }catch(error){
         console.log(`Error from presentation layer-> http->PersonalInformation\n ${error}`)
         next(error)

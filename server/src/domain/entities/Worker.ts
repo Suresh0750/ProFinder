@@ -9,7 +9,9 @@ export interface PersonalInformation{
     EmailAddress : string,
     Password : string,
     Profile : String,
-    isVerified? : Boolean
+    isVerified? : Boolean,
+    latitude?: number,
+    longitude?: number,
 }
 
 export interface ProfessionInformation{ 
@@ -30,6 +32,7 @@ export interface ProfessionInformation{
 
 export type WorkerInformation = PersonalInformation & ProfessionInformation & {
     _id?: string; 
-    role ? : string
+    role?: string,
+   
 };
 
