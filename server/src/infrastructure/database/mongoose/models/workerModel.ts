@@ -1,7 +1,7 @@
 import { Document, model, Schema } from "mongoose";
-import {PersonalInformation, ProfessionInformation} from '../../../../domain/entities/Worker'
+import {PersonalInformation, ProfessionInformation,WorkerInformation} from '../../../../domain/entities/Worker'
 
-const workerSchema = new Schema<PersonalInformation & ProfessionInformation>({
+const workerSchema = new Schema<WorkerInformation>({
     FirstName: { type: String, required: true },
     LastName: { type: String, required: true },
     PhoneNumber: { type: Number, required: true },  
@@ -11,6 +11,8 @@ const workerSchema = new Schema<PersonalInformation & ProfessionInformation>({
     Category: { type: String, required: true },
     Country: { type: String, required: true },
     StreetAddress: { type: String, required: true },
+    latitude : {type:Number,requied: true},   // * latitude  and longitude 
+    longitude : {type:Number,requied: true},
     State: { type: String, required: true },
     City: { type: String, required: true },
     Apt: { type: String, default: "" },
@@ -22,6 +24,6 @@ const workerSchema = new Schema<PersonalInformation & ProfessionInformation>({
     isWorker : {type:Boolean,default:false}
 }, { timestamps: true });
 
-const WorkerModel = model<PersonalInformation & ProfessionInformation & Document>('WorkerDetails', workerSchema);
+const WorkerModel = model<WorkerInformation & Document>('WorkerDetails', workerSchema);
 
 export { WorkerModel };

@@ -11,7 +11,7 @@ import {APIProvider,
 } from '@vis.gl/react-google-maps'
 
 export default function Intro(){
-    const position= {lat:53.54,lng:10}
+    const position= {lat:38.897699700000004,lng:-77.03655315}
     const [open,setOpen] = useState(false)
     return(
         <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_API}>

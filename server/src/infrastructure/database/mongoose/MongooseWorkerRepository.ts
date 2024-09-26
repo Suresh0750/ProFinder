@@ -8,7 +8,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     createWorker: async(workerData:PersonalInformation)=>{
         try {
             console.log(`Req reached createworker`)
-
+            console.log(workerData)
             const workerDetails = new WorkerModel(workerData); 
             await workerDetails.save();
            

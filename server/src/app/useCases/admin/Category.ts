@@ -35,7 +35,7 @@ export const AddCategoryUseCases = async(categoryDetails:addCategoryData)=>{
     try {
         // * call mongoose query
         console.log(`req reached AddCategory Usecases`)
-        console.log(categoryDetails)
+        
         const categoryData = {
             categoryName : categoryDetails.CategoryName,
             categoryDescription : categoryDetails.Description,

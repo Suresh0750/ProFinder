@@ -65,7 +65,7 @@ export const workerVerification = (wokerId:string)=>{
 export const customerResentOTP = async(customerData:ResendOTP)=>{
     try {
         console.log(`Req reached usCases utils cutomerResentOTP`)
-        console.log(customerData)
+
         const {getUserDataResendOTP,getWorkerDataResendOTP} = OTPRepository()
         if(customerData.role=='user'){
             const userEmail : string | undefined= await getUserDataResendOTP(customerData.userId) 
@@ -76,7 +76,7 @@ export const customerResentOTP = async(customerData:ResendOTP)=>{
         }else {
             const userEmail : string | undefined= await getWorkerDataResendOTP(customerData.userId)
             console.log(`customerResentotp in worker role`) 
-            console.log(customerData)
+      
             if(userEmail){
                 const userData  = await OtpService(customerData.userId,userEmail)
                 ResendOTPStore(customerData.userId,Number(userData?.customerOTP))      // * Restore the OTP data in mongodb database
