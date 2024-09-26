@@ -36,27 +36,3 @@
   }
 
 
-//   {
-//     "isWorker": false,
-//     "_id": "66f0f0df7234b819b529ccaf",
-//     "FirstName": "Akil",
-//     "LastName": "kanna",
-//     "PhoneNumber": 3456789993,
-//     "EmailAddress": "Akill@gmail.com",
-//     "Password": "$2b$10$Gq3XlZF9KX3ucpMc.gD4EOTnUtSKHAgTWtVmxalRvosAagjg2zFqi",
-//     "Profile": "https://profinder.s3.eu-north-1.amazonaws.com/uploads/1727066287947_Anbu_Mech.webp",
-//     "Category": "Mechanic",
-//     "Country": "India",
-//     "StreetAddress": "742 west street, Tenkasi at Tamil Nadu",
-//     "State": "TN",
-//     "City": "Kollankodu",
-//     "Apt": "rsmantion",
-//     "Identity": "https://profinder.s3.eu-north-1.amazonaws.com/uploads/1727066334153_Akill_Mech.webp",
-//     "PostalCode": "62780",
-//     "WorkerImage": [],
-//     "reviews": [],
-//     "isVerified": true,
-//     "createdAt": "2024-09-23T04:38:55.304Z",
-//     "updatedAt": "2024-09-23T04:39:43.570Z",
-//     "__v": 0
-// },

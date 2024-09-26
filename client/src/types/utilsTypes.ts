@@ -35,7 +35,35 @@ export type GoogleWorkerCredentials = {
 
 // * Google Maps for emergency
 
-export interface CoordsTypes {
+export interface CoordsTypes  {
     latitude : number,
     longitude : number
 }
+
+export  type workerDetailsWithlatlon= GoogleWorkerCredentials&{
+    latitude ? :number,
+    longitude ? : number,
+    isWorker? : boolean
+  }
+
+
+
+export type Tree = {
+    _id: string;
+    key: string;
+    name: string;
+    lat: number;
+    lng: number;
+  };
+
+
+// * here we denote point which is render the worker mark
+export type Point = {
+            _id: string;
+            FirstName: string;
+            latitude: number;
+            longitude: number;
+            key: string;
+        };
+ 
+

@@ -7,9 +7,14 @@ import {OTPData} from '../../../types/otpTypes/otpTypes'
 
 console.log('back url',process.env.NEXT_NODE_SERVER_URL)
 const baseQuery = fetchBaseQuery({
-    baseUrl : `http://localhost:3001`,
-    credentials: 'include',  // for include cookies
-})
+    baseUrl: 'http://localhost:3001',
+    credentials: 'include',
+    prepareHeaders: (headers, { getState }) => {
+        headers.set('Content-Type', 'application/json');
+        return headers;
+    }
+});
+
 
 // Function to get headers
 const getHeaders = (role :string) => ({
