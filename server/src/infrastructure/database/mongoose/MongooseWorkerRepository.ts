@@ -76,5 +76,13 @@ export const getWorkerRepository = ():WorkerRepository =>({
             console.log(`Error from infrastructure->mongoseUser->loginVerify\n`,error)
             throw error
         }
+    },
+    chagneExitWorkerCategoryName : async(existName:string,newName:string)=>{
+        try{
+            await WorkerModel.updateMany({Category:existName},{$set:{Category:newName}})
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->chagneExitWorkerCategoryName->\n`,error)
+            throw error
+        }
     }
 })

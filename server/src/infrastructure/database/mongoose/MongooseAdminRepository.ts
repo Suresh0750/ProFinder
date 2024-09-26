@@ -62,5 +62,13 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->EditeCategoryQuery->\n`,error)
             throw error
         }
+    },
+    getEditCategoryName : async(_id:string)=>{
+        try {
+            return await CategoryModel.findById({_id},{categoryName:1,_id:0})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getEditCategoryName->\n`,error)
+            throw error
+        }
     }
 })

@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux'
 import { useCustomerLogoutMutation } from '@/lib/features/api/customerApiSlice'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
-import { updateCustomerLogin, updateRole } from '@/lib/features/slices/customerSlice'
+import { updateWorkerName } from '@/lib/features/slices/siteSlice'
 import Modal from '@/components/Emergency'
-import GoogleMaps from '@/components/googleMap/googleMaps'
+
 
 export const DropDownDashboard = ()=>{
   const [useDropdown,setUserDropDown] = useState(false)

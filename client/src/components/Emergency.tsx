@@ -7,28 +7,55 @@ interface ModalProps {
   onClose: () => void;
 }
 
+
+
+
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+
+
   const [category, setCategory] = useState<string>('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isOpenMap, setIsOpenMap] = useState<boolean>(false);
+  const [coords,setCoords] = useState({})
+   
 
-  // API call to get categories
+  // * API call to get categories
   const { data } = useGetCategoryNameQuery('');
   const [getNearByworkerList, { isLoading }] = useGetNearByworkerListMutation();
 
-  // Set the default category when the data is loaded
+
+  // * Set the default category when the data is loaded
   useEffect(() => {
     if (data?.result?.length) {
       setCategory(data.result[0]); 
     }
   }, [data]);
 
-  // Form submission handler
+
+  // * get user location
+const userLocation = async()=>{
+  try{
+
+  const result =await navigator.geolocation.getCurrentPosition(
+          (position)=>{
+              console.log(position)
+              const {latitude,longitude } :{latitude:any,longitude:any}= position.coords;
+              setCoords({latitude,longitude})
+  },(error)=>console.log(error.message))
+  
+  }catch(error){
+    console.log('eror',error)
+  }
+
+}
+
+
+  // * Form submission handler
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newErrors: { [key: string]: string } = {};
 
-    // Validation
+    // * Validation
     if (!category) newErrors.category = "Category is required";
 
     if (Object.keys(newErrors).length > 0) {
@@ -38,8 +65,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
     try {
       // Handle form submission and API call
+      await userLocation()
       await handleCategorySelection(category);
-      setIsOpenMap(true); // Open the map after successfully fetching workers
+
       onClose(); // Optionally close the modal after submission
     } catch (error) {
       console.error('Error fetching workers:', error);
@@ -52,7 +80,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const result = await getNearByworkerList(selectedCategory);
     
     // Handle the API response (you may want to check the API result here before showing the map)
-    if (result?.data?.nearbyWorkers) {
+    if (result?.data?.success) {
+     
       console.log('Nearby workers:', result.data.nearbyWorkers);
       setIsOpenMap(true);
     } else {
@@ -110,7 +139,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           </div>
         </form>
       </div>
-      {isOpenMap && <GoogleMaps />}
+      {isOpenMap  &&  <GoogleMaps coords ={coords} />}
     </div>
   );
 };
