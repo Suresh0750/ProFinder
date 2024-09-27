@@ -6,7 +6,7 @@ import Jwt from 'jsonwebtoken'
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
 import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
 import {getALLWorkerUseCases}  from '../../../app/useCases/admin/AdminwokerSide'
-import {getAllUserUseCase} from '../../../app/useCases/admin/AdminUserSide'
+import {getAllUserUseCase,isBlockUserUseCases} from '../../../app/useCases/admin/AdminUserSide'
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
@@ -14,6 +14,18 @@ import { StatusCode } from "../../../domain/entities/commonTypes"
 
 
 // * admin User side
+
+export const isBlockUser = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request reached`)
+        console.log(req.body)
+        // await isBlockUserUseCases(req.body._id,req.body.value)
+        // return res.status(StatusCode.Success).json({success:true,message:"Data has been update"})
+    } catch (error) {
+        console.log(`Error from isBlcokUser\n${error}`)  
+        next(error)
+    }
+}
 
 export const getAllUserList = async(req:Request,res:Response,next:NextFunction)=>{
     try {

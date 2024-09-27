@@ -92,5 +92,13 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->getAllUserList->\n`,error)
             throw error
         }
+    },
+    isBlockUser : async(userId:string,isBlock:false)=>{
+        try {
+            await UserModel.findByIdAndUpdate({_id:userId},{$set:{isBlock}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->isBlockUser->\n`,error)
+            throw error
+        }
     }
 })

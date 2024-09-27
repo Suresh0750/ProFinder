@@ -40,10 +40,10 @@ app.use(cookieParser()); // * cookie parser use to access the cookie from client
 app.use(morgan("dev")); // *
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Role'], // Add all headers used in the frontend
-  credentials: true // Required if you are using credentials (cookies, auth headers)
+  origin: 'http://localhost:3000', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Role'],
+  credentials: true // * Required for using credentials (cookies, auth headers)
 }));
 
 
