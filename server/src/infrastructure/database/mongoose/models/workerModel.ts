@@ -21,6 +21,6 @@ const workerSchema = new Schema<PersonalInformation & ProfessionInformation>({
     isVerified : {type:Boolean, default:false}
 }, { timestamps: true });
 
-const WorkerModel = model<PersonalInformation & ProfessionInformation & Document>('WorkerCollection', workerSchema);
+const WorkerModel = model<PersonalInformation & ProfessionInformation & Document>('workerdetails', workerSchema);
 
 export { WorkerModel };

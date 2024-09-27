@@ -7,6 +7,8 @@ import {IAdminRepository} from "../../../domain/repositories/AdminRepository"
 
 // * Model
 import {CategoryModel} from "./models/AdminModel"
+import {WorkerModel} from "./models/workerModel"
+
 
 export const AdminMongoose = () : IAdminRepository =>({
     AddCategoryQuery: async (categoryDetails:AddCategory)=>{
@@ -58,6 +60,14 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Req entered EditeCategory query`)
             console.log(categoryData)
             await CategoryModel.findByIdAndUpdate({_id:categoryData._id},{$set:{categoryName:categoryData.categoryName,categoryDescription:categoryData.categoryDescription,categoryImage:categoryData.categoryImage}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->EditeCategoryQuery->\n`,error)
+            throw error
+        }
+    },
+    getAllWorkerList : async()=>{
+        try {
+          return  await WorkerModel.find({})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->EditeCategoryQuery->\n`,error)
             throw error
