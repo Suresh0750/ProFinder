@@ -159,6 +159,7 @@ export const ForgetPassWordController = async(req:Request,res:Response,next:Next
         next(error)
     }
 }
+
 export const WorkerGoogleLoginWithRegistrastion = async (req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log('Request reached WorkerGoogleLoginWithRegistrastion')

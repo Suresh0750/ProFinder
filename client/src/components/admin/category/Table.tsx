@@ -31,6 +31,7 @@ import {
   useDeleteProductAPIMutation,
 } from "../../../lib/features/api/adminApiSlice";
 
+
 export default function Table() {
   const {
     data: categoryData,

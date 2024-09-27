@@ -76,6 +76,13 @@ export const adminApi = createApi({
                 method: "GET",
                 headers: getHeaders('admin'), 
             })
+        }),
+        getUserList : builder.query({
+            query:()=>({
+                url:'/admin/getAllUserList',
+                method:'GET',
+                headers:getHeaders('admin')
+            })
         })
     })
 });
@@ -89,5 +96,6 @@ export const {
     useListUnlistAPIMutation,
     useDeleteProductAPIMutation,
     useAdminLogoutAPIMutation,
-    useGetWorkerListQuery
+    useGetWorkerListQuery,
+    useGetUserListQuery
 } = adminApi;

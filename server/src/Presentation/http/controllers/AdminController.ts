@@ -6,10 +6,24 @@ import Jwt from 'jsonwebtoken'
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
 import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
 import {getALLWorkerUseCases}  from '../../../app/useCases/admin/AdminwokerSide'
+import {getAllUserUseCase} from '../../../app/useCases/admin/AdminUserSide'
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
 
+
+
+// * admin User side
+
+export const getAllUserList = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await getAllUserUseCase()
+        return res.status(StatusCode.Success).json({success:true,message:'Data fetched successfully',result})
+    } catch (error) {
+        console.log(`Error from getAllUserList\n${error}`)  
+        next(error)
+    }
+}
 
 
 // * admin worker side
@@ -17,13 +31,13 @@ import { StatusCode } from "../../../domain/entities/commonTypes"
 export const getALLWorkerListController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         const result = await getALLWorkerUseCases()
+        console.log(JSON.stringify(result))
         return res.status(StatusCode.Success).json({success:true,message:"successfully fetched the worker list",result})
     } catch (error) {
         console.log(`Error from getALLWorkerListController\n${error}`)  
         next(error)
     }
 }
-
 
 // * Admin category side
 
@@ -129,8 +143,6 @@ export const AdminVerify = async (req:Request,res:Response,next:NextFunction)=>{
         next(error)
     }    
 }    
-
-
 
 export const adminLogoutController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
