@@ -30,7 +30,7 @@ const googleSignIn = ({role}:{role:string}) => {
     if(result?.data?.success){
 
       toast.success(result?.data?.message)
-
+      localStorage.setItem('customerData',JSON.stringify(result?.data?.customerData))
       setTimeout(()=>{
         Router.push('/homePage')
       },2000)

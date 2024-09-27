@@ -16,13 +16,9 @@ export default function Aside(){
     const navigation = useRouter();
 
     // * Navigation functions
-    const workerList = () => {
-        navigation.push("/admin/workerlist");
-    };
-    const category = () => {
-        navigation.push("/admin/category");
-    };
-
+    const handleNavigation =(url:string)=>{
+        navigation.push(url)
+    }
     return (
         <aside className="w-[75px] h-[91vh] bg-gray-900 shadow-lg">
             <section className="text-white pt-[3em] w-full">
@@ -40,13 +36,13 @@ export default function Aside(){
                         </Tooltip>
                     </li>
                     {/* People Icon */}
-                    <li className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
-                        <Tooltip title="People" placement="right">
+                    <li onClick={()=>handleNavigation('/admin/userlist')} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
+                        <Tooltip title="user list" placement="right">
                             <PeopleOutlineIcon sx={{ width: '48px', height: '48px' }} />
                         </Tooltip>
                     </li>
                     {/* Worker List Icon */}
-                    <li onClick={workerList} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
+                    <li onClick={()=>handleNavigation('/admin/workerlist')} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
                         <Tooltip title="Worker List" placement="right">
                             <EngineeringIcon sx={{ width: '48px', height: '48px' }} />
                         </Tooltip>
@@ -58,7 +54,7 @@ export default function Aside(){
                         </Tooltip>
                     </li>
                     {/* Category Icon */}
-                    <li onClick={category} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
+                    <li onClick={()=>handleNavigation('/admin/category')} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
                         <Tooltip title="Category" placement="right">
                             <CategoryIcon sx={{ width: '48px', height: '48px' }} />
                         </Tooltip>

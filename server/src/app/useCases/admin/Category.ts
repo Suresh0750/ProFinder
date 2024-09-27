@@ -4,15 +4,26 @@ import {AddCategory,addCategoryData} from '../../../domain/entities/Admin'
 
 // * Mongoose Query
 import {AdminMongoose} from "../../../infrastructure/database/mongoose/MongooseAdminRepository"
+import {getWorkerRepository} from '../../../infrastructure/database/mongoose/MongooseWorkerRepository'
 
 
 export const EditCategoryUseCases = async(categoryData:AddCategory)=>{
     try {
         console.log(`Req reached in EditCategoryUseCases`)
-        console.log(categoryData)
+
         delete categoryData.newImage 
-        console.log(categoryData)
-        return await AdminMongoose().EditeCategoryQuery(categoryData)
+        const {_id} = categoryData
+        const getCategoryName = await AdminMongoose().getEditCategoryName((_id || ''))
+        console.log("getCategoryName",getCategoryName)
+        const changeCategory = await AdminMongoose().EditeCategoryQuery(categoryData)
+        console.log(`EditeCategory data `)
+        if(getCategoryName&& categoryData && getCategoryName?.categoryName!==categoryData?.categoryName ){
+            
+            await getWorkerRepository().chagneExitWorkerCategoryName(getCategoryName?.categoryName,categoryData?.categoryName)  // * change all worker category name if admin change their modal
+            
+        }
+    
+        return 
         
     } catch (error) {
         console.log(`Error from useCases->admin->EditCategoryUseCases\n`,error)
@@ -24,7 +35,7 @@ export const AddCategoryUseCases = async(categoryDetails:addCategoryData)=>{
     try {
         // * call mongoose query
         console.log(`req reached AddCategory Usecases`)
-        console.log(categoryDetails)
+        
         const categoryData = {
             categoryName : categoryDetails.CategoryName,
             categoryDescription : categoryDetails.Description,

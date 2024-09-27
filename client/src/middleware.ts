@@ -41,7 +41,7 @@ export async function middleware(req:NextRequest){
   console.log("workerVerifyToken\n",workerVerifyToken)
   console.log("workerVerifyToken\n",userVerifyToken)
   
-  if(req.url=='/'){
+  if(req.url==='/'){
     const loginUrl = new URL("/homePage",req.url)
     return NextResponse.redirect(loginUrl)
   }
@@ -50,7 +50,7 @@ export async function middleware(req:NextRequest){
     console.log('req redirect')
     const loginUrl = new URL("/homePage",req.url)
     return NextResponse.redirect(loginUrl)
-  }else if(!workerVerifyToken && !isUserProtectedRoute(pathname) && req.url == '/homePage'){
+  }else if((!workerVerifyToken && !isUserProtectedRoute(pathname) && req.url == '/homePage')||(!workerVerifyToken&& (req.url).includes("/worker/dashboard"))){
     console.log('req redirect')
     const loginUrl = new URL("/homePage",req.url)
     return NextResponse.redirect(loginUrl)

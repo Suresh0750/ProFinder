@@ -5,13 +5,14 @@ import {getUserRepository} from "../../../infrastructure/database/mongoose/Mongo
 import {OtpService} from '../../services/OtpService'
 import {OtpStoreData} from '../utils/OtpStoreData'
 import {verifyRefreshToken} from "../../../infrastructure/service/JwtService"
+import {GeoCoding} from "../../../infrastructure/service/geoCode"
+import { StatusCode } from '../../../domain/entities/commonTypes'
 
 
 export const workerExist = async (workerData:PersonalInformation) =>{
     try {
         console.log(workerData,"workerData")
         const {findWorker} = getWorkerRepository()
-        // const {findUserByEmail} = getUserRepository()
         return await findWorker(workerData.EmailAddress) // * check the worker already exite or not  
 
     } catch (error) {
@@ -25,9 +26,16 @@ export const WorkerUsecase= async(workerData:PersonalInformation)=>{
         console.log(`Request reached WorkrUsecase`)
 
         const {createWorker} = getWorkerRepository()
-        const workerDetails = await createWorker(workerData)
-        console.log(`worker Details`,workerDetails)
+        const result = await GeoCoding(workerData)
+        const {lat,lon} = result
+        if(!lat || !lon){
+            const error = new Error('Current address is incomplete or invalid. Suggestion contains an improved, verified address up to City.');
+            (error as any).statusCode = 502;
+            throw error;
+        }
         
+        const workerDetails = await createWorker({...workerData,latitude:lat,longitude:lon})
+
         const {customerOTP,customerId} = await OtpService((workerDetails?._id)?.toString(),(workerDetails?.EmailAddress || ''))
         await OtpStoreData(customerId,customerOTP)
         return customerId
@@ -40,7 +48,7 @@ export const WorkerUsecase= async(workerData:PersonalInformation)=>{
 export const getWorkerData = async(token:string)=>{
     try {
         console.log(`req reached WorkrUsecase getWorkerData`)
-        console.log(verifyRefreshToken(token))
+   
         const {customerId} :any = verifyRefreshToken(token) 
         const {getWorkerData} = getWorkerRepository()
         return getWorkerData(customerId)

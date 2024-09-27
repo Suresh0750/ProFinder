@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux'
 import { useCustomerLogoutMutation } from '@/lib/features/api/customerApiSlice'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
-import { updateCustomerLogin, updateRole } from '@/lib/features/slices/customerSlice'
-
+import { updateWorkerName } from '@/lib/features/slices/siteSlice'
+import Modal from '@/components/Emergency'
 
 
 export const DropDownDashboard = ()=>{
@@ -53,25 +53,26 @@ export const DropDownDashboard = ()=>{
   )
 }
 
+
+
 const Page = () => {
-
-
-
   const [role,setRole] = useState('')
-  
-  const Router = useRouter()
-  const dispatch = useDispatch()
-
-
-  useEffect(()=>{
-    let customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
-    setRole(customerRole?.role)
-  },[role])
-
+  const [isModalOpen,setIsModalOpen] = useState<boolean>(false)
+  const [isOpenMap,setIsOpenMap] = useState<boolean>(false)
   const [openProfile,setOpenProfile] = useState(false)
   console.log(role)
 
   const [CustomerLogout,{isSuccess}] = useCustomerLogoutMutation()
+
+
+  const router = useRouter()
+    useEffect(()=>{
+      let customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
+      setRole(customerRole?.role)
+    },[role])
+
+ 
+  
 
   const handleLogout = async ()=>{
     try {
@@ -80,16 +81,13 @@ const Page = () => {
       const result = await CustomerLogout(role)
       console.log(result)
       if(result.data.success){
-        console.log(`is logout`)
-        // dispatch(updateCustomerLogin(false))   // * customer after login
-        
+        console.log(`is logout`)        
         localStorage.setItem("customerData",'')
-     
         setTimeout(()=>{
-          Router.push('/homePage')
-        },2000)
-      }
-      
+              router.push('/homePage')
+            },2000)
+        window.location.reload()
+          }
     } catch (error) {
       console.log(error)
     }
@@ -108,7 +106,11 @@ const Page = () => {
                Home
               </Link>
             </li>
-            <li className="hover:text-gray-300 cursor-pointer">Service</li>
+            <li className="hover:text-gray-300 cursor-pointer">
+              <Link href={'/service-workerlist'}>
+                Service
+              </Link >
+            </li>
             <li className="hover:text-gray-300 cursor-pointer">Contact</li>
           </ul>
           {
@@ -120,7 +122,7 @@ const Page = () => {
                  {/* <Link href={'/worker/dashboard/personalInfo'}> */}
                    Get Started
                  {/* </Link> */}
-               </button>) : role=='user' ? <>Dashboard <button onClick={handleLogout}>Logout</button></> :(<>
+               </button>) : role=='user' ? <><button className='bg-red-700 text-white text-1xl p-2 rounded' onClick={()=>setIsModalOpen((prev)=>!prev)}>Emergency</button> <button onClick={()=>setIsOpenMap((prev)=>!prev)}>Dashboard</button> <button onClick={handleLogout}>Logout</button></> :(<>
                 <Link href={"/worker/dashboard/personalInfo"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
                 </>
                 )
@@ -132,13 +134,12 @@ const Page = () => {
               }
               
             </>
-            
-            
-           
           }
 
-         
         </nav>
+        {/* Modal component */}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+       
       </>
     );
   }

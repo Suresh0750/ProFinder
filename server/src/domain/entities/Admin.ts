@@ -25,9 +25,9 @@ export interface paramsImage {
 
 export interface AddCategory{
     _id ?: string,
-    categoryName : String,
-    categoryDescription : String,
-    categoryImage : String,
+    categoryName : string,
+    categoryDescription : string,
+    categoryImage : string,
     isListed ? : Boolean,
     createAt? : string,
     updateAt? : string

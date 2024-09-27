@@ -22,7 +22,7 @@ import {useState} from 'react'
 
 
 const AddCategoryForm = () => {
-  const Router = useRouter();
+  const router = useRouter();
 
   // * Admin RTK api
   const [AddCategoryForm, { isError, isLoading }] = useAddCategoryFormMutation();
@@ -54,9 +54,12 @@ const AddCategoryForm = () => {
       const res = await AddCategoryForm(formData).unwrap();
       console.log(`Responce addcategory from server side \n`, res);
       console.log(res?.success);
+      console.log(res?.data?.success);
       if (res?.success) {
         toast.success(res?.message); 
-        Router.push("/admin/category");
+
+        router.push("/admin/category");
+        window.location.reload()
        
       } else {
         console.log(res)
