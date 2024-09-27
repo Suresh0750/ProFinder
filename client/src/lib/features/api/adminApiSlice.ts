@@ -69,6 +69,13 @@ export const adminApi = createApi({
                 method: 'POST',
                 headers: getHeaders('admin'), 
             }),
+        }),
+        getWorkerList : builder.query({
+            query : ()=>({
+                url: `/admin/getWorkerList`,
+                method: "GET",
+                headers: getHeaders('admin'), 
+            })
         })
     })
 });
@@ -81,5 +88,6 @@ export const {
     useEditCategoryAPIMutation,
     useListUnlistAPIMutation,
     useDeleteProductAPIMutation,
-    useAdminLogoutAPIMutation
+    useAdminLogoutAPIMutation,
+    useGetWorkerListQuery
 } = adminApi;

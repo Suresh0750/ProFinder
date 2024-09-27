@@ -24,6 +24,7 @@ const workerSchema = new Schema<WorkerInformation>({
     isWorker : {type:Boolean,default:false}
 }, { timestamps: true });
 
+
 const WorkerModel = model<WorkerInformation & Document>('WorkerDetails', workerSchema);
 
 export { WorkerModel };

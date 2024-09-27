@@ -5,14 +5,27 @@ import Jwt from 'jsonwebtoken'
 // * useCases
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
 import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
-
+import {getALLWorkerUseCases}  from '../../../app/useCases/admin/AdminwokerSide'
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
 
 
 
+// * admin worker side
 
+export const getALLWorkerListController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await getALLWorkerUseCases()
+        return res.status(StatusCode.Success).json({success:true,message:"successfully fetched the worker list",result})
+    } catch (error) {
+        console.log(`Error from getALLWorkerListController\n${error}`)  
+        next(error)
+    }
+}
+
+
+// * Admin category side
 
 export const addCategoryController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
@@ -35,34 +48,6 @@ export const addCategoryController = async(req:Request,res:Response,next:NextFun
     }
 }
 
-
-export const AdminVerify = async (req:Request,res:Response,next:NextFunction)=>{
-    try{
-        console.log('req entered AdminVerify controller')
-        console.log(AdminVerifyUseCases(req.body))
-        if(AdminVerifyUseCases(req.body)){
-            const refreshToken =  Jwt.sign({adminEmail: req.body.adminEmail},String(process.env.REFRESH_TOKEN_SECRET),{expiresIn:'7d'})
-            const accessToken = Jwt.sign({adminEmail:req.body.adminEmail},String(process.env.ACCESS_TOKEN_SECRET), { expiresIn:'15m' }); 
-            res.cookie('adminToken',refreshToken,{
-                httpOnly:true,
-                secure :true,
-                sameSite:'strict',
-                maxAge: 7 * 24 * 60 * 60 * 1000
-            })
-            res.cookie('accessToken',accessToken,{
-                maxAge: 2 * 60 * 1000
-            })
-            res.status(StatusCode.Success).json({success:true,message:'login verify successful'})
-        }
-        console.log('admin verify')
-        res.status(StatusCode.Unauthorized).json({success:false,message:'Invalid credentials'})
-
-    }catch(error){
-        console.log(`Error from addCategoryController\n${error}`)
-        next(error)
-    }
-}
-
 export const getAllCategory =async (req:Request,res:Response,next:NextFunction)=>{
     try {
         const totalCategory = await getAllCategoryUseCases()
@@ -72,8 +57,6 @@ export const getAllCategory =async (req:Request,res:Response,next:NextFunction)=
         next(error)
     }
 }
-
- 
 
 export const editCategory = async (req:Request,res:Response,next:NextFunction)=>{
     try{
@@ -116,6 +99,37 @@ export const deleteProductController = async (req:Request,res:Response,next:Next
         next(error)
     }
 }
+
+
+// * Admin authendication
+
+export const AdminVerify = async (req:Request,res:Response,next:NextFunction)=>{
+    try{
+        console.log('req entered AdminVerify controller')
+        console.log(AdminVerifyUseCases(req.body))
+        if(AdminVerifyUseCases(req.body)){
+            const refreshToken =  Jwt.sign({adminEmail: req.body.adminEmail},String(process.env.REFRESH_TOKEN_SECRET),{expiresIn:'7d'})
+            const accessToken = Jwt.sign({adminEmail:req.body.adminEmail},String(process.env.ACCESS_TOKEN_SECRET), { expiresIn:'15m' }); 
+            res.cookie('adminToken',refreshToken,{
+                httpOnly:true,
+                secure :true,
+                sameSite:'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            })    
+            res.cookie('accessToken',accessToken,{
+                maxAge: 2 * 60 * 1000
+            })    
+            res.status(StatusCode.Success).json({success:true,message:'login verify successful'})
+        }    
+        console.log('admin verify')
+        res.status(StatusCode.Unauthorized).json({success:false,message:'Invalid credentials'})
+
+    }catch(error){
+        console.log(`Error from addCategoryController\n${error}`)
+        next(error)
+    }    
+}    
+
 
 
 export const adminLogoutController = async(req:Request,res:Response,next:NextFunction)=>{
