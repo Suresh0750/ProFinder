@@ -25,6 +25,7 @@ export const getAllUserList = async(req:Request,res:Response,next:NextFunction)=
     }
 }
 
+
 // * admin worker side
 
 export const getALLWorkerListController = async(req:Request,res:Response,next:NextFunction)=>{
