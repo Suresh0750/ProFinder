@@ -8,4 +8,6 @@ export interface WorkerRepository{
     setNewPassWord(customerId:string,newPass:string) :Promise<void>
     loginVerifyQuery(userEmail:string):Promise<WorkerInformation | null>
     getWorkerData(workerId:string):Promise<WorkerInformation | null>
+    insertWorker (customerData:WorkerInformation) : Promise<WorkerInformation | null>
+    chagneExitWorkerCategoryName(existName:string,newName:string) :Promise<void>   // * here the worker category will update if Admin change their category
 }

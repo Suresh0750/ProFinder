@@ -1,4 +1,8 @@
 
+
+
+// * Customer authendication 
+
 import {OTPRepository} from '../../../infrastructure/database/mongoose/MongooseOtpRepository'
 import {getUserRepository} from '../../../infrastructure/database/mongoose/MongooseUserRepository'
 import {getWorkerRepository} from '../../../infrastructure/database/mongoose/MongooseWorkerRepository'
@@ -11,10 +15,26 @@ import { hashPassword } from '../../../shared/utils/encrptionUtils'
 
 // * types
 import {forgetPasswordDataType} from '../../../domain/entities/CustomerOTP'
+import { WorkerInformation } from '../../../domain/entities/Worker'
+
+
+
+
+
+// * get all verified Worker for list in service page Usecases 
+
+export const getAllWorkerDataUseCases = async ()=>{
+    try {
+        return await CustomerQueryRepository().getVerifiedWorker()
+    } catch (error) {
+        console.log(`Error from app->utils->getAllWorkerDataUseCases \n ${error}`)
+        throw error
+    }
+}
 
 // * here verified the worker and user data. check whether they are verified OTP 
 
-export const userVerification= (customerId:string,role:string)=>{
+export const userVerification= async (customerId:string,role:string)=>{
     try {
         const {verifyUser} = OTPRepository()
         const {getDataFindById} = getUserRepository()
@@ -45,7 +65,7 @@ export const workerVerification = (wokerId:string)=>{
 export const customerResentOTP = async(customerData:ResendOTP)=>{
     try {
         console.log(`Req reached usCases utils cutomerResentOTP`)
-        console.log(customerData)
+
         const {getUserDataResendOTP,getWorkerDataResendOTP} = OTPRepository()
         if(customerData.role=='user'){
             const userEmail : string | undefined= await getUserDataResendOTP(customerData.userId) 
@@ -56,7 +76,7 @@ export const customerResentOTP = async(customerData:ResendOTP)=>{
         }else {
             const userEmail : string | undefined= await getWorkerDataResendOTP(customerData.userId)
             console.log(`customerResentotp in worker role`) 
-            console.log(customerData)
+      
             if(userEmail){
                 const userData  = await OtpService(customerData.userId,userEmail)
                 ResendOTPStore(customerData.userId,Number(userData?.customerOTP))      // * Restore the OTP data in mongodb database
@@ -94,10 +114,26 @@ export const ForgetPassWordUseCase = async (forgetPasswordData:forgetPasswordDat
     }
 }
 
-// * Google Login UseCases 
-export const GoogleLoginUseCases = async (customerData:GoogleLogintypes)=>{
+// * if customer is a worker after verification of email is not there means here we create an account for them
+export const GoogleLoginWorkerRegister = async(customerData:WorkerInformation)=>{
     try {
         
+        console.log(`Req reached GoogleLoginWorker`)
+       
+        delete customerData.role
+     
+        await getWorkerRepository().insertWorker(customerData)
+        return getWorkerRepository().findWorker(customerData.EmailAddress)
+    } catch (error) {
+        
+    }
+}
+
+// * Google Login UseCases 
+export const GoogleLoginUseCases = async (customerData:GoogleLogintypes )=>{
+    try {
+        console.log(`Reques reached Google LoginUsecase`)
+        console.log(customerData)
         if(customerData.role=='user'){
             const {UserGoogleLogin} = CustomerQueryRepository()     // * user
             console.log(customerData)
@@ -115,6 +151,21 @@ export const GoogleLoginUseCases = async (customerData:GoogleLogintypes)=>{
         }
     } catch (error) {
         console.log(`Error from app->usecase->utils->GoogleLoginUseCases\n${error}`)
+        throw error
+    }
+}
+
+
+// * worker verification while worker login through google
+export const workerGoogleVerification = async (workerEmail:any)=>{
+    try {
+
+        console.log(`Request reached workerGoogleVerification`)
+   
+        return await CustomerQueryRepository().WorkerGoogleLoginVerification(workerEmail)
+        
+    } catch (error) {
+        console.log(`Error from app->usecase->utils->workerGoogleVerification\n${error}`)
         throw error
     }
 }

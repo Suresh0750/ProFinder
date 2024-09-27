@@ -21,4 +21,15 @@ export interface AdminCredentials {
     adminPass : string
 }
 
+export interface showCategory {
+    _id : string,
+    categoryName : string,
+    categoryDescription : string,
+    categoryImage : string,
+    isListed : string,
+    createdAt : string,
+    updatedAt :string,
+    __v : string
+}
+
 

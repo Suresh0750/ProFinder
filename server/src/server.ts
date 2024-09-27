@@ -4,7 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import session from 'express-session'
-
+import bodyParser  from 'body-parser'
 
 
 // * database connection
@@ -13,7 +13,7 @@ import { connectDB } from "./infrastructure/config/database.config";
 // * routers
 import userRouter from "./Presentation/http/routes/userRoutes";
 import adminRouter from "./Presentation/http/routes/adminRoutes"
-import verifyOTPRouter from './Presentation/http/routes/customerRouter'
+import customerRouter from './Presentation/http/routes/customerRouter'
 import { errorHandles } from "./Presentation/http/middlewares/errorHandler";
 import workerRouter from './Presentation/http/routes/workerRouter'
 import commonRouter from './Presentation/http/routes/commonRouter'
@@ -29,6 +29,7 @@ app.use(session({
   saveUninitialized: false,
 }));
 
+app.use(bodyParser.urlencoded({ extended: false }))  
 
 dotenv.config(); // * config the dotenv for accessing the value inside the file.
 
@@ -38,18 +39,18 @@ app.use(cookieParser()); // * cookie parser use to access the cookie from client
 
 app.use(morgan("dev")); // *
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: 'http://localhost:3000', // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Role'], // Add all headers used in the frontend
+  credentials: true // Required if you are using credentials (cookies, auth headers)
+}));
 
 
 
 // * application layer
 app.use("/user", userRouter);
-app.use('/customer',verifyOTPRouter)
+app.use('/customer',customerRouter)
 app.use("/admin",adminRouter)
 app.use("/worker",workerRouter)
 app.use("/commonAPI",commonRouter)

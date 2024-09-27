@@ -24,6 +24,7 @@ import Link from 'next/link'
 import {updateCustomerLogin,updateRole} from '@/lib/features/slices/customerSlice'
 import { useDispatch } from "react-redux"
 import { updateSignup ,getWorkerData} from "@/lib/features/slices/workerSlice"
+import GooglLogin from '../Utils/workerGoogle'
 
 const formSchema = z.object({
   EmailAddress: z.string().email({
@@ -61,7 +62,7 @@ export function LoginForm() {
 
 
       const res = await Login(values).unwrap()
- 
+      
       if (res.success) {
         console.log(res)
         toast.success(res.message)
@@ -170,12 +171,13 @@ export function LoginForm() {
         <h2 className="text-center mt-4">
           Don’t have an account?{" "}
           <span
-            onClick={() => Router.push("/user/signup")}
+            onClick={() => Router.push("/worker/signup")}
             className="text-blue-500 cursor-pointer hover:underline"
           >
             Register
           </span>
         </h2>
+          <GooglLogin role="worker" />
       </div>
     </>
   )

@@ -94,7 +94,7 @@ export default function WorkerSignUp() {
       formData.append('profileImage',profilePicFile)
 
       const res = await WorkerSignUp(formData).unwrap()
-     
+  
     if(res.success){
       // console.log(res.workerDetails)
       dispatch(updateSignup(res.workerDetails))  // * update the signup details

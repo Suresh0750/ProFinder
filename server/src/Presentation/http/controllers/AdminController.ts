@@ -51,7 +51,6 @@ export const addCategoryController = async(req:Request,res:Response,next:NextFun
 export const getAllCategory =async (req:Request,res:Response,next:NextFunction)=>{
     try {
         const totalCategory = await getAllCategoryUseCases()
-        console.log(JSON.stringify(totalCategory))
         res.status(StatusCode.Success).json({success:true,message:'Successfully data fetched',totalCategory})
     } catch (error) {
         console.log(`Error from getAllCategory\n${error}`)
@@ -61,16 +60,14 @@ export const getAllCategory =async (req:Request,res:Response,next:NextFunction)=
 
 export const editCategory = async (req:Request,res:Response,next:NextFunction)=>{
     try{
-        console.log(req.body)
-        console.log(req.file)
-        console.log(req.body.categoryImage)
+        
         if(req.body.newImage){
             const file: IMulterFile |any = req.file
             const imageUrl = await uploadImage(file)  
             console.log(imageUrl)
             req.body.categoryImage = imageUrl
         }
-        console.log(req.body.categoryImage)
+    
         await EditCategoryUseCases(req.body)
         return res.status(StatusCode.Success).json({success: true,message:'Product has been successfully edit'})
     }catch(error){

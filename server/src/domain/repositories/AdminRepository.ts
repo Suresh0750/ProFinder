@@ -12,4 +12,5 @@ export interface IAdminRepository{
     deleteProductQuery(_id:string) : Promise<void>;
     EditeCategoryQuery(categoryData:AddCategory) : Promise<void>
     getAllWorkerList(): Promise<WorkerInformation[]> // * all worker list
+    getEditCategoryName(_id:string) : Promise<{categoryName:string} |null>
 }

@@ -1,20 +1,27 @@
 
 import { Router } from "express";
-import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn} from "../controllers/CutomerOTPController";
+import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController} from "../controllers/customerController";
+import {authorizeRoles} from '../middlewares/authorizeRoles'
+import upload from '../../../infrastructure/service/multer'
 
-const verifyOTPRouter = Router()
+const customerRouter = Router()
 
-verifyOTPRouter.post('/verifyOTP',CustomerOtpController)
+customerRouter.post('/verifyOTP',CustomerOtpController)
+customerRouter.post('/resentOTP',ResentOTP)
 
-verifyOTPRouter.post('/resentOTP',ResentOTP)
+customerRouter.post('/setForgotPassword',ForgetPassWordController)
+customerRouter.post('/CustomerGoogleLogin',upload.single('identity'),authorizeRoles('customer'),GoogleLogin)
 
-verifyOTPRouter.post('/setForgotPassword',ForgetPassWordController)
-verifyOTPRouter.post('/CustomerGoogleLogin',GoogleLogin)
+customerRouter.post("/cutomerLogout",authorizeRoles('customer'),CustomerLogoutController)
+customerRouter.post("/customerLogIn",customerLogIn) 
+customerRouter.post("/customerGoogleVerification:email",authorizeRoles('customer'),WorkerGoogleLoginWithRegistrastion)   // * worker login with google
 
-verifyOTPRouter.post("/cutomerLogout",CustomerLogoutController)
-verifyOTPRouter.post("/customerLogIn",customerLogIn)
+customerRouter.get('/getALLVerifiedWorker',authorizeRoles('customer'),getVerifiedWorkerController)
 
-export default verifyOTPRouter
+customerRouter.get('/getCategoryName',authorizeRoles('customer'),getCategoryName)
+customerRouter.post('/getNearByWorkerDetails:categoryName',authorizeRoles('customer'),getNearByWorkerDetailsController)
+
+export default customerRouter
 
 
 

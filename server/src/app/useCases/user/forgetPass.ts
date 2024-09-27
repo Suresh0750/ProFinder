@@ -13,7 +13,6 @@ export const isCheckUserEmail = async (email:string)=>{
         const userId = await ischeckEmail(email)  // * call the querey check whether is email there or not
         if(userId){
             const {customerOTP} = await OtpService(userId,email) // * generate OTP and send to the user
-            console.log(userId,customerOTP)
             return  await OtpStoreData(userId,customerOTP) 
         }
         return false
