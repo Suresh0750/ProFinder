@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { useGetUserListQuery } from "@/lib/features/api/adminApiSlice";
+import { useGetUserListQuery ,useIsUserBlockMutation} from "@/lib/features/api/adminApiSlice";
 import Table from '@mui/material/Table';
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,15 +11,17 @@ import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import SearchBar from '@/components/admin/SearchBar';
 import { Pagination } from "@mui/material";
+import {toast,Toaster} from 'sonner'
 
 function createData(
   No: number,
   Name: string,
   Phone: number,
   EmailId: string,
-  Actions: string
+  isBlock : boolean,
+  _id:string
 ) {
-  return { No, Name, Phone,EmailId, Actions };
+  return { No, Name, Phone,EmailId,isBlock,_id };
 }
 
 const UserTable = () => {
@@ -28,12 +30,23 @@ const UserTable = () => {
   const [showUserList, setShowUserList] = useState<any[]>([]);
   const [allWorkerList, setAllUserList] = useState<any[]>([]);
   const { data } = useGetUserListQuery("");
+  const [isUserBlock] = useIsUserBlockMutation()
 
 
   const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage)
   };
 
+  const handleUserBlock = (isBlock:boolean,_id:string)=>{
+    try{
+       const result = isUserBlock(isBlock,_id)
+       if(result?.success){
+        toast.success(result?.message)
+       }
+    }catch(error){
+        console.log(`Error from handleUserBlock`,error)
+    }
+  }
 
   useEffect(() => {
     if (data) {
@@ -46,7 +59,8 @@ const UserTable = () => {
             user.username, // Assuming this is a URL for the image
             user.PhoneNumber,
             user.EmailAddress,
-            "Action",
+            user.isBlock,
+            user._id
           )
           
         )
@@ -84,7 +98,11 @@ const UserTable = () => {
             <TableCell align="right">{worker.Phone}</TableCell>
             <TableCell align="right">{worker.EmailId}</TableCell>
             <TableCell align="right">
-                <button className="p-2 bg-green-600 rounded">Action</button>
+                <button onClick={()=>handleUserBlock(worker?.isBlock,worker?._id)} className={`p-2 rounded cursor-pointer ${worker?.isBlock ? 'bg-green-600':'bg-red-600'}`}>
+                    {
+                        worker?.isBlock ? 'unblock' : 'block'
+                    }
+                </button>
             </TableCell>
             </TableRow>
         ))}
@@ -100,6 +118,7 @@ const UserTable = () => {
           color="primary"
         />
     </div>
+    <Toaster richColors position="top-center" />
     </>
   );
 };
