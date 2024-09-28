@@ -7,7 +7,7 @@ import {uploadImage} from '../../../app/useCases/utils/uploadImage'
 import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
 import {getALLWorkerUseCases}  from '../../../app/useCases/admin/AdminwokerSide'
 import {getAllUserUseCase,isBlockUserUseCases} from '../../../app/useCases/admin/AdminUserSide'
-import {AdminWorkerApprovalUseCases} from "../../../app/useCases/admin/AdminWorkerApprovalSide"
+import {AdminWorkerApprovalUseCases,isWorkerApprovalUseCases} from "../../../app/useCases/admin/AdminWorkerApprovalSide"
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
@@ -53,6 +53,17 @@ export const getAllUnApprovalWorkerlist = async (req:Request,res:Response,next:N
     }
 }
 
+export const isWorkerApproval = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request reaced isWorkerApproval`)
+        console.log(req.body)
+        const result = await isWorkerApprovalUseCases(req.body?._id)
+        return res.status(StatusCode.Success).json({success:true,message:'Data successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from isWorkerApproval\n${error}`)  
+        next(error)
+    }
+}
 
 // * admin worker side
 
