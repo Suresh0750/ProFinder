@@ -32,6 +32,7 @@
     isVerified : boolean,
     createdAt? : string,
     updatedAt ? : string,
+    isBlock? :boolean,
     __v ? : number
   }
 
