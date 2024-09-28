@@ -30,7 +30,7 @@ export default function Aside(){
                         </Tooltip>
                     </li>
                     {/* Approval Icon */}
-                    <li className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
+                    <li onClick={()=>handleNavigation('/admin/workerApproval')} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
                         <Tooltip title="Approval" placement="right">
                             <Image src={ApprovalIcon} alt="Approval Icon" width={38} height={38} />
                         </Tooltip>

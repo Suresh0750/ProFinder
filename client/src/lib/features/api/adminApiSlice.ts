@@ -5,11 +5,16 @@ import { addCategoryType, AdminCredentials, EditCategoryType } from '../../../ty
 const baseQuery = fetchBaseQuery({
     baseUrl: `http://localhost:3001`,
     credentials: 'include',  
+    prepareHeaders: (headers, { getState }) => {
+        headers.set('Content-Type', 'application/json');
+        return headers;
+    }
 });
 
 // * Function to get headers
 const getHeaders = (role:string) => ({
     'Role': 'admin', 
+    'Content-Type': 'application/json'
 });
 
 export const adminApi = createApi({
@@ -83,6 +88,21 @@ export const adminApi = createApi({
                 method:'GET',
                 headers:getHeaders('admin')
             })
+        }),
+        isUserBlock: builder.mutation({
+            query: (data:{isBlock:boolean,_id:string}) => ({
+              url: `/admin/isBlockUser`,
+              method: 'POST',
+              body : data,
+              headers: getHeaders('admin')
+            })
+          }), 
+        getAllUnApprovalWorkerlist : builder.query({
+            query:()=>({
+                url: `/admin/getAllUnApprovalWorkerlist`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
@@ -97,5 +117,7 @@ export const {
     useDeleteProductAPIMutation,
     useAdminLogoutAPIMutation,
     useGetWorkerListQuery,
-    useGetUserListQuery
+    useGetUserListQuery,
+    useIsUserBlockMutation,
+    useGetAllUnApprovalWorkerlistQuery,
 } = adminApi;

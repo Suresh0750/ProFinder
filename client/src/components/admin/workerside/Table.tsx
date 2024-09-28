@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { useGetUserListQuery } from "@/lib/features/api/adminApiSlice";
+import { useGetWorkerListQuery } from "@/lib/features/api/adminApiSlice";
 import Table from '@mui/material/Table';
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,20 +14,21 @@ import { Pagination } from "@mui/material";
 
 function createData(
   No: number,
+  RegisterImage: string, // Change to string URL if you want to use img src directly
   Name: string,
   Phone: number,
-  EmailId: string,
+  categories: string,
   Actions: string
 ) {
-  return { No, Name, Phone,EmailId, Actions };
+  return { No, RegisterImage, Name, Phone, categories, Actions };
 }
 
-const UserTable = () => {
+const WorkerTableBody = () => {
 
   const [page,setPage] = useState(1)
-  const [showUserList, setShowUserList] = useState<any[]>([]);
-  const [allWorkerList, setAllUserList] = useState<any[]>([]);
-  const { data } = useGetUserListQuery("");
+  const [showWorkerList, setShowWorkerList] = useState<any[]>([]);
+  const [allWorkerList, setAllWorkerList] = useState<any[]>([]);
+  const { data } = useGetWorkerListQuery("");
 
 
   const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
@@ -37,16 +38,17 @@ const UserTable = () => {
 
   useEffect(() => {
     if (data) {
-      setAllUserList(data?.result);
-      setShowUserList(
-        (data?.result).map((user: any, i: number) =>
+      setAllWorkerList(data?.result);
+      setShowWorkerList(
+        (data?.result).map((worker: any, i: number) =>
             
           createData(
             i + 1,
-            user.username, // Assuming this is a URL for the image
-            user.PhoneNumber,
-            user.EmailAddress,
-            "Action",
+            worker.Profile, // Assuming this is a URL for the image
+            worker.FirstName,
+            worker.PhoneNumber,
+            worker.Category,
+            "Action"
           )
           
         )
@@ -66,23 +68,31 @@ const UserTable = () => {
         <TableHead className='bg-black'>
             <TableRow>
             <TableCell className='text-xl font-bold text-white'>No</TableCell>
+            <TableCell className='text-xl font-bold text-white w-5' align="right">Register Image</TableCell>
             <TableCell className='text-xl font-bold text-white' align="right">Name</TableCell>
             <TableCell className='text-xl font-bold text-white' align="right">Phone</TableCell>
-            <TableCell className='text-xl font-bold text-white' align="right">Email Id</TableCell>
+            <TableCell className='text-xl font-bold text-white' align="right">Categories</TableCell>
             <TableCell className='text-xl font-bold text-white' align="right">Actions</TableCell>
             </TableRow>
         </TableHead>
         {/* Passing currentPage and rowsPerPage as props to the TBody component */}
         <TableBody>
-        {showUserList.length > 0 &&
-        showUserList.slice((page-1), 5).map((worker: any, index: number) => (
+        {showWorkerList.length > 0 &&
+        showWorkerList.slice((page-1), 5).map((worker: any, index: number) => (
             <TableRow key={index}>
             <TableCell component="th" scope="row">
                 {((page-1)*5)+index+1}
             </TableCell>
+            <TableCell align="center" className="w-11 h-10">
+                <img
+                src={worker.RegisterImage}
+                alt={worker.Name + " image"}
+                className="w-11 h-10 rounded"
+                />
+            </TableCell>
             <TableCell align="right">{worker.Name}</TableCell>
             <TableCell align="right">{worker.Phone}</TableCell>
-            <TableCell align="right">{worker.EmailId}</TableCell>
+            <TableCell align="right">{worker.categories}</TableCell>
             <TableCell align="right">
                 <button className="p-2 bg-green-600 rounded">Action</button>
             </TableCell>
@@ -93,7 +103,7 @@ const UserTable = () => {
     </TableContainer>
     <div className='flex justify-center mt-4'>
     <Pagination
-          count={Math.ceil(showUserList.length / 5)} // Total number of pages
+          count={Math.ceil(showWorkerList.length / 5)} // Total number of pages
           page={page} // Current page number
           onChange={handleChangePage} // Handle page change
           variant="outlined"
@@ -104,4 +114,4 @@ const UserTable = () => {
   );
 };
 
-export default UserTable;
+export default WorkerTableBody;
