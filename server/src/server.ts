@@ -41,11 +41,18 @@ app.use(morgan("dev")); // *
 
 app.use(cors({
   origin: 'http://localhost:3000', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Role'],
-  credentials: true // * Required for using credentials (cookies, auth headers)
+  credentials: true
 }));
 
+// Handle preflight requests
+app.options('*', cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Role'],
+  credentials: true
+}));
 
 
 // * application layer

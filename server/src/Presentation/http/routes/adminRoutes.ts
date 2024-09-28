@@ -1,6 +1,6 @@
 
 import {    Router} from 'express'
-import {addCategoryController,AdminVerify,getAllCategory,editCategory,verifyListController,deleteProductController, adminLogoutController,getALLWorkerListController, getAllUserList, isBlockUser} from "../controllers/AdminController"
+import {addCategoryController,AdminVerify,getAllCategory,editCategory,verifyListController,deleteProductController, adminLogoutController,getALLWorkerListController, getAllUserList, isBlockUserController, getAllUnApprovalWorkerlist} from "../controllers/AdminController"
 import {verify} from '../middlewares/JWTVerify/adminVerify'
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 import upload from '../../../infrastructure/service/multer'
@@ -11,7 +11,11 @@ const adminRoutes = Router()
 
 // * admin / User side
 adminRoutes.get('/getAllUserList',verify,authorizeRoles('admin'),getAllUserList)
-adminRoutes.post('/isBlockUser',verify,authorizeRoles('admin'),isBlockUser)
+adminRoutes.post('/isBlockUser',verify,authorizeRoles('admin'),isBlockUserController)
+
+// * admin / Worker Approval side
+adminRoutes.get('/getAllUnApprovalWorkerlist',verify,authorizeRoles('admin'),getAllUnApprovalWorkerlist)
+
 
 // * admin/ worker side
 adminRoutes.get("/getWorkerList",verify,authorizeRoles('admin'),getALLWorkerListController)

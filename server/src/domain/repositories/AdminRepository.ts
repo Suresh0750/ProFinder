@@ -12,6 +12,7 @@ export interface IAdminRepository{
     deleteProductQuery(_id:string) : Promise<void>;
     EditeCategoryQuery(categoryData:AddCategory) : Promise<void>
     getEditCategoryName(_id:string) : Promise<{categoryName:string} |null>
+    getUnApprovalWorker() : Promise<WorkerInformation[]> // * All in approval Workers
     getAllWorkerList(): Promise<WorkerInformation[] | undefined> // * all worker list
     getAllUserList(): Promise<User[]>     // * Admin in User side
     isBlockUser(_id:string,isBlock:boolean) : Promise<void>

@@ -7,6 +7,8 @@ import {uploadImage} from '../../../app/useCases/utils/uploadImage'
 import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
 import {getALLWorkerUseCases}  from '../../../app/useCases/admin/AdminwokerSide'
 import {getAllUserUseCase,isBlockUserUseCases} from '../../../app/useCases/admin/AdminUserSide'
+import {AdminWorkerApprovalUseCases} from "../../../app/useCases/admin/AdminWorkerApprovalSide"
+
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
@@ -15,12 +17,13 @@ import { StatusCode } from "../../../domain/entities/commonTypes"
 
 // * admin User side
 
-export const isBlockUser = async(req:Request,res:Response,next:NextFunction)=>{
+export const isBlockUserController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(`Request reached`)
         console.log(req.body)
-        // await isBlockUserUseCases(req.body._id,req.body.value)
-        // return res.status(StatusCode.Success).json({success:true,message:"Data has been update"})
+       
+        await isBlockUserUseCases(req.body._id,req.body.isBlock)
+        return res.status(StatusCode.Success).json({success:true,message:"Data has been update"})
     } catch (error) {
         console.log(`Error from isBlcokUser\n${error}`)  
         next(error)
@@ -33,6 +36,19 @@ export const getAllUserList = async(req:Request,res:Response,next:NextFunction)=
         return res.status(StatusCode.Success).json({success:true,message:'Data fetched successfully',result})
     } catch (error) {
         console.log(`Error from getAllUserList\n${error}`)  
+        next(error)
+    }
+}
+
+// * admin in worker Approval side
+
+export const getAllUnApprovalWorkerlist = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`request reached getAllUnApprovalWorkerlist`)
+        const result = await AdminWorkerApprovalUseCases()
+        return res.status(StatusCode.Success).json({success:true,message:'Data successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from getALLWorkerListController\n${error}`)  
         next(error)
     }
 }

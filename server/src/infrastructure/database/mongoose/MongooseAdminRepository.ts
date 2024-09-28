@@ -75,6 +75,15 @@ export const AdminMongoose = () : IAdminRepository =>({
             throw error
         }
     },
+    // * Admin in Worker Approval side
+    getUnApprovalWorker : async()=>{
+        try {
+            return await WorkerModel.find({isWorker:false})  //* all un Approval workers
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getInvalidWorker->\n`,error)
+            throw error
+        }
+    },
     // * Admin in Worker side query's
     getAllWorkerList : async()=>{
         try {
