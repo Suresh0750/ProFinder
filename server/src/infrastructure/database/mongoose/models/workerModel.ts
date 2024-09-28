@@ -21,7 +21,8 @@ const workerSchema = new Schema<WorkerInformation>({
     WorkerImage: [{ type: String }], 
     reviews: [{ type: String }], 
     isVerified : {type:Boolean, default:false},
-    isWorker : {type:Boolean,default:false}
+    isWorker : {type:Boolean,default:false},
+    isBlock : {type:Boolean,default:false}
 }, { timestamps: true });
 
 
