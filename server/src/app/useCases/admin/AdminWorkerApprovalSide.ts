@@ -12,3 +12,12 @@ export const AdminWorkerApprovalUseCases = async ()=>{
         throw error
     }
 }
+
+export const isWorkerApprovalUseCases = async (_id:string)=>{
+    try {
+        return await AdminMongoose().isWorkerApproval(_id)
+    } catch (error) {
+        console.log(`Error from isWorkerApprovalUseCases \n ${error}`)
+        throw error
+    }
+}

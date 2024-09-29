@@ -103,6 +103,13 @@ export const adminApi = createApi({
                 method: 'GET',
                 headers: getHeaders('admin') 
             })
+        }),
+        isWorkerApproval : builder.mutation({
+            query:(data:string)=>({
+                url: `/admin/isWorkerApproval${data}`,
+                method: 'PUT',
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
@@ -120,4 +127,5 @@ export const {
     useGetUserListQuery,
     useIsUserBlockMutation,
     useGetAllUnApprovalWorkerlistQuery,
+    useIsWorkerApprovalMutation,
 } = adminApi;

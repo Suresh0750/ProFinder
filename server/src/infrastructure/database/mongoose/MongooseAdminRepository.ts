@@ -84,6 +84,15 @@ export const AdminMongoose = () : IAdminRepository =>({
             throw error
         }
     },
+    isWorkerApproval : async(_id:string)=>{
+        try{
+            console.log(_id)
+            await WorkerModel.findByIdAndUpdate({_id},{$set:{isWorker:true}});
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->isWorkerApproval->\n`,error)
+            throw error
+        }
+    },
     // * Admin in Worker side query's
     getAllWorkerList : async()=>{
         try {
