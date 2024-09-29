@@ -1,13 +1,31 @@
 
-import {PersonalInformation,WorkerInformation} from '../../../domain/entities/Worker'
+import {PersonalInformation,WorkerInformation,ProjectDetails} from '../../../domain/entities/Worker'
 import {getWorkerRepository} from "../../../infrastructure/database/mongoose/MongooseWorkerRepository"
 import {getUserRepository} from "../../../infrastructure/database/mongoose/MongooseUserRepository"
 import {OtpService} from '../../services/OtpService'
 import {OtpStoreData} from '../utils/OtpStoreData'
 import {verifyRefreshToken} from "../../../infrastructure/service/JwtService"
 import {GeoCoding} from "../../../infrastructure/service/geoCode"
-import { StatusCode } from '../../../domain/entities/commonTypes'
 
+
+
+// * worker upload project details usecses
+export const workerProjectUsecases = async (workerProjectDetails:ProjectDetails)=>{
+    try {
+        const {_id,projectName,ProjectDescription,ProjectImage} = workerProjectDetails
+        const ProjectDetails = {
+            projectName,
+            ProjectDescription,
+            ProjectImage 
+        }
+
+        if(_id) await getWorkerRepository().addWorkerProjectDetails(_id,ProjectDetails)
+        return
+    } catch (error) {
+        console.log(`Error from useCases->admin->workerProjectUsecases\n`,error)
+        throw error
+    }
+}
 
 export const workerExist = async (workerData:PersonalInformation) =>{
     try {

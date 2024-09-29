@@ -1,6 +1,6 @@
 
 import {WorkerRepository} from '../../../domain/repositories/WorkerRepository'
-import {PersonalInformation, WorkerInformation} from '../../../domain/entities/Worker'
+import {PersonalInformation, WorkerInformation,ProjectDetails} from '../../../domain/entities/Worker'
 import { WorkerModel } from './models/workerModel'
 
 
@@ -82,6 +82,15 @@ export const getWorkerRepository = ():WorkerRepository =>({
             await WorkerModel.updateMany({Category:existName},{$set:{Category:newName}})
         }catch(error){
             console.log(`Error from infrastructure->database->mongoose->chagneExitWorkerCategoryName->\n`,error)
+            throw error
+        }
+    },
+    // * Add worker project details 
+    addWorkerProjectDetails : async(_id:string,ProjectDetails:ProjectDetails)=>{
+        try {
+            await WorkerModel.updateOne({_id},{$push:{WorkerImage:ProjectDetails}})  // * worker add project image
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->addWorkerProjectDetails->\n`,error)
             throw error
         }
     }

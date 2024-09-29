@@ -1,5 +1,5 @@
 import {Response,Request, NextFunction } from "express";
-import {WorkerUsecase,workerExist,getWorkerData} from "../../../app/useCases/worker/workerUsecases"
+import {WorkerUsecase,workerExist,getWorkerData,workerProjectUsecases} from "../../../app/useCases/worker/workerUsecases"
 import {LoginVerify} from "../../../app/useCases/worker/loginVerifyWorker"
 import {isCheckWorkerEmail} from "../../../app/useCases/worker/forgetPass"
 import {IMulterFile} from "../../../domain/entities/s3entities"
@@ -9,6 +9,23 @@ import {Cookie,StatusCode} from '../../../domain/entities/commonTypes'
 import {hashPassword} from '../../../shared/utils/encrptionUtils'
 import {JwtService} from '../../../infrastructure/service/JwtService'
 
+
+
+
+// * Worker in Project side
+export const AddProjectDetails = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+      
+        const file: IMulterFile |any = req.file
+        const imageUrl = await uploadImage(file) 
+        req.body.ProjectImage = imageUrl
+        const result = await workerProjectUsecases(req.body)
+        return res.status(StatusCode.Success).json({success:true,message:'Project details has been successfully update'})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->AddProjectDetails\n ${error}`)
+        next(error)
+    }
+}
 
 export const PersonalInformationControll = async (req:Request,res:Response, next : NextFunction)=>{
     try{

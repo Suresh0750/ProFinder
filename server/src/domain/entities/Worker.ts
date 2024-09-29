@@ -1,4 +1,11 @@
+// * worker Project details
 
+export interface ProjectDetails {
+    _id? : string,
+    projectName : string,
+    ProjectDescription : string,
+    ProjectImage : string
+}
 
 
 export interface PersonalInformation{
