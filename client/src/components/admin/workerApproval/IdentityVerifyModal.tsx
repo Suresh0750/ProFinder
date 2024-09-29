@@ -2,10 +2,13 @@
 import { useState, useEffect } from 'react';
 import './Identity.module.css'
 import { useIsWorkerApprovalMutation } from '@/lib/features/api/adminApiSlice';
+import {toast, Toaster} from 'sonner'
+import {useRouter} from 'next/navigation'
 
-const IdentityModal = ({ isOpen, onClose, image, workerId }: { isOpen: boolean, onClose: any, image: string, workerId: string }) => {
+const IdentityModal = ({ isOpen, onClose, image, workerId,refetch}: { isOpen: boolean, onClose: any, image: string, workerId: string,refetch:any}) => {
     const [imageUrl, setImageUrl] = useState('');
     const [isWorkerApproval] =  useIsWorkerApprovalMutation();
+    const Router = useRouter()
   
 
     useEffect(() => {
@@ -16,8 +19,17 @@ const IdentityModal = ({ isOpen, onClose, image, workerId }: { isOpen: boolean, 
         try {
             const result =await isWorkerApproval(id).unwrap()
             console.log(result)
-        } catch (error) {
+            if(result?.success){
+                toast.success(result.message)
+                setTimeout(()=>{
+                    Router.push(`/admin/workerApproval`)
+                })
+                onClose() 
+                refetch()
+            }
+        } catch (error:any) {
             console.error('Error fetching data:', error);
+            toast.error(error.message)
         }
     };
 
@@ -33,6 +45,7 @@ const IdentityModal = ({ isOpen, onClose, image, workerId }: { isOpen: boolean, 
                     <button onClick={onClose} className="ml-4 px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
                 </div>
             </div>
+            <Toaster richColors position="top-center" />
         </div>
     );
 };

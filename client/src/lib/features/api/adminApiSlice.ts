@@ -106,9 +106,8 @@ export const adminApi = createApi({
         }),
         isWorkerApproval : builder.mutation({
             query:(data:string)=>({
-                url: `/admin/isWorkerApproval`,
-                method: 'POST',
-                body:data,
+                url: `/admin/isWorkerApproval${data}`,
+                method: 'PUT',
                 headers: getHeaders('admin') 
             })
         })

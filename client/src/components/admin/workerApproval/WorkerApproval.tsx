@@ -159,6 +159,7 @@ const UserTable = () => {
         onClose={() => setModalOpen(false)}
         image={imageUrl}
         workerId={workerId}
+        refetch={refetch}
       />
     </>
   );
