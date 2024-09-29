@@ -56,9 +56,10 @@ export const getAllUnApprovalWorkerlist = async (req:Request,res:Response,next:N
 export const isWorkerApproval = async (req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(`Request reaced isWorkerApproval`)
-        console.log(req.body)
-        const result = await isWorkerApprovalUseCases(req.body?._id)
-        return res.status(StatusCode.Success).json({success:true,message:'Data successfully fetched',result})
+        console.log(req.params?.id)
+        const result = await isWorkerApprovalUseCases(req.params?.id)
+        
+        return res.status(StatusCode.Success).json({success:true,message:'worker successfully verified'})
     } catch (error) {
         console.log(`Error from isWorkerApproval\n${error}`)  
         next(error)

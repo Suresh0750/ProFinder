@@ -49,7 +49,7 @@ app.use(cors({
 // * Handle preflight requests
 app.options('*', cors({
   origin: 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+  methods:  'GET,POST,PUT,PATCH,DELETE,OPTIONS,HEAD',
   allowedHeaders: ['Content-Type', 'Authorization', 'Role'],
   credentials: true
 }));

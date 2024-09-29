@@ -1,5 +1,5 @@
 
-import {    Router} from 'express'
+import {Request,Response,Router} from 'express'
 import {addCategoryController,AdminVerify,getAllCategory,editCategory,verifyListController,deleteProductController, adminLogoutController,getALLWorkerListController, getAllUserList, isBlockUserController, getAllUnApprovalWorkerlist, isWorkerApproval} from "../controllers/AdminController"
 import {verify} from '../middlewares/JWTVerify/adminVerify'
 import {authorizeRoles} from '../middlewares/authorizeRoles'
@@ -15,7 +15,8 @@ adminRoutes.post('/isBlockUser',verify,authorizeRoles('admin'),isBlockUserContro
 
 // * admin / Worker Approval side
 adminRoutes.get('/getAllUnApprovalWorkerlist',verify,authorizeRoles('admin'),getAllUnApprovalWorkerlist)
-adminRoutes.post('/isWorkerApproval',verify,authorizeRoles('admin'),isWorkerApproval)
+// adminRoutes.post('/isWorkerApproval',isWorkerApproval)
+adminRoutes.put('/isWorkerApproval:id',verify,authorizeRoles('admin'),isWorkerApproval)
 
 
 // * admin/ worker side
