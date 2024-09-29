@@ -56,9 +56,24 @@ export const workerApi = createApi({
                 method:"POST",
                 body : data
             })
+        }),
+        workerUploadProject : builder.mutation({
+            query : (data)=>({
+                url:`/worker/uploadWorkerProject`,
+                method:"POST",
+                body : data,
+                headers : getHeaders('worker')
+            })
         })
     })
 })
 
 
-export const {useWorkerSignUpMutation,useProfessionalInfoMutation,useCheckWorkerEmailForgetPassMutation,useLoginMutation,useGetWorkerDetailsQuery} = workerApi
+export const {
+    useWorkerSignUpMutation,
+    useProfessionalInfoMutation,
+    useCheckWorkerEmailForgetPassMutation,
+    useLoginMutation,
+    useGetWorkerDetailsQuery,
+    useWorkerUploadProjectMutation,
+} = workerApi

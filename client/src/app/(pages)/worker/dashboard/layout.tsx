@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <Link href={'/worker/dashboard/professionalInfo'}>Professional Info</Link>
             </li>
             <li className="hover:bg-gray-600 w-full py-2 rounded-md cursor-pointer">
-              <Link href={''}>Works</Link>
+              <Link href={'/worker/dashboard/workerprojectDetails'}>Works</Link>
             </li>
             <li className="hover:bg-gray-600 w-full py-2 rounded-md cursor-pointer">
               <Link href={''}>Message</Link>
