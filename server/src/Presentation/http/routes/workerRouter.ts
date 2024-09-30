@@ -1,13 +1,16 @@
 import {Router} from "express"
-import { PersonalInformationControll,ProfessionalInfoControll,isCheckEmail,getWorkerDataController,LoginWorkerController,AddProjectDetails, getProjectDetails} from "../controllers/WorkerController"
+import { PersonalInformationControll,ProfessionalInfoControll,isCheckEmail,getWorkerDataController,LoginWorkerController,AddProjectDetails, getProjectDetails, getSingleWorkerDetails} from "../controllers/WorkerController"
 import upload from '../../../infrastructure/service/multer'
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 
 
 const workerRouter = Router()
 
-// * Worker in worker Project upload 
 
+// * get single worker Details
+workerRouter.get('/singleWorkerDetails:workerid',getSingleWorkerDetails) 
+
+// * Worker in worker Project upload 
 workerRouter.post("/uploadWorkerProject",upload.single('image'),AddProjectDetails)
 workerRouter.get('/getWorkerProject:id',authorizeRoles('worker'),getProjectDetails)
 

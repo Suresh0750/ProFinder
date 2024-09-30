@@ -1,5 +1,5 @@
 import {Response,Request, NextFunction } from "express";
-import {WorkerUsecase,workerExist,getWorkerData,workerProjectUsecases, getWorkerProjectData} from "../../../app/useCases/worker/workerUsecases"
+import {WorkerUsecase,workerExist,getWorkerData,workerProjectUsecases, getWorkerProjectData, getSingleWorkerDetailsUsecases} from "../../../app/useCases/worker/workerUsecases"
 import {LoginVerify} from "../../../app/useCases/worker/loginVerifyWorker"
 import {isCheckWorkerEmail} from "../../../app/useCases/worker/forgetPass"
 import {IMulterFile} from "../../../domain/entities/s3entities"
@@ -10,7 +10,20 @@ import {hashPassword} from '../../../shared/utils/encrptionUtils'
 import {JwtService} from '../../../infrastructure/service/JwtService'
 
 
+// * get worker Single worker Details
 
+export const getSingleWorkerDetails = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request entered into getSingleworkerDetails`)
+        console.log(req.params)
+        const result = await getSingleWorkerDetailsUsecases(req.params.workerid)
+        console.log(JSON.stringify(result))
+        return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->getSingleWorkerDetails\n ${error}`)
+        next(error)
+    }
+}
 
 // * Worker in Project side
 export const AddProjectDetails = async(req:Request,res:Response,next:NextFunction)=>{

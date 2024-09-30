@@ -12,4 +12,5 @@ export interface WorkerRepository{
     chagneExitWorkerCategoryName(existName:string,newName:string) :Promise<void>   // * here the worker category will update if Admin change their category
     addWorkerProjectDetails(_id:string,ProjectDetails:ProjectDetails):Promise<void> // * worker add project Details
     getProjectDetailsQuery(_id:string): Promise<getProjectData | null>
+    getSingleWorkerDetailsQuery(_id:string) : Promise<WorkerInformation | null>
 }

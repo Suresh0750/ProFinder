@@ -30,7 +30,7 @@ export interface ProfessionInformation{
     Apt : String,
     Identity : String,
     PostalCode : Number,
-    WorkerImage? : string[],
+    WorkerImage? : any,
     reviews? : string[],
     isVerified? : Boolean,
     isWorker ? : Boolean

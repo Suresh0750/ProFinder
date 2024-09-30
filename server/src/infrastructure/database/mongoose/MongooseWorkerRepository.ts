@@ -101,5 +101,13 @@ export const getWorkerRepository = ():WorkerRepository =>({
             console.log(`Error from infrastructure->database->mongoose->getProjectDetailsQuery->\n`,error)
             throw error
         }
+    },
+    getSingleWorkerDetailsQuery : async(_id:string)=>{
+        try {
+            return await WorkerModel.findById({_id})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getSingleWorkerDetailsQuery->\n`,error)
+            throw error
+        }
     }
 })

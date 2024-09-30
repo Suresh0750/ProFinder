@@ -8,6 +8,16 @@ import {verifyRefreshToken} from "../../../infrastructure/service/JwtService"
 import {GeoCoding} from "../../../infrastructure/service/geoCode"
 
 
+// * get Single worker Details
+
+export const getSingleWorkerDetailsUsecases= async (_id:string)=>{
+    try {
+        return await getWorkerRepository().getSingleWorkerDetailsQuery(_id)
+    } catch (error) {
+        console.log(`Error from useCases->admin->getSingleWorkerDetailsUsecases\n`,error)
+        throw error
+    }
+}
 
 // * worker upload project details usecses
 export const workerProjectUsecases = async (workerProjectDetails:ProjectDetails)=>{
