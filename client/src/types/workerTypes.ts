@@ -37,3 +37,13 @@
   }
 
 
+export interface MaterialCarouselProps {
+              images: [
+                {
+                  projectName: string,
+                  ProjectDescription:string,
+                  ProjectImage: string,
+                  _id: string
+                }
+              ];
+            }
