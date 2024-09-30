@@ -85,12 +85,20 @@ export const getWorkerRepository = ():WorkerRepository =>({
             throw error
         }
     },
-    // * Add worker project details 
+    // * Add worker project details  && worker Project page
     addWorkerProjectDetails : async(_id:string,ProjectDetails:ProjectDetails)=>{
         try {
             await WorkerModel.updateOne({_id},{$push:{WorkerImage:ProjectDetails}})  // * worker add project image
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->addWorkerProjectDetails->\n`,error)
+            throw error
+        }
+    },
+    getProjectDetailsQuery : async(_id:string)=>{
+        try {
+           return await WorkerModel.findById({_id},{WorkerImage:1,_id:0})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getProjectDetailsQuery->\n`,error)
             throw error
         }
     }

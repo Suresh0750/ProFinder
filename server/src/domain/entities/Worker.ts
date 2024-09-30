@@ -43,3 +43,11 @@ export type WorkerInformation = PersonalInformation & ProfessionInformation & {
     isBlock? : boolean;
 };
 
+export type getProjectData = {
+    WorkerImage :[{
+        projectName:string,
+        ProjectDescription : string,
+        ProjectImage : string,
+        _id : string
+    }]
+}

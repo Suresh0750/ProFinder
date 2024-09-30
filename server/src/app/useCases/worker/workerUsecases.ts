@@ -26,6 +26,16 @@ export const workerProjectUsecases = async (workerProjectDetails:ProjectDetails)
         throw error
     }
 }
+export const getWorkerProjectData = async(_id:string)=>{
+    try {
+        return await getWorkerRepository().getProjectDetailsQuery(_id)
+    } catch (error) {
+        console.log(`Error from useCases->admin->getWorkerProjectData\n`,error)
+        throw error
+    }
+}
+
+
 
 export const workerExist = async (workerData:PersonalInformation) =>{
     try {

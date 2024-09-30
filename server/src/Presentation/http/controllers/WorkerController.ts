@@ -1,5 +1,5 @@
 import {Response,Request, NextFunction } from "express";
-import {WorkerUsecase,workerExist,getWorkerData,workerProjectUsecases} from "../../../app/useCases/worker/workerUsecases"
+import {WorkerUsecase,workerExist,getWorkerData,workerProjectUsecases, getWorkerProjectData} from "../../../app/useCases/worker/workerUsecases"
 import {LoginVerify} from "../../../app/useCases/worker/loginVerifyWorker"
 import {isCheckWorkerEmail} from "../../../app/useCases/worker/forgetPass"
 import {IMulterFile} from "../../../domain/entities/s3entities"
@@ -23,6 +23,17 @@ export const AddProjectDetails = async(req:Request,res:Response,next:NextFunctio
         return res.status(StatusCode.Success).json({success:true,message:'Project details has been successfully update'})
     } catch (error) {
         console.log(`Error from presentation layer-> http->AddProjectDetails\n ${error}`)
+        next(error)
+    }
+}
+export const getProjectDetails = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request reached getProjectDetails`)
+        console.log(req.params)
+        const result = await getWorkerProjectData(req.params.id)
+        return res.status(StatusCode.Success).json({success:true,message:'Worker Project Data has been Fetched',result})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->getProjectDetails\n ${error}`)
         next(error)
     }
 }
