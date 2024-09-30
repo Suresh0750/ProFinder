@@ -17,6 +17,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (data) {
+
+      console.log(data)
       setCustomerData(data?.workerData || {});
       dispatch(getWorkerData(data?.workerData))
     }

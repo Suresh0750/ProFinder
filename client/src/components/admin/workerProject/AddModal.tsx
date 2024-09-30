@@ -9,10 +9,11 @@ import {toast,Toaster} from 'sonner'
 interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
+  refetch : ()=>void;
 }
 
 
-const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
+const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose,refetch }) => {
   const [image, setImage] = useState<File | null>(null); // To store uploaded image
   const [projectName, setProjectName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -47,40 +48,40 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose }) => {
     return true;
   };
 
+ 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(""); // Reset error before validation
-
+  
     if (!validateForm()) return;
-
-    // FormData to send image file and other inputs
-    const {_id} = JSON.parse(localStorage.getItem('customerData') || '{}') || ''
+  
+    const { _id } = JSON.parse(localStorage.getItem('customerData') || '{}') || '';
     const formData = new FormData();
-    formData.append("_id",_id)
+    formData.append("_id", _id);
     formData.append("image", image as Blob);
     formData.append("projectName", projectName.trim());
     formData.append("ProjectDescription", description.trim());
-
+  
     try {
-        const response = await workerUploadProject(formData).unwrap()
-        console.log(response)
-        if(response?.success){
-            alert('success')
-            toast.success(response.message)
-        }
-      onClose(); // Close modal on successful submission
-    } catch (error:any) {
+      const response = await workerUploadProject(formData).unwrap();
+      if (response?.success) {
+        toast.success(response.message);
+        refetch();  // Refetch the updated projects after upload
+        console.log("Refetch called");
+        onClose(); // Close modal on successful submission
+      }
+    } catch (error: any) {
       setError("Failed to submit. Try again.");
       console.error("Error:", error);
-      toast.error(error?.errMessage)
+      toast.error(error?.errMessage);
     }
   };
-
+  
   if (!isOpen) return null; // Return null if modal is closed
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md relative">
+    <div className="fixed inset-0 flex items-center justify-center  bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg z-20 w-full max-w-md relative">
         {/* Close button */}
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"

@@ -1,50 +1,49 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image"; // Assuming you're using Next.js
-// import axios from 'axios'; // For API calls
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import AddImageModal from "./AddModal";
+import { useSelector } from "react-redux";
+import { useGetWorkerProjectQuery } from "@/lib/features/api/workerApiSlice";
 
-// Define types for props and state
 interface ImageData {
   src: string;
   alt: string;
   id: number;
 }
 
-interface ImageGridProps {
-  images: string;
-}
-
-const ImageGrid: React.FC<ImageGridProps> = ({ images }) => {
-  const [selectedImage, setSelectedImage] = useState<ImageData | null>(null); // Stores selected image info
+const ImageGrid = () => {
   const [modalData, setModalData] = useState<ImageData | null>(null); // Stores data fetched for modal
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isViewDetails, setIsViewDetails] = useState<boolean>(false);
+  const workerData = useSelector((state: any) => state?.WorkerSignupData?.getWorkerData);
+  const [showImage, setShowImage] = useState<any[]>([]);
 
-  // Function to handle the button click (assume imageId is of type number)
-  const handleButtonClick = async (imageId: number) => {
+  const { _id }: any = JSON.parse(localStorage.getItem('customerData') || '{_id:null}');
+
+  // Fetching worker projects data
+  const { data, refetch, isLoading, error } = useGetWorkerProjectQuery(_id);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setShowImage(data?.result); // Using data fetched from the API
+    } else if (workerData?.WorkerImage) {
+      setShowImage(workerData.WorkerImage); // Fallback to redux data if API fails
+    }
+  }, [data, workerData]);
+
+  const handleButtonClick = async (workerProject: any) => {
     try {
-      // Example API call to fetch dynamic data
-      // const response = await axios.get(`/api/images/${imageId}`);
-      // setModalData(response.data);
-      setIsModalOpen(true); // Open modal
+      setModalData(workerProject);
+      setIsViewDetails(true); // Open modal
     } catch (error) {
       console.error("Error fetching image data:", error);
     }
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
+    setIsViewDetails(false);
     setModalData(null); // Reset modal data when closed
   };
-
-  // Transform the single image to match the expected array format
-  const imageList: ImageData[] = [
-    {
-      src: images,
-      alt: "Sample Alt Text",
-      id: 1,
-    },
-  ];
 
   return (
     <>
@@ -57,47 +56,67 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images }) => {
         </button>
       </div>
 
-      <div className="mt-[75px] w-[70%] mr-[5%] ml-[5%] min-h-96 max-h-[600px] overflow-y-auto bg-[#D9D9D9] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {/* Image grid container */}
+      <div className="mt-[75px] w-[70%] mr-[5%] ml-[5%] min-h-96 max-h-[600px] overflow-y-auto overflow-x-hidden bg-[#D9D9D9] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {/* Loop through images */}
-        {imageList.map((image) => (
-          <div key={image.id} className="relative w-[500px] h-[500px] group">
-            {/* Image */}
-            <Image
-              src={image.src}
-              alt={image.alt}
-              width={500}
-              height={500}
-              className="object-cover"
-            />
+        {showImage.length > 0 &&
+          showImage.map((workerProject: any) => (
+            <div
+              key={workerProject.id}
+              className="relative w-full h-[300px] group overflow-hidden"
+            >
+              {/* Displaying the Image */}
+              <img
+                src={workerProject.ProjectImage}
+                alt={`${workerProject.projectName} Image`}
+                className="w-full h-full object-cover"
+              />
 
-            {/* Button that appears on hover */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-md transition-transform duration-300 hover:bg-blue-700"
-                onClick={() => handleButtonClick(image.id)}
-              >
-                View Details
-              </button>
+              {/* Button container with hover effect */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md transform transition-transform duration-300 hover:scale-110"
+                  onClick={() => handleButtonClick(workerProject)}
+                >
+                  View Details
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg relative w-[80%] max-w-[800px]">
-              <button
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
-                onClick={closeModal}
-              >
-                Close
-              </button>
-              {/* Modal content placeholder */}
-            </div>
-          </div>
-        )}
-        <AddImageModal isOpen={isModalOpen} onClose={() =>setIsModalOpen(false)} />
+          ))}
       </div>
+
+      {/* Modal */}
+      {isViewDetails && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 mb-4">
+          <div className="bg-white p-6 rounded-lg relative w-[80%] max-w-[800px]">
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+              onClick={closeModal}
+            >
+              Close
+            </button>
+            {/* Modal content */}
+            {modalData && (
+              <div>
+                <Image
+                  src={modalData.src}
+                  alt={modalData.alt}
+                  width={500}
+                  height={500}
+                  className="object-cover"
+                />
+                <p>{modalData.alt}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <AddImageModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        refetch={() => refetch()}
+      />
     </>
   );
 };

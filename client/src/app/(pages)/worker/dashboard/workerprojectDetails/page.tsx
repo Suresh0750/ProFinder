@@ -12,10 +12,10 @@ const page = () => {
     <div className="min-h-[100%] fixed min-w-full bg-gray-200">
 
       <h2 className='text-3xl font-bold text-center pt-3 w-[80%]'>Worker Project Page</h2>
-        <ShowImage Images={Images} />
+        <ShowImage />
     </div>
 
-  )
+  ) 
 }
 
 

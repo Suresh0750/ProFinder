@@ -64,6 +64,13 @@ export const workerApi = createApi({
                 body : data,
                 headers : getHeaders('worker')
             })
+        }),
+        getWorkerProject : builder.query({
+               query :(data)=>({
+                url:`/worker/getWorkerProject${data}`,
+                method:"GET",
+                headers : getHeaders('worker')
+               })
         })
     })
 })
@@ -76,4 +83,5 @@ export const {
     useLoginMutation,
     useGetWorkerDetailsQuery,
     useWorkerUploadProjectMutation,
+    useGetWorkerProjectQuery
 } = workerApi
