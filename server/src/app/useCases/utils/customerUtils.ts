@@ -35,6 +35,7 @@ export const userRequestUsecases = async (userRequestDetails:RequestData)=>{
 
         const AdditionalNotes = userRequestDetails.additionalNotes // * change the name convention
         delete userRequestDetails.additionalNotes 
+        console.log(userRequestDetails)
         return await CustomerQueryRepository().userRequestQuery({...userRequestDetails,AdditionalNotes})
 
     } catch (error) {

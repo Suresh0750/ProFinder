@@ -1,11 +1,36 @@
 
 import {PersonalInformation,WorkerInformation,ProjectDetails} from '../../../domain/entities/Worker'
 import {getWorkerRepository} from "../../../infrastructure/database/mongoose/MongooseWorkerRepository"
-import {getUserRepository} from "../../../infrastructure/database/mongoose/MongooseUserRepository"
 import {OtpService} from '../../services/OtpService'
 import {OtpStoreData} from '../utils/OtpStoreData'
 import {verifyRefreshToken} from "../../../infrastructure/service/JwtService"
 import {GeoCoding} from "../../../infrastructure/service/geoCode"
+
+
+
+
+// * getAll Request data  of worker
+
+export const getRequestUsecases = async (workerId:string)=>{
+    try {
+        return await getWorkerRepository().getAllRequestQuery(workerId)
+    } catch (error) {
+        console.log(`Error from useCases->worker->getAllWorkerUseCases\n`,error)
+        throw error
+    }
+}
+
+export const isAcceptUseCasess = async(data:any)=>{
+    try {
+        const {_id,isPayment} = JSON.parse(data)
+        return await getWorkerRepository().isAcceptWorkQuery(_id,Number(isPayment))
+    } catch (error) {
+        console.log(`Error from useCases->worker->isAcceptUseCasess\n`,error)
+        throw error
+    }
+}
+
+
 
 
 // * get Single worker Details
@@ -15,7 +40,7 @@ export const getSingleWorkerDetailsUsecases= async (_id:string)=>{
    
         return await getWorkerRepository().getSingleWorkerDetailsQuery(_id)
     } catch (error) {
-        console.log(`Error from useCases->admin->getSingleWorkerDetailsUsecases\n`,error)
+        console.log(`Error from useCases->worker->getSingleWorkerDetailsUsecases\n`,error)
         throw error
     }
 }
@@ -35,7 +60,7 @@ export const workerProjectUsecases = async (workerProjectDetails:ProjectDetails)
         if(_id) await getWorkerRepository().addWorkerProjectDetails(_id,ProjectDetails)
         return
     } catch (error) {
-        console.log(`Error from useCases->admin->workerProjectUsecases\n`,error)
+        console.log(`Error from useCases->worker->workerProjectUsecases\n`,error)
         throw error
     }
 }
@@ -43,7 +68,7 @@ export const getWorkerProjectData = async(_id:string)=>{
     try {
         return await getWorkerRepository().getProjectDetailsQuery(_id)
     } catch (error) {
-        console.log(`Error from useCases->admin->getWorkerProjectData\n`,error)
+        console.log(`Error from useCases->worker->getWorkerProjectData\n`,error)
         throw error
     }
 }

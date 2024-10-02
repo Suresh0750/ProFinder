@@ -51,3 +51,20 @@ export type getProjectData = {
         _id : string
     }]
 }
+
+
+// * request data 
+
+
+export type workerRequest = {
+    service : string,
+    worker :string,
+    user : string,
+    preferredDate : string,
+    preferredTime : string,
+    servicelocation : string,
+    AdditionalNotes : string,
+    userId : string,
+    workerId : string,
+    isAccept :string
+}
