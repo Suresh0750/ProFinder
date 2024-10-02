@@ -4,7 +4,7 @@ import { useRequestToWorkerMutation } from '@/lib/features/api/customerApiSlice'
 import React, { useState } from 'react';
 import {toast,Toaster} from 'sonner'
 
-const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClose: () => void }> = ({ workerDetails, isOpen, onClose }) => {
+const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClose: () => void, refetch: () => void }> = ({ workerDetails, isOpen, onClose,refetch }) => {
     const [formData, setFormData] = useState({
         workerId: workerDetails?._id,
         service: workerDetails?.Category,
@@ -71,9 +71,11 @@ const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClo
             const result = await requestToWorker({ ...formData,user:customerData.customerName, userId: customerData._id,    service: workerDetails?.Category,
                 worker: workerDetails?.FirstName, workerId: workerDetails?._id}).unwrap();
 
+            alert(JSON.stringify(result))
             if(result?.success){
-             
+                
                 toast.success(result?.message)
+                 refetch()
                 onClose();
             }
             console.log('Form submitted successfully');

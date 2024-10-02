@@ -20,11 +20,13 @@ const page = ({params}:{params:string})=>{
 
     const {_id} = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
 
-    const {data} = useGetSingleWorkerDetailsQuery(`${params?.workerId}/${_id}`)
+    const {data,refetch} = useGetSingleWorkerDetailsQuery(`${params?.workerId}/${_id}`)
 
     useEffect(()=>{
         setWorkerDetails(data?.result)
+        console.log(data)
         console.log(JSON.stringify(workerDetails))
+        console.log(JSON.stringify(data?.result?.requestData))
 
     },[data])
 
@@ -50,7 +52,7 @@ const page = ({params}:{params:string})=>{
                             <span className="text-yellow-500 text-lg">★★★★★</span>
                         </div>
                         {
-                           data?.result?.requestData ? (<button onClick={()=>setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                           !data?.requestData ? (<button onClick={()=>setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
                            Add Request 
                        </button>) : data?.result?.requestData?.isAccept ? (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
                             Accept 
@@ -131,7 +133,7 @@ const page = ({params}:{params:string})=>{
             </div>  
         </div>
         </div>
-         <ServiceRequestModal workerDetails={workerDetails} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+         <ServiceRequestModal workerDetails={workerDetails} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} refetch={()=>refetch()} />
     
         
         </div>
