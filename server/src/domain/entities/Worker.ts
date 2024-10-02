@@ -1,4 +1,11 @@
+// * worker Project details
 
+export interface ProjectDetails {
+    _id? : string,
+    projectName : string,
+    ProjectDescription : string,
+    ProjectImage : string
+}
 
 
 export interface PersonalInformation{
@@ -23,7 +30,7 @@ export interface ProfessionInformation{
     Apt : String,
     Identity : String,
     PostalCode : Number,
-    WorkerImage? : string[],
+    WorkerImage? : any,
     reviews? : string[],
     isVerified? : Boolean,
     isWorker ? : Boolean
@@ -36,3 +43,11 @@ export type WorkerInformation = PersonalInformation & ProfessionInformation & {
     isBlock? : boolean;
 };
 
+export type getProjectData = {
+    WorkerImage :[{
+        projectName:string,
+        ProjectDescription : string,
+        ProjectImage : string,
+        _id : string
+    }]
+}

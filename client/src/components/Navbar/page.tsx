@@ -85,8 +85,7 @@ const Page = () => {
         localStorage.setItem("customerData",'')
         setTimeout(()=>{
               router.push('/homePage')
-            },2000)
-        window.location.reload()
+            },1000)
           }
     } catch (error) {
       console.log(error)
@@ -111,7 +110,9 @@ const Page = () => {
                 Service
               </Link >
             </li>
-            <li className="hover:text-gray-300 cursor-pointer">Contact</li>
+            <li className="hover:text-gray-300 cursor-pointer">
+              Contact
+            </li>
           </ul>
           {
             
@@ -123,7 +124,7 @@ const Page = () => {
                    Get Started
                  {/* </Link> */}
                </button>) : role=='user' ? <><button className='bg-red-700 text-white text-1xl p-2 rounded' onClick={()=>setIsModalOpen((prev)=>!prev)}>Emergency</button> <button onClick={()=>setIsOpenMap((prev)=>!prev)}>Dashboard</button> <button onClick={handleLogout}>Logout</button></> :(<>
-                <Link href={"/worker/dashboard/personalInfo"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
+                <Link href={"/worker/dashboard/workerdashboard"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
                 </>
                 )
                

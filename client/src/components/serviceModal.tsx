@@ -1,0 +1,182 @@
+'use client'; // This directive is necessary for client-side rendering
+
+import { useRequestToWorkerMutation } from '@/lib/features/api/customerApiSlice';
+import React, { useState } from 'react';
+import {toast,Toaster} from 'sonner'
+
+const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClose: () => void }> = ({ workerDetails, isOpen, onClose }) => {
+    const [formData, setFormData] = useState({
+        workerId: workerDetails?._id,
+        service: workerDetails?.Category,
+        worker: workerDetails?.FirstName,
+        user : '',
+        preferredDate: '',
+        preferredTime: '',
+        serviceLocation: '',
+        additionalNotes: '',
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [validationErrors, setValidationErrors] = useState<any>({});
+    const [requestToWorker,{isLoading}] = useRequestToWorkerMutation();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const validateForm = () => {
+        const errors: any = {};
+     
+        
+        if (!formData.preferredDate) {
+            errors.preferredDate = "Preferred date is required.";
+        } else if (new Date(formData.preferredDate) < new Date()) {
+            errors.preferredDate = "Preferred date cannot be in the past.";
+        }
+        
+        if (!formData.preferredTime) {
+            errors.preferredTime = "Preferred time is required.";
+        }
+        
+        if (!formData.serviceLocation) {
+            errors.serviceLocation = "Service location is required.";
+        }
+        if(!formData.additionalNotes){
+            errors.additionalNotes = "AdditionalNotes is required."
+        }
+
+        return errors;
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        
+        if(isLoading) return
+        // Validate form inputs
+        const errors = validateForm();
+        
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            setLoading(false);
+            return;
+        }
+
+        // Assuming customer data is stored in local storage
+        const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
+        
+        try {
+      
+            const result = await requestToWorker({ ...formData,user:customerData.customerName, userId: customerData._id,    service: workerDetails?.Category,
+                worker: workerDetails?.FirstName, workerId: workerDetails?._id}).unwrap();
+
+            if(result?.success){
+             
+                toast.success(result?.message)
+                onClose();
+            }
+            console.log('Form submitted successfully');
+        } catch (err:any) {
+            console.log(err)
+            setError(err?.data?.message);
+            toast.error(err?.data?.errorMessage)
+            setTimeout(()=>{
+                onClose();
+            },1000)
+        } finally {
+            setLoading(false);
+           
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+            <div className="bg-white rounded-lg p-6 shadow-lg w-96">
+                <h2 className="text-xl font-bold mb-4">Service Request</h2>
+                {error && <p className="text-red-500">{error}</p>}
+                <form onSubmit={handleSubmit}>
+                    <label className="block mb-2">
+                        Service:
+                        <input
+                            type="text"
+                            name="service"
+                            value={workerDetails?.Category}
+                            onChange={handleChange}
+                            required
+                            className="w-full border rounded p-2"
+                        />
+                        {validationErrors.service && <p className="text-red-500">{validationErrors.service}</p>}
+                    </label>
+                    <label className="block mb-2">
+                        Worker:
+                        <input
+                            type="text"
+                            name="worker"
+                            value={workerDetails?.FirstName}
+                            onChange={handleChange}
+                            required
+                            className="w-full border rounded p-2"
+                        />
+                        {validationErrors.worker && <p className="text-red-500">{validationErrors.worker}</p>}
+                    </label>
+                    <label className="block mb-2">
+                        Preferred Date:
+                        <input
+                            type="date"
+                            name="preferredDate"
+                            value={formData.preferredDate}
+                            onChange={handleChange}
+                            required
+                            min={new Date().toISOString().split("T")[0]} // Set minimum date to today
+                            className="w-full border rounded p-2"
+                        />
+                        {validationErrors.preferredDate && <p className="text-red-500">{validationErrors.preferredDate}</p>}
+                    </label>
+                    <label className="block mb-2">
+                        Preferred Time:
+                        <input
+                            type="time"
+                            name="preferredTime"
+                            value={formData.preferredTime}
+                            onChange={handleChange}
+                            required
+                            className="w-full border rounded p-2"
+                        />
+                        {validationErrors.preferredTime && <p className="text-red-500">{validationErrors.preferredTime}</p>}
+                    </label>
+                    <label className="block mb-2">
+                        Service Location:
+                        <input
+                            type="text"
+                            name="serviceLocation"
+                            value={formData.serviceLocation}
+                            onChange={handleChange}
+                            required
+                            className="w-full border rounded p-2"
+                        />
+                        {validationErrors.serviceLocation && <p className="text-red-500">{validationErrors.serviceLocation}</p>}
+                    </label>
+                    <label className="block mb-2">
+                        Additional Notes:
+                        <textarea
+                            name="additionalNotes"
+                            value={formData.additionalNotes}
+                            onChange={handleChange}
+                            className="w-full border rounded p-2"
+                        />
+                    </label>
+                    <button type="submit" disabled={loading} className={`mt-4 w-full p-2 text-white ${loading ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'} rounded`}>
+                        {loading ? 'Submitting...' : 'Submit'}
+                    </button>
+                </form>
+                <Toaster richColors position='top-center' />
+                <button onClick={onClose} className="mt-4 text-blue-500">Close</button>
+            </div>
+        </div>
+    );
+};
+
+export default ServiceRequestModal;

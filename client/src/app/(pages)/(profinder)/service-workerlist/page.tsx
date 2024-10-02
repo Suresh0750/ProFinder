@@ -11,6 +11,7 @@ import {
   useListWorkerDataAPIQuery,
 } from "@/lib/features/api/customerApiSlice";
 import { WorkerDatails } from "@/types/workerTypes";
+import {useRouter} from 'next/navigation'
 
 const ServiceWorkerListPage = () => {
   // console.log(arr.slice((page-1)*8,(page*total)))
@@ -21,9 +22,13 @@ const ServiceWorkerListPage = () => {
   const [fillCategory,setFillterCategory] = useState<string>('All')
   const [allCategory, setAllCategory] = useState<WorkerDatails[]>([]);
   const [categoryName, setCategoryName] = useState<string[]>([]);
+
+  const Router = useRouter()
   // * API call fetch all verified worker
   const { data } = useListWorkerDataAPIQuery("");
   const { data: GetCategoryName } = useGetCategoryNameQuery("");
+
+
   const total = 8; // * showing the total card
 
   // * filter category wise
@@ -40,6 +45,13 @@ const ServiceWorkerListPage = () => {
       setFillterCategory(categoryName)
     }
   };
+
+
+  // * handleRedirect workerDetails page
+
+  const handleRedirectWorkerPage = (_id:string)=>{
+    Router.push(`/worker_details/${_id}`)
+  }
 
   useEffect(() => {
     setCategoryName(GetCategoryName?.result);
@@ -93,6 +105,7 @@ const ServiceWorkerListPage = () => {
               key={category}
               onClick={() => handleFilterCategory(category)}
               className="cursor-pointer py-2 px-4 bg-blue-50 rounded-full hover:bg-blue-100 text-gray-700 transition"
+              style={{'cursor':'pointer'}}
             >
               {category}
             </li>
@@ -107,8 +120,9 @@ const ServiceWorkerListPage = () => {
             ?.slice((page - 1) * total, page * total)
             .map((val, i) => (
               <div
-                className="card w-full flex flex-col border border-gray-200 shadow-lg hover:shadow-xl rounded-lg overflow-hidden"
+                className="card w-full cursor-pointer flex flex-col border border-gray-200 shadow-lg hover:shadow-xl rounded-lg overflow-hidden"
                 key={i}
+                onClick={()=>handleRedirectWorkerPage(val?._id)}
               >
                 <img
                   src={val?.Profile}
@@ -150,8 +164,7 @@ const ServiceWorkerListPage = () => {
         />
       </div>
 
-      {/* footer component */}
-      <Footer />
+     
     </div>
   );
 };

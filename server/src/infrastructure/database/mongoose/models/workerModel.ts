@@ -18,7 +18,11 @@ const workerSchema = new Schema<WorkerInformation>({
     Apt: { type: String, default: "" },
     Identity: { type: String, required: true },
     PostalCode: { type: String, required: true },  
-    WorkerImage: [{ type: String }], 
+    WorkerImage: [{
+        projectName: { type: String, required: true },
+        ProjectDescription: { type: String, required: true },
+        ProjectImage: { type: String, required: true }
+      }], 
     reviews: [{ type: String }], 
     isVerified : {type:Boolean, default:false},
     isWorker : {type:Boolean,default:false},

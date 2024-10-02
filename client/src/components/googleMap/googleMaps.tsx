@@ -160,7 +160,7 @@ const FindNearByWorkers = (coords: CoordsTypes, workerData: workerDetailsWithlat
           worker?.longitude
         );
         console.log("distance",distance)
-        alert(distance)
+        
         return distance <= maxDistance;
     });
 

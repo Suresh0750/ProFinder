@@ -1,10 +1,16 @@
 
 import { Router } from "express";
-import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController} from "../controllers/customerController";
+import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController, userRequestWorkerController} from "../controllers/customerController";
 import {authorizeRoles} from '../middlewares/authorizeRoles'
+import {customeVerify} from '../middlewares/JWTVerify/customerVerify'
 import upload from '../../../infrastructure/service/multer'
 
 const customerRouter = Router()
+
+// * router for Request 
+
+customerRouter.post('/userRequestWorker',authorizeRoles('customer'),userRequestWorkerController)
+
 
 customerRouter.post('/verifyOTP',CustomerOtpController)
 customerRouter.post('/resentOTP',ResentOTP)

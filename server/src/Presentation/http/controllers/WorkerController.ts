@@ -1,5 +1,5 @@
 import {Response,Request, NextFunction } from "express";
-import {WorkerUsecase,workerExist,getWorkerData} from "../../../app/useCases/worker/workerUsecases"
+import {WorkerUsecase,workerExist,getWorkerData,workerProjectUsecases, getWorkerProjectData, getSingleWorkerDetailsUsecases} from "../../../app/useCases/worker/workerUsecases"
 import {LoginVerify} from "../../../app/useCases/worker/loginVerifyWorker"
 import {isCheckWorkerEmail} from "../../../app/useCases/worker/forgetPass"
 import {IMulterFile} from "../../../domain/entities/s3entities"
@@ -8,7 +8,52 @@ import {PersonalInformation,WorkerInformation} from '../../../domain/entities/Wo
 import {Cookie,StatusCode} from '../../../domain/entities/commonTypes'
 import {hashPassword} from '../../../shared/utils/encrptionUtils'
 import {JwtService} from '../../../infrastructure/service/JwtService'
+import { getUserRequestDataUsecasuse } from "../../../app/useCases/utils/customerUtils";
 
+
+// * get worker Single worker Details
+
+export const getSingleWorkerDetails = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request getSingleWorkerDetails`)
+        console.log(req.params)
+        const requestData = await getUserRequestDataUsecasuse(req.params.workerid,req.params.userId)
+        const result = await getSingleWorkerDetailsUsecases(req.params.workerid)
+        
+        if(requestData) return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result,requestData})
+
+        return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->getSingleWorkerDetails\n ${error}`)
+        next(error)
+    }
+}
+
+// * Worker in Project side
+export const AddProjectDetails = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+      
+        const file: IMulterFile |any = req.file
+        const imageUrl = await uploadImage(file) 
+        req.body.ProjectImage = imageUrl
+        const result = await workerProjectUsecases(req.body)
+        return res.status(StatusCode.Success).json({success:true,message:'Project details has been successfully update'})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->AddProjectDetails\n ${error}`)
+        next(error)
+    }
+}
+export const getProjectDetails = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request reached getProjectDetails`)
+        console.log(req.params)
+        const result = await getWorkerProjectData(req.params.id)
+        return res.status(StatusCode.Success).json({success:true,message:'Worker Project Data has been Fetched',result})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->getProjectDetails\n ${error}`)
+        next(error)
+    }
+}
 
 export const PersonalInformationControll = async (req:Request,res:Response, next : NextFunction)=>{
     try{

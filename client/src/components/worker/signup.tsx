@@ -27,7 +27,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // * Eye icon fr
 import {signUPformSchema} from '../../lib/formSchema' // * form Schema
 import { useDispatch,useSelector } from "react-redux";
 import {updateSignup} from '../../lib/features/slices/workerSlice'
-
+import Link from 'next/link'
 
 
 export default function WorkerSignUp() {
@@ -275,7 +275,11 @@ export default function WorkerSignUp() {
               Upload Image
             </label>
             <h2 className='mt-[25px]'>
-              Already have an account? <span className='text-blue-500 cursor-pointer'>Sign In</span>
+              Already have an account? <span className='text-blue-500 cursor-pointer'>
+                <Link href={"/worker/login"}>
+                    Sign In
+                </Link>
+              </span>
             </h2>
           </div>
         </form>

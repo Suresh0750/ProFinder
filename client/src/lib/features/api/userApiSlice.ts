@@ -11,8 +11,9 @@ const baseQuery = fetchBaseQuery({
 })
 
 // * Function to get headers and pass the role via header in request
-const getHeaders = (role :string) => ({
+const getHeaders = (role: string) => ({
     'Role': role, 
+    'Content-Type': 'application/json'  // Specify Content-Type header
 });
 
 

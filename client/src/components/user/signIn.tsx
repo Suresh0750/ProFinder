@@ -72,7 +72,7 @@ export function LoginForm() {
         }, 3000)
       }
     } catch (error: any) {
-      toast.error(error.data.errorMessage || "An error occurred.")
+      toast.error(error?.data?.errorMessage || "An error occurred.")
     }
   }
 
@@ -147,8 +147,6 @@ export function LoginForm() {
             </Button>
             <h2 className="text-center text-gray-500 my-4">or</h2>
             <GoogleSignIn role="user" />
-            
-            
           </form>
         </Form>
         <h2 className="text-center mt-4">

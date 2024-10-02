@@ -9,19 +9,23 @@ console.log('back url',process.env.NEXT_NODE_SERVER_URL)
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3001',
     credentials: 'include',
-    prepareHeaders: (headers, { getState }) => {
-        headers.set('Content-Type', 'application/json');
-        return headers;
-    }
 });
+// prepareHeaders: (headers, { getState }) => {
+//     headers.set('Content-Type', 'application/json');
+//     return headers;
+// }
+
+
 
 
 // Function to get headers
-const getHeaders = (role :string) => ({
+const getHeaders = (role: string) => ({
     'Role': role, 
+    'Content-Type': 'application/json'  // Specify Content-Type header
 });
 
-export const customerApi = createApi({
+
+export const customerApi  = createApi({
     reducerPath : "CustomerOtp",
     baseQuery,
     endpoints :(builder)=>({
@@ -101,6 +105,14 @@ export const customerApi = createApi({
                 method : "POST",
                 headers : getHeaders('customer')
             })
+        }),
+        requestToWorker : builder.mutation({
+            query : (data)=> ({
+                url : `/customer/userRequestWorker`,
+                method : "POST",
+                body : data,
+                headers : getHeaders('customer')
+            })
         })
     })
 })
@@ -108,4 +120,15 @@ export const customerApi = createApi({
 // GoogleLogin
 
 
-export const {useCustomerOtpMutation,useCustomerResendMutation,useForgetPasswordMutation,useCustomerGoogleLoginMutation,useCustomerLogoutMutation,useCustomerGoogleVerificationMutation,useGetCategoryNameQuery,useListWorkerDataAPIQuery,useGetNearByworkerListMutation} = customerApi
+export const {
+    useCustomerOtpMutation,
+    useCustomerResendMutation,
+    useForgetPasswordMutation,
+    useCustomerGoogleLoginMutation,
+    useCustomerLogoutMutation,
+    useCustomerGoogleVerificationMutation,
+    useGetCategoryNameQuery,
+    useListWorkerDataAPIQuery,
+    useGetNearByworkerListMutation,
+    useRequestToWorkerMutation
+} = customerApi

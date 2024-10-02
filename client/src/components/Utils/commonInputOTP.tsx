@@ -56,7 +56,7 @@ export default function SetNewPass({role}:{role:string}) {
   // * ResendOTP
   const ResendOTPFunc = async()=>{
     try {
-      alert(customerID)
+  
       if(timer!=0) return
   
       const result = await CustomerResend({role,customerID}).unwrap()
@@ -92,7 +92,7 @@ export default function SetNewPass({role}:{role:string}) {
   // * form submit function
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
-      alert('hellow')
+ 
       event.preventDefault();
       const checkError =  HandlError(formData, error);  
       console.log(checkError,isLoading)

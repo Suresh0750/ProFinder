@@ -38,9 +38,7 @@ export async function middleware(req:NextRequest){
   }
 
 
-  console.log("workerVerifyToken\n",workerVerifyToken)
-  console.log("workerVerifyToken\n",userVerifyToken)
-  
+
   if(req.url==='/'){
     const loginUrl = new URL("/homePage",req.url)
     return NextResponse.redirect(loginUrl)
