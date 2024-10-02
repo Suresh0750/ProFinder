@@ -46,7 +46,7 @@ const googleSignIn = ({role}:{role:string}) => {
     <div className="p-4">
       <GoogleLogin
         onSuccess={credentialResponse => {
-          const credentialResponseDecoded = jwtDecode(credentialResponse.credential)
+          const credentialResponseDecoded = jwtDecode(credentialResponse?.credential)
           console.log(credentialResponseDecoded);
           handleLoginSuccess(credentialResponseDecoded)
         }}

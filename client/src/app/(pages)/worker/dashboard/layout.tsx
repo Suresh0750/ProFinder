@@ -30,6 +30,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <aside className="mt-2 h-[92.65vh] flex flex-col justify-start w-[20%] bg-gray-700 text-white shadow-lg">
           <ul className="flex flex-col items-start gap-6 w-full pt-6 text-lg font-bold pl-8">
             <li className="hover:bg-gray-600 w-full py-2 rounded-md cursor-pointer">
+              <Link href={'/worker/dashboard/workerdashboard'}>Dashboard</Link>
+            </li>
+            <li className="hover:bg-gray-600 w-full py-2 rounded-md cursor-pointer">
               <Link href={'/worker/dashboard/personalInfo'}>Personal Info</Link>
             </li>
             <li className="hover:bg-gray-600 w-full py-2 rounded-md cursor-pointer">

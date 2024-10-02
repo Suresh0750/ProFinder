@@ -1,0 +1,32 @@
+
+"use client"
+import {useState} from 'react'
+import ShowRequest from './ShowRequestToWorker'
+
+export const DashboardHeader = ()=>{
+
+    const customerData = JSON.parse(localStorage.getItem('customerData')|| '{_id:null}')
+    return(
+        <div className="bg-gray-800 text-white p-4 rounded-md text-center">
+            <h1 className="text-xl font-semibold">Welcome, {customerData?.customerName}</h1>
+        </div>
+    )
+}
+
+export const ViewRequest = ()=>{
+
+    const [isOpenRequstModal,setIsModalOpenRequestModal] = useState<boolean>(false)
+
+    return(
+        <div className="bg-white shadow-md p-6 rounded-md text-center">
+            <h2 className="text-gray-600 font-medium">New Service Requests</h2>
+            <button onClick={()=>setIsModalOpenRequestModal(true)} className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-md">
+            View Details
+            </button>
+            {
+                isOpenRequstModal &&   <ShowRequest onClose={()=>setIsModalOpenRequestModal(false)} />
+            }
+           
+        </div>
+    )
+}

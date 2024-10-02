@@ -105,6 +105,7 @@ const ServiceWorkerListPage = () => {
               key={category}
               onClick={() => handleFilterCategory(category)}
               className="cursor-pointer py-2 px-4 bg-blue-50 rounded-full hover:bg-blue-100 text-gray-700 transition"
+              style={{'cursor':'pointer'}}
             >
               {category}
             </li>

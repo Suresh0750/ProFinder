@@ -1,13 +1,15 @@
-// components/ServiceRequestModal.tsx
-
 'use client'; // This directive is necessary for client-side rendering
 
+import { useRequestToWorkerMutation } from '@/lib/features/api/customerApiSlice';
 import React, { useState } from 'react';
+import {toast,Toaster} from 'sonner'
 
-const ServiceRequestModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClose: () => void }> = ({ workerDetails, isOpen, onClose }) => {
     const [formData, setFormData] = useState({
-        service: '',
-        worker: '',
+        workerId: workerDetails?._id,
+        service: workerDetails?.Category,
+        worker: workerDetails?.FirstName,
+        user : '',
         preferredDate: '',
         preferredTime: '',
         serviceLocation: '',
@@ -15,37 +17,76 @@ const ServiceRequestModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [validationErrors, setValidationErrors] = useState<any>({});
+    const [requestToWorker,{isLoading}] = useRequestToWorkerMutation();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const validateForm = () => {
+        const errors: any = {};
+     
+        
+        if (!formData.preferredDate) {
+            errors.preferredDate = "Preferred date is required.";
+        } else if (new Date(formData.preferredDate) < new Date()) {
+            errors.preferredDate = "Preferred date cannot be in the past.";
+        }
+        
+        if (!formData.preferredTime) {
+            errors.preferredTime = "Preferred time is required.";
+        }
+        
+        if (!formData.serviceLocation) {
+            errors.serviceLocation = "Service location is required.";
+        }
+        if(!formData.additionalNotes){
+            errors.additionalNotes = "AdditionalNotes is required."
+        }
+
+        return errors;
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        
+        if(isLoading) return
+        // Validate form inputs
+        const errors = validateForm();
+        
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            setLoading(false);
+            return;
+        }
 
+        // Assuming customer data is stored in local storage
+        const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
+        
         try {
-            alert(JSON.stringify(formData))
-            // const response = await fetch('/api/service-request', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify(formData),
-            // });
+      
+            const result = await requestToWorker({ ...formData,user:customerData.customerName, userId: customerData._id,    service: workerDetails?.Category,
+                worker: workerDetails?.FirstName, workerId: workerDetails?._id}).unwrap();
 
-            // if (!response.ok) {
-            //     throw new Error('Failed to submit the form');
-            // }
-
-            // Handle successful submission if needed
+            if(result?.success){
+             
+                toast.success(result?.message)
+                onClose();
+            }
             console.log('Form submitted successfully');
-            onClose();
-        } catch (err) {
-            setError(err.message);
+        } catch (err:any) {
+            console.log(err)
+            setError(err?.data?.message);
+            toast.error(err?.data?.errorMessage)
+            setTimeout(()=>{
+                onClose();
+            },1000)
         } finally {
             setLoading(false);
+           
         }
     };
 
@@ -62,22 +103,24 @@ const ServiceRequestModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                         <input
                             type="text"
                             name="service"
-                            value={formData.service}
+                            value={workerDetails?.Category}
                             onChange={handleChange}
                             required
                             className="w-full border rounded p-2"
                         />
+                        {validationErrors.service && <p className="text-red-500">{validationErrors.service}</p>}
                     </label>
                     <label className="block mb-2">
                         Worker:
                         <input
                             type="text"
                             name="worker"
-                            value={formData.worker}
+                            value={workerDetails?.FirstName}
                             onChange={handleChange}
                             required
                             className="w-full border rounded p-2"
                         />
+                        {validationErrors.worker && <p className="text-red-500">{validationErrors.worker}</p>}
                     </label>
                     <label className="block mb-2">
                         Preferred Date:
@@ -87,8 +130,10 @@ const ServiceRequestModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                             value={formData.preferredDate}
                             onChange={handleChange}
                             required
+                            min={new Date().toISOString().split("T")[0]} // Set minimum date to today
                             className="w-full border rounded p-2"
                         />
+                        {validationErrors.preferredDate && <p className="text-red-500">{validationErrors.preferredDate}</p>}
                     </label>
                     <label className="block mb-2">
                         Preferred Time:
@@ -100,6 +145,7 @@ const ServiceRequestModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                             required
                             className="w-full border rounded p-2"
                         />
+                        {validationErrors.preferredTime && <p className="text-red-500">{validationErrors.preferredTime}</p>}
                     </label>
                     <label className="block mb-2">
                         Service Location:
@@ -111,6 +157,7 @@ const ServiceRequestModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                             required
                             className="w-full border rounded p-2"
                         />
+                        {validationErrors.serviceLocation && <p className="text-red-500">{validationErrors.serviceLocation}</p>}
                     </label>
                     <label className="block mb-2">
                         Additional Notes:
@@ -125,6 +172,7 @@ const ServiceRequestModal: React.FC<{ isOpen: boolean; onClose: () => void }> = 
                         {loading ? 'Submitting...' : 'Submit'}
                     </button>
                 </form>
+                <Toaster richColors position='top-center' />
                 <button onClick={onClose} className="mt-4 text-blue-500">Close</button>
             </div>
         </div>

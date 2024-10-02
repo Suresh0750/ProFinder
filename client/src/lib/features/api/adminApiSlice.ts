@@ -5,17 +5,15 @@ import { addCategoryType, AdminCredentials, EditCategoryType } from '../../../ty
 const baseQuery = fetchBaseQuery({
     baseUrl: `http://localhost:3001`,
     credentials: 'include',  
-    prepareHeaders: (headers, { getState }) => {
-        headers.set('Content-Type', 'application/json');
-        return headers;
-    }
+   
 });
 
 // * Function to get headers
-const getHeaders = (role:string) => ({
-    'Role': 'admin', 
-    'Content-Type': 'application/json'
+const getHeaders = (role: string) => ({
+    'Role': role, 
+    'Content-Type': 'application/json'  // Specify Content-Type header
 });
+
 
 export const adminApi = createApi({
     reducerPath: "adminApi",

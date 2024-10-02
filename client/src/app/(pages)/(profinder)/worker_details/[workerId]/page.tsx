@@ -18,7 +18,9 @@ const page = ({params}:{params:string})=>{
     const [workerDetails,setWorkerDetails] = useState([])
     const [isModalOpen,setIsModalOpen] = useState(false)
 
-    const {data} = useGetSingleWorkerDetailsQuery(params?.workerId)
+    const {_id} = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
+
+    const {data} = useGetSingleWorkerDetailsQuery(`${params?.workerId}/${_id}`)
 
     useEffect(()=>{
         setWorkerDetails(data?.result)
@@ -47,9 +49,16 @@ const page = ({params}:{params:string})=>{
                         <div className="flex items-center mt-2">
                             <span className="text-yellow-500 text-lg">★★★★★</span>
                         </div>
-                        <button onClick={()=>setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
-                            Add Request 
-                        </button>
+                        {
+                           data?.result?.requestData ? (<button onClick={()=>setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                           Add Request 
+                       </button>) : data?.result?.requestData?.isAccept ? (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                            Accept 
+                        </button>) : (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                            Pending 
+                        </button>)
+                        }
+                        
                         </div>
                 </div>
                 </div>
@@ -64,11 +73,13 @@ const page = ({params}:{params:string})=>{
                             </div>
                             <div>
                                 <p className="font-bold">Experience:</p>
-                                <p>{"worker.experience"}</p>
+                                {/* <p>{"worker.experience"}</p> */}
+                                <p>5</p>
                             </div>
                             <div>
                                 <p className="font-bold">Availability:</p>
-                                <p>{"worker.availability"}</p>
+                                {/* <p>{"worker.availability"}</p> */}
+                                <p>update...</p>
                             </div>
                         </div>
                     </div>
@@ -120,7 +131,9 @@ const page = ({params}:{params:string})=>{
             </div>  
         </div>
         </div>
-        <ServiceRequestModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+         <ServiceRequestModal workerDetails={workerDetails} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    
+        
         </div>
   )
 }

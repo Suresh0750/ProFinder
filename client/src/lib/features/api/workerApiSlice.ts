@@ -1,10 +1,8 @@
 
 
-import Login from "@/app/(pages)/admin/login/page"
 import { createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
 // import { register } from "module"
 import {FormValues} from "@/types/workerTypes"
-import ProfessionalInfo from "@/components/worker/professionalInfo"
 
 const baseQuery = fetchBaseQuery({
     baseUrl : `http://localhost:3001`,
@@ -12,8 +10,9 @@ const baseQuery = fetchBaseQuery({
 })
 
 // * Function to get headers and pass the role via header in request
-const getHeaders = (role :string) => ({
+const getHeaders = (role: string) => ({
     'Role': role, 
+    'Content-Type': 'application/json'  // Specify Content-Type header
 });
 
 
