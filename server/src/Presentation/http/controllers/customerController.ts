@@ -14,6 +14,20 @@ import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,
 
 
 
+// * paymetAPI
+
+export const paymetnAPIController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+
+        console.log(`Request reached paymetnAPIController`)
+        console.log(req.body)
+        
+    } catch (error) {
+        console.log(`Error from paymetnAPIController\n${error}`)
+        next(error)   
+    }
+}
+
 
 // * user Request to worker
 
