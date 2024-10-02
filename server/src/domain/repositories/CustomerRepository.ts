@@ -4,6 +4,7 @@
 import { User } from "../entities/User";
 import { WorkerInformation } from "../entities/Worker";
 import { getCategoryName } from "../entities/commonTypes";
+import { RequestData } from "../entities/customerTypes";
 
 
 export interface CustomerRepository {
@@ -13,4 +14,6 @@ export interface CustomerRepository {
     getVerifiedWorker() : Promise<WorkerInformation[]> 
     getCategoryName () :Promise<getCategoryName>
     getNearByWorkerListQuery (categoryName:string):Promise<WorkerInformation[]>
+    userRequestQuery(userRequestDetails:RequestData) : Promise<void>
+    checkExitstRequestQuery(userId:string,workerId:string) : Promise<RequestData| null>
 }

@@ -8,16 +8,20 @@ import {PersonalInformation,WorkerInformation} from '../../../domain/entities/Wo
 import {Cookie,StatusCode} from '../../../domain/entities/commonTypes'
 import {hashPassword} from '../../../shared/utils/encrptionUtils'
 import {JwtService} from '../../../infrastructure/service/JwtService'
+import { getUserRequestDataUsecasuse } from "../../../app/useCases/utils/customerUtils";
 
 
 // * get worker Single worker Details
 
 export const getSingleWorkerDetails = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(`Request entered into getSingleworkerDetails`)
+        console.log(`Request getSingleWorkerDetails`)
         console.log(req.params)
+        const requestData = await getUserRequestDataUsecasuse(req.params.workerid,req.params.userId)
         const result = await getSingleWorkerDetailsUsecases(req.params.workerid)
-        console.log(JSON.stringify(result))
+        
+        if(requestData) return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result,requestData})
+
         return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result})
     } catch (error) {
         console.log(`Error from presentation layer-> http->getSingleWorkerDetails\n ${error}`)

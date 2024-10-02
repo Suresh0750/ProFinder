@@ -10,9 +10,26 @@ import {userVerification,workerVerification,ForgetPassWordUseCase,customerResent
 import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
-import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils} from "../../../app/useCases/utils/customerUtils"
+import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,userRequestUsecases} from "../../../app/useCases/utils/customerUtils"
 
 
+
+
+// * user Request to worker
+
+
+export const userRequestWorkerController = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request reached useRequestWorkerController`)
+        console.log(req.body)
+        const result = await userRequestUsecases(req.body)
+        return res.status(StatusCode.Success).json({success:true,message:'Request has been sent'})
+        
+    } catch (error) {
+        console.log(`Error from useRequestWorkerController\n${error}`)
+        next(error)  
+    }
+}
 
 // * Get near by worker which around the customer
 
@@ -281,7 +298,7 @@ export const CustomerLogoutController =async (req:Request,res:Response,next:Next
             path : '/'
         });
       
-        res.status(200).json({success:true, message: 'Logged out successfully' });
+        return res.status(200).json({success:true, message: 'Logged out successfully' });
     } catch (error) {
         console.log(`Error from CustomerLogoutController\n${error}`)
         next(error)

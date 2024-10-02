@@ -50,3 +50,10 @@ export enum StatusCode {
 
 // * category name type
 export type getCategoryName = string[] | any
+
+
+// * error status code
+
+export interface CustomError extends Error {
+  statusCode?: number;
+}

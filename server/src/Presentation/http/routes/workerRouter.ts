@@ -8,7 +8,7 @@ const workerRouter = Router()
 
 
 // * get single worker Details
-workerRouter.get('/singleWorkerDetails:workerid',getSingleWorkerDetails) 
+workerRouter.get('/singleWorkerDetails:workerid/:userId',getSingleWorkerDetails) 
 
 // * Worker in worker Project upload 
 workerRouter.post("/uploadWorkerProject",upload.single('image'),AddProjectDetails)
