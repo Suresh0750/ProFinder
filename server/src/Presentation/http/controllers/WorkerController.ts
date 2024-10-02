@@ -16,10 +16,9 @@ import { getUserRequestDataUsecasuse } from "../../../app/useCases/utils/custome
 export const getSingleWorkerDetails = async (req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(`Request getSingleWorkerDetails`)
-        console.log(req.params)
-        const requestData = await getUserRequestDataUsecasuse(req.params.workerid,req.params.userId)
+        const requestData = await getUserRequestDataUsecasuse(req.params.userId,req.params.workerid)
         const result = await getSingleWorkerDetailsUsecases(req.params.workerid)
-        
+        console.log(requestData)
         if(requestData) return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result,requestData})
 
         return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result})
