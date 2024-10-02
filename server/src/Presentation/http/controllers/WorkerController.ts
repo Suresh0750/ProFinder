@@ -1,5 +1,4 @@
 import {Response,Request, NextFunction } from "express";
-import {WorkerUsecase,workerExist,getWorkerData,workerProjectUsecases, getWorkerProjectData, getSingleWorkerDetailsUsecases} from "../../../app/useCases/worker/workerUsecases"
 import {LoginVerify} from "../../../app/useCases/worker/loginVerifyWorker"
 import {isCheckWorkerEmail} from "../../../app/useCases/worker/forgetPass"
 import {IMulterFile} from "../../../domain/entities/s3entities"
@@ -9,6 +8,64 @@ import {Cookie,StatusCode} from '../../../domain/entities/commonTypes'
 import {hashPassword} from '../../../shared/utils/encrptionUtils'
 import {JwtService} from '../../../infrastructure/service/JwtService'
 import { getUserRequestDataUsecasuse } from "../../../app/useCases/utils/customerUtils";
+import {
+    WorkerUsecase,
+    workerExist,
+    getWorkerData,
+    workerProjectUsecases,
+    getWorkerProjectData, 
+    getSingleWorkerDetailsUsecases,
+    getRequestUsecases,
+    isAcceptUseCasess
+} from "../../../app/useCases/worker/workerUsecases"
+
+
+
+
+
+// * worker Request details 
+
+export const getAllRequestController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        console.log(`Request reached getAllRequestcontroller`);
+        console.log(req.params.workerId);
+        
+        const result = await getRequestUsecases(req.params.workerId);
+        
+        // Check if headers have already been sent
+        if (!res.headersSent) {
+            return res.status(StatusCode.Success).json({ 
+                success: true, 
+                message: 'Data has been successfully fetched', 
+                result 
+            });
+        }
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
+
+    } catch (error) {
+        console.log(`Error from presentation layer -> http -> getAllRequestController\n ${error}`);
+        // Ensure that you're not sending a response after calling next
+        // if (!res.headersSent) {
+        // }
+        next(error);
+    }
+};
+export const isAcceptWorkController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`request isAcceptWorkcontroller`)
+        console.log(req.params.update)
+       
+        console.log(req.body)
+        const result = await isAcceptUseCasess(req.params.update)
+        return res.status(StatusCode.Success).json({success:true,message:'successfully updated'})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->isAcceptWorkController\n ${error}`)
+        next(error)
+    }
+}
+
+
+
 
 
 // * get worker Single worker Details
@@ -17,9 +74,9 @@ export const getSingleWorkerDetails = async (req:Request,res:Response,next:NextF
     try {
         console.log(`Request getSingleWorkerDetails`)
         console.log(req.params)
-        const requestData = await getUserRequestDataUsecasuse(req.params.workerid,req.params.userId)
+        const requestData = await getUserRequestDataUsecasuse(req.params.userId,req.params.workerid)
         const result = await getSingleWorkerDetailsUsecases(req.params.workerid)
-        
+        console.log(requestData)
         if(requestData) return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result,requestData})
 
         return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result})

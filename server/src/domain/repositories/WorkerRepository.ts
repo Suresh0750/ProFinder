@@ -1,5 +1,5 @@
 
-import {PersonalInformation,ProjectDetails,WorkerInformation,getProjectData} from '../entities/Worker'
+import {PersonalInformation,ProjectDetails,WorkerInformation,getProjectData,workerRequest} from '../entities/Worker'
 
 export interface WorkerRepository{
     createWorker (workerData:PersonalInformation) : Promise<PersonalInformation | null>
@@ -13,4 +13,6 @@ export interface WorkerRepository{
     addWorkerProjectDetails(_id:string,ProjectDetails:ProjectDetails):Promise<void> // * worker add project Details
     getProjectDetailsQuery(_id:string): Promise<getProjectData | null>
     getSingleWorkerDetailsQuery(_id:string) : Promise<WorkerInformation | null>
+    getAllRequestQuery(workerId:string) : Promise<workerRequest[]> // fetch request of worker data
+    isAcceptWorkQuery(_id:string,isPayment:number):Promise<void>
 }
