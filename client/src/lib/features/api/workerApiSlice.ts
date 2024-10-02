@@ -76,6 +76,20 @@ export const workerApi = createApi({
                 url:`worker/singleWorkerDetails${data}`,
                 method:"GET",
             })
+        }),
+        getAllRequestData : builder.query({
+            query : (data:string)=>({
+                url : `/worker/getRequestData${data}`,
+                method : "GET",
+                headers : getHeaders('worker')
+            })
+        }),
+        AcceptWorkAPI : builder.mutation({
+            query : (data:{_id:string,isPayment:number})=>({
+                url : `/worker/isAcceptWork/${JSON.stringify(data)}`,
+                method: "PUT",
+                headers : getHeaders('worker')
+            })
         })
     })
 })
@@ -89,5 +103,7 @@ export const {
     useGetWorkerDetailsQuery,
     useWorkerUploadProjectMutation,
     useGetWorkerProjectQuery,
-    useGetSingleWorkerDetailsQuery
+    useGetSingleWorkerDetailsQuery,
+    useGetAllRequestDataQuery,
+    useAcceptWorkAPIMutation,
 } = workerApi

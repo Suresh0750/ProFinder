@@ -130,5 +130,5 @@ export const {
     useGetCategoryNameQuery,
     useListWorkerDataAPIQuery,
     useGetNearByworkerListMutation,
-    useRequestToWorkerMutation
+    useRequestToWorkerMutation,
 } = customerApi
