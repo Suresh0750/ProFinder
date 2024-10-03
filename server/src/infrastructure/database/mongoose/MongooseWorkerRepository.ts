@@ -1,8 +1,10 @@
 
 import {WorkerRepository} from '../../../domain/repositories/WorkerRepository'
 import {PersonalInformation, WorkerInformation,ProjectDetails} from '../../../domain/entities/Worker'
-import { WorkerModel } from './models/workerModel'
 
+// * model
+import { WorkerModel } from './models/workerModel'
+import {RequestModal} from './models/RequestModel'
 
 export const getWorkerRepository = ():WorkerRepository =>({
     createWorker: async(workerData:PersonalInformation)=>{
@@ -107,6 +109,23 @@ export const getWorkerRepository = ():WorkerRepository =>({
             return await WorkerModel.findById({_id})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->getSingleWorkerDetailsQuery->\n`,error)
+            throw error
+        }
+    },
+    // * Request of worker side
+    getAllRequestQuery : async(workerId:string)=>{
+        try {
+            return await RequestModal.find({workerId,isAccept:"Pending"})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getAllRequestQuery->\n`,error)
+            throw error
+        }
+    },
+    isAcceptWorkQuery : async(_id:string,isPayment:number)=>{
+        try {
+            await RequestModal.findByIdAndUpdate({_id},{$set:{isAccept:"Accepted",payment:isPayment}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->isAcceptWorkQuery->\n`,error)
             throw error
         }
     }

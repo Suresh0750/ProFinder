@@ -12,7 +12,7 @@ const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClo
         user : '',
         preferredDate: '',
         preferredTime: '',
-        serviceLocation: '',
+        servicelocation: '',
         additionalNotes: '',
     });
     const [loading, setLoading] = useState(false);
@@ -38,8 +38,8 @@ const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClo
             errors.preferredTime = "Preferred time is required.";
         }
         
-        if (!formData.serviceLocation) {
-            errors.serviceLocation = "Service location is required.";
+        if (!formData.servicelocation) {
+            errors.servicelocation = "Service location is required.";
         }
         if(!formData.additionalNotes){
             errors.additionalNotes = "AdditionalNotes is required."
@@ -67,7 +67,7 @@ const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClo
         const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
         
         try {
-      
+            alert(JSON.stringify(formData))
             const result = await requestToWorker({ ...formData,user:customerData.customerName, userId: customerData._id,    service: workerDetails?.Category,
                 worker: workerDetails?.FirstName, workerId: workerDetails?._id}).unwrap();
 
@@ -153,13 +153,13 @@ const ServiceRequestModal: React.FC<{ workerDetails: any; isOpen: boolean; onClo
                         Service Location:
                         <input
                             type="text"
-                            name="serviceLocation"
-                            value={formData.serviceLocation}
+                            name="servicelocation"
+                            value={formData.servicelocation}
                             onChange={handleChange}
                             required
                             className="w-full border rounded p-2"
                         />
-                        {validationErrors.serviceLocation && <p className="text-red-500">{validationErrors.serviceLocation}</p>}
+                        {validationErrors.servicelocation && <p className="text-red-500">{validationErrors.servicelocation}</p>}
                     </label>
                     <label className="block mb-2">
                         Additional Notes:

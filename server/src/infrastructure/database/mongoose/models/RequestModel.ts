@@ -13,9 +13,13 @@ const RequestSchema = new Schema({
     userId : String,
     workerId : String,
     isAccept : {
-        type:Boolean,
-        default: false
+        type:String,
+        default: "Pending"
     },
+    payment :{
+        type : Number,
+        default : 0
+    }
 },{ timestamps: true })
 
 

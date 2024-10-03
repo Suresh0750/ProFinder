@@ -14,9 +14,11 @@ declare module 'express-session' {
 export const customeVerify = (req: Request, res: Response, next: NextFunction) => {
     try {
         const verifyRole = req.headers['role'];
+        console.log(`verifyRole`,verifyRole)
         if (verifyRole === 'user') {
             UserJWT(req, res, next);
         } else if (verifyRole === 'worker') {
+            console.log(verifyRole)
             WorkerJWT(req, res, next);
         } else {
             return res.status(StatusCode.Unauthorized).json({ message: 'In JWT Invalid role specified' });
@@ -55,7 +57,7 @@ export const UserJWT = async (req: Request, res: Response, next: NextFunction) =
 export const WorkerJWT = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const workerAccessToken = req.cookies.accessToken;
-
+        console.log(`accesstoker\n ${workerAccessToken}`)
         if (!workerAccessToken) {
             // * Attempt to renew token if access token is not present
             if (await renewToken(req, res)) {
