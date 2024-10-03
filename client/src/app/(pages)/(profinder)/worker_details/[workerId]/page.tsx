@@ -25,6 +25,7 @@ const page = ({params}:{params:string})=>{
     useEffect(()=>{
         setWorkerDetails(data?.result)
         console.log(JSON.stringify(workerDetails))
+        alert(JSON.stringify(data?.requestData))
 
     },[data])
 
@@ -50,17 +51,34 @@ const page = ({params}:{params:string})=>{
                             <span className="text-yellow-500 text-lg">★★★★★</span>
                         </div>
                         {
-                           !data?.result?.requestData ? (<button onClick={()=>setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                           !data?.requestData ? (<button onClick={()=>setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
                            Add Request 
-                       </button>) : data?.result?.requestData?.isAccept ? (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                       </button>) : (data?.requestData?.isAccept=="Accepted") ? (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
                             Accept 
-                        </button>) : (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                        </button>) : (data?.requestData?.isAccept=="Pending") ? (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
                             Pending 
-                        </button>)
+                        </button>) : ((<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
+                            Cancelled 
+                        </button>))
                         }
                         
                         </div>
+                        <br />
+
                 </div>
+                <div>
+                            {
+                                data?.requestData?.isAccept === "Accepted" && (
+                                    <button className='p-2 bg-green-500 rounded'>Payment</button>
+                                )
+                            }
+                            &nbsp;
+                            {
+                                data?.requestData?.payment > 0 && (
+                                    <span>{data?.requestData?.payment}</span>
+                                )
+                            }
+                        </div>
                 </div>
                 {/* Overview Section */}
                 <div className="mb-8">

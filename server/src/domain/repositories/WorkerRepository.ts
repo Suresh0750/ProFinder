@@ -15,4 +15,5 @@ export interface WorkerRepository{
     getSingleWorkerDetailsQuery(_id:string) : Promise<WorkerInformation | null>
     getAllRequestQuery(workerId:string) : Promise<workerRequest[]> // fetch request of worker data
     isAcceptWorkQuery(_id:string,isPayment:number):Promise<void>
+    isRejectWorkQuery(_id:string) : Promise<void>
 }

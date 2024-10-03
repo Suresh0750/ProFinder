@@ -113,6 +113,14 @@ export const customerApi  = createApi({
                 body : data,
                 headers : getHeaders('customer')
             })
+        }),
+        payU_API :builder.mutation({
+            query : (data)=> ({
+                url : `/customer/paymetAPI`,
+                method : "POST",
+                body : data,
+                headers : getHeaders('customer')
+            })
         })
     })
 })
@@ -131,4 +139,5 @@ export const {
     useListWorkerDataAPIQuery,
     useGetNearByworkerListMutation,
     useRequestToWorkerMutation,
+    usePayU_APIMutation,
 } = customerApi

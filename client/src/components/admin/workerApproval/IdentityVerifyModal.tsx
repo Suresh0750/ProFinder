@@ -41,7 +41,7 @@ const IdentityModal = ({ isOpen, onClose, image, workerId,refetch}: { isOpen: bo
                 <span className="close" onClick={onClose}>&times;</span>
                 {imageUrl && <img src={imageUrl} alt="Dynamic" className="w-full h-auto rounded-md" />}
                 <div className="mt-4">
-                    <button onClick={() => handleApiCall(workerId)} className="px-4 py-2 bg-blue-500 text-white rounded-md">Make API Call</button>
+                    <button onClick={() => handleApiCall(workerId)} className="px-4 py-2 bg-blue-500 text-white rounded-md">Verify</button>
                     <button onClick={onClose} className="ml-4 px-4 py-2 bg-gray-400 text-white rounded-md">Cancel</button>
                 </div>
             </div>

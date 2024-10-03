@@ -30,6 +30,14 @@ export const isAcceptUseCasess = async(data:any)=>{
     }
 }
 
+export const isRejectUsecases = async (_id:string)=>{
+    try {
+        return await getWorkerRepository().isRejectWorkQuery(_id)
+    } catch (error) {
+        console.log(`Error from useCases->worker->isRejectUsecases\n`,error)
+        throw error
+    }
+}
 
 
 

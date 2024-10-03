@@ -90,6 +90,13 @@ export const workerApi = createApi({
                 method: "PUT",
                 headers : getHeaders('worker')
             })
+        }),
+        rejectWorkAPI : builder.mutation({
+            query : (data)=>({
+                url : `/worker/rejectWork/${data}`,
+                method: "PUT",
+                headers : getHeaders('worker')
+            })
         })
     })
 })
@@ -106,4 +113,5 @@ export const {
     useGetSingleWorkerDetailsQuery,
     useGetAllRequestDataQuery,
     useAcceptWorkAPIMutation,
+    useRejectWorkAPIMutation
 } = workerApi
