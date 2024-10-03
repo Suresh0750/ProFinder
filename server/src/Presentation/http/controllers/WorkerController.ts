@@ -16,7 +16,8 @@ import {
     getWorkerProjectData, 
     getSingleWorkerDetailsUsecases,
     getRequestUsecases,
-    isAcceptUseCasess
+    isAcceptUseCasess,
+    isRejectUsecases
 } from "../../../app/useCases/worker/workerUsecases"
 
 
@@ -60,6 +61,17 @@ export const isAcceptWorkController = async(req:Request,res:Response,next:NextFu
         return res.status(StatusCode.Success).json({success:true,message:'successfully updated'})
     } catch (error) {
         console.log(`Error from presentation layer-> http->isAcceptWorkController\n ${error}`)
+        next(error)
+    }
+}
+
+export const isRejectWorkController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`request isRejectWorkController`)
+        const result = await isRejectUsecases(req.params.id)
+        return res.status(StatusCode.Success).json({success:true,message:"Project has been cancelled"})
+    } catch (error) {
+        console.log(`Error from presentation layer-> http->isRejectWorkController\n ${error}`)
         next(error)
     }
 }

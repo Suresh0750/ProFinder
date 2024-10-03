@@ -128,5 +128,13 @@ export const getWorkerRepository = ():WorkerRepository =>({
             console.log(`Error from infrastructure->database->mongoose->isAcceptWorkQuery->\n`,error)
             throw error
         }
+    },
+    isRejectWorkQuery : async(_id:string)=>{
+        try {
+            await RequestModal.findByIdAndUpdate({_id},{$set:{isAccept:"Cancelled"}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->isRejectWorkQuery->\n`,error)
+            throw error
+        }
     }
 })

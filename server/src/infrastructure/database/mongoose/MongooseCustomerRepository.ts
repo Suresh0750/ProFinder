@@ -40,7 +40,7 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
     },
     getVerifiedWorker : async()=>{
         try {
-            return await WorkerModel.find({})  // * replace the query which only fetch verified worker for show the servie page
+            return await WorkerModel.find({isWorker:true})  // * replace the query which only fetch verified worker for show the servie page
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->getVerifiedWorker\n`,error)
             throw error
@@ -48,7 +48,7 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
     },
     getCategoryName : async()=>{
         try {
-            return await CategoryModel.distinct('categoryName')   // * show all category in worker signup page for select
+            return await CategoryModel.distinct('categoryName',{isListed:true})   // * show all category in worker signup page for select
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->getCategoryName\n`,error)
             throw error  
