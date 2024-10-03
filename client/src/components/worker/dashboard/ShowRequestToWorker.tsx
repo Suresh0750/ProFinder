@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetAllRequestDataQuery ,useAcceptWorkAPIMutation} from '@/lib/features/api/workerApiSlice';
+import { useGetAllRequestDataQuery ,useAcceptWorkAPIMutation,useRejectWorkAPIMutation} from '@/lib/features/api/workerApiSlice';
 import React, { useState,useEffect } from 'react';
 import {toast,Toaster} from 'sonner'
 
@@ -14,7 +14,8 @@ const FormComponent = ({ onClose }: { onClose: () => void; }) => {
 
     // * API call 
     const {data,refetch} = useGetAllRequestDataQuery(customerData?._id)
-    const [AcceptWorkAPI] = useAcceptWorkAPIMutation()
+    const [AcceptWorkAPI] = useAcceptWorkAPIMutation()   
+    const [rejectWorkAPI,{isLoading:preventRejectRequest}] = useRejectWorkAPIMutation()
 
     useEffect(()=>{
         setRequestData(data?.result)
@@ -29,6 +30,21 @@ const FormComponent = ({ onClose }: { onClose: () => void; }) => {
         }
     };
 
+    // * handle Cancel 
+    const handleCancle = async(_id:string)=>{
+        try{
+            alert(_id)
+            if(preventRejectRequest) return 
+            
+            const res = await rejectWorkAPI(_id).unwrap()
+            refetch()
+            if(res?.success){
+                toast.success(res.message)
+            }
+        }catch(error){
+            
+        }
+    }
 
     // * handle Accept
     const handleAccept = async (_id:string)=>{
@@ -120,6 +136,7 @@ const FormComponent = ({ onClose }: { onClose: () => void; }) => {
                                                 Accept
                                             </button>
                                             <button
+                                                onClick={()=>handleCancle(data?._id)}
                                                 className="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                                             >
                                                 Cancel

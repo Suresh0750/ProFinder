@@ -67,3 +67,7 @@ export type Point = {
         };
  
 
+export type IUser = {
+    FirstName :string,
+    
+}
