@@ -6,12 +6,9 @@ import { isUserProtectedRoute } from './routes/routes';
 import { cookies } from 'next/headers';
 
 export async function middleware(req:NextRequest){
-    console.log(`req reached middleware f`)
     const cookieStore = cookies();
     const pathname = req.nextUrl.pathname;
-    console.log(req.url)
     // console.log(pathname)
-    console.log(req.cookies)
   // Improved matcher for static assets
   if (pathname.startsWith("/_next/") || pathname.startsWith("/favicon.ico")) {
     return NextResponse.next();
@@ -21,11 +18,8 @@ export async function middleware(req:NextRequest){
   const userVerifyToken = await verifyToken("userToken",req)
 
   // * product admin router
-  console.log('pathname',pathname)
-  console.log(pathname.includes('/admin'))
   if(pathname.includes('/admin')){
     const adminVerifyToken = await AdminVerifyToken("adminToken",req)
-    console.log(adminVerifyToken)
   if (!adminVerifyToken && pathname!='/admin/login'){
       const loginUrl = new URL("/admin/login",req.url)
       return NextResponse.redirect(loginUrl)
@@ -39,7 +33,7 @@ export async function middleware(req:NextRequest){
 
 
 
-  if(req.url==='/'){
+  if(req.url=='/'){
     const loginUrl = new URL("/homePage",req.url)
     return NextResponse.redirect(loginUrl)
   }
@@ -54,7 +48,6 @@ export async function middleware(req:NextRequest){
     return NextResponse.redirect(loginUrl)
   }
 
-  console.log(workerVerifyToken)
 
     return NextResponse.next() 
 }
@@ -72,13 +65,11 @@ async function verifyToken(
   ){
     const token = req.cookies.get(workerToken);
     
-    console.log("token\n",token)
     if (!token?.value) {
       return false;
     }
   
     const secret = process.env.REFRESH_TOKEN_SECRET;
-    console.log("secret",secret)
     
     if (!secret) {
       console.log("JWT secret not found in env");
@@ -91,11 +82,6 @@ async function verifyToken(
         new TextEncoder().encode(secret)
       );
   
-      if (payload) {
-        console.log(payload);
-        
-      } else {
-      }
       return Boolean(payload);
     } catch (err: any) {
       console.log(`failed to verify ${workerToken}`, err.message);
@@ -107,7 +93,6 @@ async function verifyToken(
 async function AdminVerifyToken(AdminToken:string,req:NextRequest){
   const token = req.cookies.get(AdminToken);
     
-    console.log("admintoken\n",token)
     if (!token?.value) {
       return false;
     }

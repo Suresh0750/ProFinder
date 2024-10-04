@@ -5,6 +5,7 @@ import {PersonalInformation, WorkerInformation,ProjectDetails} from '../../../do
 // * model
 import { WorkerModel } from './models/workerModel'
 import {RequestModal} from './models/RequestModel'
+import {ResentActivityModal} from './models/RecentActivityModel'
 
 export const getWorkerRepository = ():WorkerRepository =>({
     createWorker: async(workerData:PersonalInformation)=>{
@@ -132,6 +133,14 @@ export const getWorkerRepository = ():WorkerRepository =>({
     isRejectWorkQuery : async(_id:string)=>{
         try {
             await RequestModal.findByIdAndUpdate({_id},{$set:{isAccept:"Cancelled"}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->isRejectWorkQuery->\n`,error)
+            throw error
+        }
+    },
+    IsActivityQuery : async(requestId:string,paymentId:string)=>{
+        try {
+            await ResentActivityModal.updateOne({requestId,paymentId})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->isRejectWorkQuery->\n`,error)
             throw error

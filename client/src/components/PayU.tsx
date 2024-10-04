@@ -7,45 +7,48 @@ import { generateTxnId } from "@/utils/generateTxnId";
 
 type props = {
   currUserData: IUser;
-  postId: string;
+  requestId: string;
+  payment : string
 };
 
-const PayUComponent = ({ currUserData, postId }: props) => {
+const PayUComponent = ({ currUserData, requestId ,payment}: props) => {
   const [hash, setHash] = useState(null);
 
-  const { firstName, lastName, email } = currUserData;
+
+  const { customerName, _id, customerEmail }:any = currUserData;
 
 
   // * API call
   const [payU_API] = usePayU_APIMutation()
 
-  console.log({ currUserData });
-
   const txnidRef = useRef(generateTxnId(8));
   const txnid = txnidRef.current;
-  const amount = parseFloat("1000").toFixed(2); // Ensure correct format
-  const productinfo = postId;
-  const firstname = firstName;
-  const lastname = lastName;
+  const amount = parseFloat(String(payment)).toFixed(2); // Ensure correct format
+  const productinfo = requestId;
+  const firstname = customerName;
+  const customerId = _id ;
   const key = PayU.merchantKey;
   const phone = "1234567890"; // Ensure this is a string
-  const surl = `${FRONTEND_DOMAIN}/api/paymentSuccess`;
+  const surl = `http://localhost:3000/api/paymentSuccess`;
   const furl = `${FRONTEND_DOMAIN}/api/paymentFailure`;
   const service_provider = "payu_paisa";
 
   useEffect(() => {
-    const data = { txnid, amount, productinfo, firstname, email, phone };
+    const data = { txnid, amount, productinfo, firstname, customerEmail, phone };
 
     (async function (data) {
       try {
-        const res = await PayUApiCalls.paymentReq(data);
+        // const res = await PayUApiCalls.paymentReq(data);
+        const res = await payU_API(data).unwrap();
         setHash(res.hash);
+        console.log(res)
+        alert(JSON.stringify(hash))
       } catch (error: any) {
         console.error("Payment Error: " + error.message);
         alert(error.message);
       }
     })(data);
-  }, [amount, email, firstname, productinfo, txnid]);
+  }, [amount, customerEmail, firstname, productinfo, txnid]);
 
   return (
     <form action="https://test.payu.in/_payment" method="post">
@@ -53,9 +56,9 @@ const PayUComponent = ({ currUserData, postId }: props) => {
       <input type="hidden" name="txnid" value={txnid} />
       <input type="hidden" name="productinfo" value={productinfo} />
       <input type="hidden" name="amount" value={amount} />
-      <input type="hidden" name="email" value={email} />
+      <input type="hidden" name="email" value={customerEmail} />
       <input type="hidden" name="firstname" value={firstname} />
-      <input type="hidden" name="lastname" value={lastname} />
+      <input type="hidden" name="_id" value={_id} />
       <input type="hidden" name="surl" value={surl} />
       <input type="hidden" name="furl" value={furl} />
       <input type="hidden" name="phone" value={phone} />

@@ -121,6 +121,14 @@ export const customerApi  = createApi({
                 body : data,
                 headers : getHeaders('customer')
             })
+        }),
+        savePaymentId : builder.mutation({
+            query : (data)=> ({
+                url : `/customer/savePaymentId`,
+                method : "POST",
+                body : data,
+                headers : getHeaders('customer')
+            })
         })
     })
 })
@@ -140,4 +148,5 @@ export const {
     useGetNearByworkerListMutation,
     useRequestToWorkerMutation,
     usePayU_APIMutation,
+    useSavePaymentIdMutation
 } = customerApi
