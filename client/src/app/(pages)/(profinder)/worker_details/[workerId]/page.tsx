@@ -5,6 +5,7 @@ import {useState,useEffect} from 'react'
 import {useGetSingleWorkerDetailsQuery} from '@/lib/features/api/workerApiSlice'
 import defaultImage from '../../../../../../public/images/worker/defaultImage.png'
 import ServiceRequestModal from '@/components/serviceModal'
+import PayUComponent from '@/components/PayU'
 
 
 interface CarouselProps {
@@ -20,12 +21,13 @@ const page = ({params}:{params:string})=>{
 
     const {_id} = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
 
+    const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
     const {data} = useGetSingleWorkerDetailsQuery(`${params?.workerId}/${_id}`)
 
     useEffect(()=>{
         setWorkerDetails(data?.result)
         console.log(JSON.stringify(workerDetails))
-        alert(JSON.stringify(data?.requestData))
+        // alert(JSON.stringify(data?.requestData))
 
     },[data])
 
@@ -69,12 +71,14 @@ const page = ({params}:{params:string})=>{
                 <div>
                             {
                                 data?.requestData?.isAccept === "Accepted" && (
-                                    <button className='p-2 bg-green-500 rounded'>Payment</button>
+                                    <PayUComponent currUserData={customerData} requestId = {data?.requestData?._id} payment={(data?.requestData?.payment) || '500'}/>
+                                    // <button className='p-2 bg-green-500 rounded'>Payment</button>
+                                    
                                 )
                             }
                             &nbsp;
                             {
-                                data?.requestData?.payment > 0 && (
+                               (data?.requestData?.isAccept === "Accepted")&& (data?.requestData?.payment > 0) && (
                                     <span>{data?.requestData?.payment}</span>
                                 )
                             }
