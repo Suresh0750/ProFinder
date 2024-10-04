@@ -22,12 +22,14 @@ const page = ({params}:{params:string})=>{
     const {_id} = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
 
     const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
-    const {data} = useGetSingleWorkerDetailsQuery(`${params?.workerId}/${_id}`)
+
+    const {data,refetch} = useGetSingleWorkerDetailsQuery(`${params?.workerId}/${_id}`)
+
 
     useEffect(()=>{
         setWorkerDetails(data?.result)
+        console.log(data)
         console.log(JSON.stringify(workerDetails))
-        // alert(JSON.stringify(data?.requestData))
 
     },[data])
 
@@ -153,7 +155,7 @@ const page = ({params}:{params:string})=>{
             </div>  
         </div>
         </div>
-         <ServiceRequestModal workerDetails={workerDetails} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+         <ServiceRequestModal workerDetails={workerDetails} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} refetch={()=>refetch()} />
     
         
         </div>
