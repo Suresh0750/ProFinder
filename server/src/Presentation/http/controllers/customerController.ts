@@ -11,6 +11,7 @@ import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
 import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,userRequestUsecases} from "../../../app/useCases/utils/customerUtils"
+import { payment,IsActivityUsecases } from "../../../app/services/PayU"
 
 
 
@@ -21,10 +22,25 @@ export const paymetnAPIController = async(req:Request,res:Response,next:NextFunc
 
         console.log(`Request reached paymetnAPIController`)
         console.log(req.body)
-        
+        const {hash}  = await payment(req.body)
+        console.log(hash)
+        return res.status(StatusCode.Success).json({success:true,hash})
+
     } catch (error) {
         console.log(`Error from paymetnAPIController\n${error}`)
         next(error)   
+    }
+}
+
+export const paymentIdController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`request reached paymentIdcontroller`)
+        console.log(req.body)
+        // const result = await IsActivityUsecases(req.body)
+        // return res.status(StatusCode.Success).json({success:true})
+    } catch (error) {
+        console.log(`Error from paymentIdController\n${error}`)
+        next(error)  
     }
 }
 

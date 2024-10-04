@@ -1,6 +1,6 @@
 
 import { Router } from "express";
-import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController, userRequestWorkerController, paymetnAPIController} from "../controllers/customerController";
+import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController, userRequestWorkerController, paymetnAPIController,paymentIdController} from "../controllers/customerController";
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 import {customeVerify} from '../middlewares/JWTVerify/customerVerify'
 import upload from '../../../infrastructure/service/multer'
@@ -9,7 +9,8 @@ const customerRouter = Router()
 
 // * payment gatway
 
-customerRouter.post("/paymetAPI", paymetnAPIController)
+customerRouter.post("/paymetAPI",authorizeRoles('customer'), paymetnAPIController)
+customerRouter.post("/savePaymentId",authorizeRoles('customer'),paymentIdController)
 
 // * router for Request 
 

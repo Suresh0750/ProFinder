@@ -16,4 +16,5 @@ export interface WorkerRepository{
     getAllRequestQuery(workerId:string) : Promise<workerRequest[]> // fetch request of worker data
     isAcceptWorkQuery(_id:string,isPayment:number):Promise<void>
     isRejectWorkQuery(_id:string) : Promise<void>
+    IsActivityQuery(requestId:string,paymentId:string) : Promise<void>
 }
