@@ -2,6 +2,7 @@
 
 import Login from "@/app/(pages)/admin/login/page"
 import { createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react"
+import {editeprofile} from '@/types/userTypes'
 // * import { register } from "module"
 
 console.log('back url',process.env.NEXT_NODE_SERVER_URL)
@@ -37,13 +38,37 @@ export const userApi = createApi({
         }),
         checkEmailForgetPass : builder.mutation({
             query : (data)=>({
-                url:`user/checkEmailForgetPass`,
+                url:`/user/checkEmailForgetPass`,
                 method : 'POST',
                 body : data
+            })
+        }),
+        Profile : builder.query({
+            query :(data)=>({
+                url : `/user/profile${data}`,
+                method: "GET",
+                headers : getHeaders("user")
+            })
+        }),
+        updateprofile : builder.mutation({
+            query :(data:editeprofile)=>({
+                url : `/user/updateprofile`,
+                method: "PUT",
+                body : data,
+                headers: {
+                    'Role' : 'user',
+                    // 'Content-Type': 'multipart/form-data', 
+                },
             })
         })
     })
 })
 
 
-export const {useSignUpMutation,useLoginMutation,useCheckEmailForgetPassMutation} = userApi
+export const {
+    useSignUpMutation,
+    useLoginMutation,
+    useCheckEmailForgetPassMutation,
+    useProfileQuery,
+    useUpdateprofileMutation,
+} = userApi
