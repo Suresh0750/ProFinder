@@ -8,7 +8,8 @@ const userSchema = new Schema({
     Address :{type : String,required :true},
     Password:{type : String,required:true},
     isVerified : {type:Boolean, default:false},
-    isBlock : {type:Boolean,default:false}
+    isBlock : {type:Boolean,default:false},
+    profile :{ type:String}
 },{ timestamps: true })
 
 const UserModel = mongoose.model<User & Document>('UserDatas',userSchema)

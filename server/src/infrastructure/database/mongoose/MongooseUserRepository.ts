@@ -1,6 +1,6 @@
 
 
-import { User,loginDetails } from "../../../domain/entities/User";
+import { User,loginDetails,editprofileTypes } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import {UserModel} from './models/UserModel'
 
@@ -68,6 +68,26 @@ export const getUserRepository = () : IUserRepository =>({
             return await UserModel.findById({_id:userId})
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->setNewPassWord\n`,error)
+            throw error
+        }
+    },
+    Profile : async(_id:string)=>{
+        try{
+            return await UserModel.findById({_id},{isVerified:0,createdAt:0,updatedAt:0,__v:0,isBlock:0})
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->setNewPassWord\n`,error)
+            throw error
+        }
+    },
+    updateprofile : async({EmailAddress,username,profile,PhoneNumber}:editprofileTypes)=>{
+        try {
+            if(profile){
+                await UserModel.updateOne({EmailAddress},{username,PhoneNumber,profile})
+            }else{
+                await UserModel.updateOne({EmailAddress},{username,PhoneNumber})
+            }
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->updateprofile\n`,error)
             throw error
         }
     }

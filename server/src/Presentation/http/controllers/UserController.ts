@@ -1,10 +1,42 @@
 import { Request,Response,NextFunction, json } from "express";
-import { createUser } from "../../../app/useCases/user/createUser";
+import { createUser,ProfileUsecases,EditprofileUsecases} from "../../../app/useCases/user/User";
 import {JwtService} from '../../../infrastructure/service/JwtService'
 import {LoginVerify} from "../../../app/useCases/user/loginVerifyUser"
 import {isCheckUserEmail} from '../../../app/useCases/user/forgetPass'
  
 import { StatusCode } from "../../../domain/entities/commonTypes";
+import { IMulterFile } from "../../../domain/entities/Admin";
+import { uploadImage } from "../../../app/useCases/utils/uploadImage";
+
+
+
+export const editprofile = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.body)
+        console.log(req.file)
+        const file: IMulterFile |any  = req.file
+        if(req.body.isImage){
+            const image = await uploadImage(file)
+            req.body.profile = image
+        }
+        await EditprofileUsecases(req.body)
+        return res.status(StatusCode.Success).json({success:true,message:'data successfully updated'})
+        
+    } catch (error) {
+        console.log(`Error from Presntation->controllers->editprofile \n${error}`)
+        next(error)
+    }
+}
+export const profile = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await ProfileUsecases(req.params.id)
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
+    } catch (error) {
+        console.log(`Error from Presntation->controllers->profile \n${error}`)
+        next(error)
+    }
+}
+
 
 export const userSignupController = async (req:Request,res:Response,next:NextFunction)=>{
     try {

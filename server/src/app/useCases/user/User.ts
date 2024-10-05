@@ -1,11 +1,39 @@
 import { StatusCode } from "../../../domain/entities/commonTypes";
-import { User } from "../../../domain/entities/User";
+import { User ,profileTypes} from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { getUserRepository } from "../../../infrastructure/database/mongoose/MongooseUserRepository";
 import { hashPassword } from "../../../shared/utils/encrptionUtils";
 import { OtpService } from "../../services/OtpService";
 import { OtpStoreData } from "../utils/OtpStoreData";
 
+
+
+export const EditprofileUsecases = async(data:profileTypes)=>{
+  try{
+      const {username,email,phone,profile} = data
+      const userData = {
+        username,
+        PhoneNumber:phone,
+        EmailAddress : email,
+        profile
+      }
+      
+      
+      return getUserRepository().updateprofile(userData)
+  }catch(error){
+    console.log(`error from usecase in editprofileUsecases`, error);
+    throw error;
+  }
+}
+
+export const ProfileUsecases = async (_id:string)=>{
+  try {
+    return getUserRepository().Profile(_id)
+  } catch (error) {
+    console.log(`error from usecase in ProfileUsecases`, error);
+    throw error;
+  }
+}
 
 export const createUser = async (userData: User) => {
   try {
