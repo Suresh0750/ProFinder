@@ -1,7 +1,7 @@
 
 
 
-import { User } from "../entities/User";
+import { User ,editprofileTypes} from "../entities/User";
 
 
 // * Repositories types
@@ -13,4 +13,6 @@ export interface IUserRepository{
     ischeckEmail(userEmail:string): Promise<string | undefined> ;
     setNewPassWord(customerId:string,newPass:string) :Promise<void> ;
     getDataFindById(userId:string) : Promise<User | null>
+    Profile(_id:string) : Promise<User | null>
+    updateprofile({username,PhoneNumber,EmailAddress,profile}:editprofileTypes) : Promise<void>
 }

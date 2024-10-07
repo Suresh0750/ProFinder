@@ -2,18 +2,23 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-
+import Homepage1 from '../../public/images/NewHomepage1.jpeg'
+import HomepageImage2 from '../../public/images/Homepage2.jpg'
+import HomepageImage3 from '../../public/images/Homepage3.jpg'
+import HomepageImage4 from '../../public/images/Homepage4.jpg'
 
 const SliderSection = () =>{
     const [currentSlide, setCurrentSlide] = useState(0);
     const slides = [
         {
-          src: 'https://source.unsplash.com/1600x900/?construction,work',
+          // src: 'https://source.unsplash.com/1600x900/?construction,work',
+          src: Homepage1,
           alt: 'Construction Image 1',
           text: 'Create Art of Transforming Future Lives Better',
         },
         {
-          src: 'https://source.unsplash.com/1600x900/?architecture,building',
+          // src: 'https://source.unsplash.com/1600x900/?architecture,building',
+          src:HomepageImage4,
           alt: 'Construction Image 2',
           text: 'Building the Future with Excellence',
         },
@@ -30,7 +35,7 @@ const SliderSection = () =>{
 
     return(
         <section className="relative z-0">
-        <div className="relative h-[500px] w-full">
+        <div className="relative h-[600px] w-full">
           {slides.map((slide, index) => (
             <div key={index} className={`  inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}>
               <Image src={slide.src} alt={slide.alt} layout="fill" objectFit="cover" />

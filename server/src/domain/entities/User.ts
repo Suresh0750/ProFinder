@@ -22,3 +22,20 @@ export interface loginDetails{
     EmailAddress : string,
     Password : string
 }
+
+
+export interface editprofileTypes{
+    username : string,
+    PhoneNumber:string,
+    EmailAddress : string,
+    profile?: string
+}
+
+export interface profileTypes{
+    username : string,
+    phone:string,
+    email : string,
+    profile? : string,
+    isImage : boolean
+    newImageData ?: string
+}
