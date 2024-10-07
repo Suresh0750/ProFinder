@@ -123,7 +123,7 @@ const Page = () => {
                  {/* <Link href={'/worker/dashboard/personalInfo'}> */}
                    Get Started
                  {/* </Link> */}
-               </button>) : role=='user' ? <><button className='bg-red-700 text-white text-1xl p-2 rounded' onClick={()=>setIsModalOpen((prev)=>!prev)}>Emergency</button> <button onClick={()=>setIsOpenMap((prev)=>!prev)}>Dashboard</button> <button onClick={handleLogout}>Logout</button></> :(<>
+               </button>) : role=='user' ? <><button className='bg-red-700 text-white text-1xl p-2 rounded' onClick={()=>setIsModalOpen((prev)=>!prev)}>Emergency</button> <button><Link href={"/user/profile"}>Dashboard</Link></button> <button onClick={handleLogout}>Logout</button></> :(<>
                 <Link href={"/worker/dashboard/workerdashboard"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
                 </>
                 )
