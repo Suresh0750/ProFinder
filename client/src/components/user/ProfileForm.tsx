@@ -1,50 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-// import { getUnreadMessagesCountAPI } from "@/app/services/allAPI";
 import { Badge } from "@mui/material";
-// import { io } from "socket.io-client";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-// const socket = io("http://localhost:4000");
-
 const Profile: React.FC<LayoutProps> = ({ children }) => {
   const [activePath, setActivePath] = useState<string>("profile");
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [profileImage,setProfileImage] = useState<string>('')
   const [unreadMessagesCount, setUnreadMessagesCount] = useState<number>(0);
 
-  // useEffect(() => {
-  //   const storedUserProfile = localStorage.getItem("user");
-
-  //   if (storedUserProfile) {
-  //     try {
-  //       const user = JSON.parse(storedUserProfile);
-  //       setUserProfile(user);
-  //     } catch (error) {
-  //       console.error("Error parsing user data from localStorage:", error);
-  //     }
-  //   }
-  // }, []);
-
-//   useEffect(() => {
-//     const fetchUnreadMessages = async () => {
-//       const response = await getUnreadMessagesCountAPI();
-//       socket.on("unreadCount", (response: any) => {
-//         console.log("Unread count received:", response);
-//         setUnreadMessagesCount(response.unreadCount);
-//       });  
-//     };
-
-//     fetchUnreadMessages();
-//   }, []);
-
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setActivePath(window.location.pathname);
-    }
+  const customerData = JSON.parse(localStorage.getItem('customerData') || '{}')
+  const userprofile = JSON.parse(localStorage.getItem('userprofile') || '{}')
+  setUserProfile(customerData)
+  setProfileImage(userprofile)
+
   }, []);
 
   const isActive = (path: string) => activePath === path;
@@ -58,16 +32,16 @@ const Profile: React.FC<LayoutProps> = ({ children }) => {
             <div className="w-16 h-16 rounded-full overflow-hidden">
               {userProfile && (
                 <Image
-                  src={userProfile.profileImage} // Use a default image if none found
+                  src={profileImage} // Use a default image if none found
                   alt="Profile"
                   width={64}
                   height={64}
-                  className="object-cover"
+                  className="object-cover h-[4.2em]"
                 />
               )}
             </div>
             <h2 className="text-xl font-semibold text-gray-800">
-              {userProfile ? userProfile.username : "Loading..."}
+              {userProfile ? userProfile.customerName : "Loading..."}
             </h2>
           </div>
           <div className="max-w-6xl mx-auto mt-4 border-b border-gray-200 ">
@@ -82,16 +56,7 @@ const Profile: React.FC<LayoutProps> = ({ children }) => {
               >
                 Manage account
               </Link>
-              <Link
-                href="/myTrips"
-                className={`rounded-lg block text-xl p-3 font-semibold ${
-                  isActive("/myTrips")
-                    ? "text-white bg-blue-700"
-                    : "hover:bg-gray-200"
-                }`}
-              >
-                Trips
-              </Link>
+            
               <Link
                 href="/chat"
                 className={`rounded-lg block text-xl p-3 font-semibold ${
