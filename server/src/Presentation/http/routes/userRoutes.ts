@@ -8,7 +8,8 @@ import {
     isCheckEmail,
     profile,
     editprofile,
-    conversation
+    conversation,
+    getConversation
 } from "../controllers/UserController";
 
 
@@ -33,5 +34,9 @@ userRouter.put('/updateprofile',upload.single('newImageData'),customeVerify,edit
 
 // * chats
 userRouter.post('/conversation',customeVerify,authorizeRoles('user'),conversation)
+userRouter.get('/conversation:id',customeVerify,authorizeRoles('user'),getConversation)
+// userRouter.route('/conversation').all(customeVerify, authorizeRoles('user')).get(getConversation).post(conversation);  
+
+
 
 export default userRouter

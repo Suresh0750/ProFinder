@@ -11,11 +11,22 @@ import {
     createUser,
     ProfileUsecases,
     EditprofileUsecases,
-    conversationUsecases
+    conversationUsecases,
+    getConversationUsecases
 } from "../../../app/useCases/user/User";
 
 // * user conversation
-
+export const getConversation = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await getConversationUsecases(req.params.id)
+        console.log('getConversation')
+        console.log(result)
+        return res.status(StatusCode.Success).json({success:true,message:'Data successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from Presntation->controllers->getConversation \n${error}`)
+        next(error)
+    }
+}
 export const conversation = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(req.body)

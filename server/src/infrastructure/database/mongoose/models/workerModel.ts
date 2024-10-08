@@ -30,6 +30,6 @@ const workerSchema = new Schema<WorkerInformation>({
 }, { timestamps: true });
 
 
-const WorkerModel = model<WorkerInformation & Document>('WorkerDetails', workerSchema);
+const WorkerModel = model<WorkerInformation & Document>('workerdetails', workerSchema);
 
 export { WorkerModel };

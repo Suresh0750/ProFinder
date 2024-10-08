@@ -1,6 +1,6 @@
+import {Types} from 'mongoose'
 
-
-import { User,loginDetails,editprofileTypes,conversationTypes } from "../../../domain/entities/User";
+import { User,loginDetails,editprofileTypes,conversationTypes,messageTypes } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 
 // * Model
@@ -38,11 +38,8 @@ export const getUserRepository = () : IUserRepository =>({
         }
     },
     loginVerifyQuery : async(userEmail:string)=>{
-        try { 
-            console.log(`req reached loginVerifyQuery`)
-            console.log(userEmail)      
+        try {   
             const userFetchDetails =  await UserModel.findOne({EmailAddress:userEmail})
-            console.log(userFetchDetails)
           return userFetchDetails
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->loginVerify\n`,error)
@@ -105,10 +102,48 @@ export const getUserRepository = () : IUserRepository =>({
     },
     fetchConversation: async(userId:string)=>{
         try {
-            return await ConversationModel.find({paricipants:{$in:[userId]}})
+            const res = await ConversationModel.find({ userId }, { __v: 0 })
+            .populate('workerId', 'FirstName Profile PhoneNumber') 
+            .lean();  // * Convert Mongoose documents to plain JavaScript objects
+          
+            return res
+            // db.conversationcollections.find({participants:{$in:['66ea91c78f03af0b8231af43']}})
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->fetcheConversation\n`,error)
             throw error
         }
+    },
+    checkConversation:async(userId:string)=>{
+        try {
+            return await ConversationModel.findById({userId})
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->checkConversation\n`,error)
+            throw error
+        }
+    },
+    updateConversation:async(data:conversationTypes)=>{
+        try{
+            await ConversationModel.updateOne({userId:data.userId},{$set:{data}})
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->updateConversation\n`,error)
+            throw error
+        }
+    },
+    findconversationId:async(userId:string)=>{
+        try{
+            return await ConversationModel.findById({userId},{_id:1})
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->updateConversation\n`,error)
+            throw error
+        }
+    },
+    createMessage : async(data:messageTypes)=>{
+        try {
+            
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->createMessage\n`,error)
+            throw error
+        }
     }
+
 })

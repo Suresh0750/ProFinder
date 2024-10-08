@@ -7,11 +7,28 @@ import { OtpService } from "../../services/OtpService";
 import { OtpStoreData } from "../utils/OtpStoreData";
 
 
-// * conversation
+// * user in chat side
+
+export const getConversationUsecases = async(id:string)=>{
+  try {
+    return await getUserRepository().fetchConversation(id)
+  } catch (error) {
+    console.log(`error from usecase in getConversationUsecases`, error);
+    throw error;
+  }
+}
+
 
 export const conversationUsecases = async(data:conversationTypes)=>{
   try {
-    return getUserRepository().conversationQuery(data)
+    const chcekExist :conversationTypes|null = await getUserRepository().checkConversation(String(data?.userId))
+    if(chcekExist){
+      await  getUserRepository().updateConversation(data)
+    }else{
+      await getUserRepository().conversationQuery(data)
+    }
+    const conversationId = await getUserRepository().findconversationId(String(data?.userId))
+    return 
   } catch (error) {
     console.log(`error from usecase in conversationUsecases`, error);
     throw error;
@@ -28,8 +45,6 @@ export const EditprofileUsecases = async(data:profileTypes)=>{
         EmailAddress : email,
         profile
       }
-      
-      
       return getUserRepository().updateprofile(userData)
   }catch(error){
     console.log(`error from usecase in editprofileUsecases`, error);

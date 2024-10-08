@@ -2,6 +2,8 @@
 
 // * using for mention the type 
 
+import { Types } from "mongoose"
+
 export interface User{
     _id? : string,
     username : string,
@@ -42,7 +44,18 @@ export interface profileTypes{
 // * conversation types
 
 export interface conversationTypes{
-    id?:string,
-    participants : string[],
-    lastMessage : string
+    userId: Types.ObjectId;
+    workerId: Types.ObjectId;
+    lastMessage?: string; 
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface messageTypes{
+    conversationId :Types.ObjectId,
+    sender:Types.ObjectId,
+    message:string,
+    isRead : boolean,
+    createdAt?: Date;
+    updatedAt?: Date;
 }
