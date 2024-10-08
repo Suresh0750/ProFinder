@@ -68,6 +68,13 @@ export const userApi = createApi({
                 body : data,
                 headers : getHeaders("user")
             })
+        }),
+        getAllconversation: builder.query({
+            query:(userId:string)=>({
+                url:`/user/conversation${userId}`,
+                method:'GET',
+                headers:getHeaders('user')
+            })
         })
     })
 })
@@ -79,5 +86,6 @@ export const {
     useCheckEmailForgetPassMutation,
     useProfileQuery,
     useUpdateprofileMutation,
-    useConversationMutation
+    useConversationMutation,
+    useGetAllconversationQuery
 } = userApi

@@ -1,8 +1,8 @@
 
 "use client"
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Search, Send } from 'lucide-react'
-import {useConversationMutation} from '../../lib/features/api/userApiSlice'
+import {useConversationMutation,useGetAllconversationQuery} from '../../lib/features/api/userApiSlice'
 
 interface Message {
   id: number
@@ -35,10 +35,22 @@ const messages: Message[] = [
 ]
 
 export default function Chats() {
+
+
   const [inputMessage, setInputMessage] = useState("")
   const [conversation] = useConversationMutation()
+  const [conversationsData,setConversations] = useState([])
 
   const {_id} = JSON.parse(localStorage.getItem('customerData') || '{}')
+
+  // * Fetch all conversation
+  const {data} = useGetAllconversationQuery(_id)
+  // alert(JSON.stringify(data))
+
+  useEffect(()=>{
+    alert(JSON.stringify(data))
+    setConversations(data?.result)
+  },[data])
 
   const handleSendMessage =async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,8 +58,9 @@ export default function Chats() {
       // Here you would typically send the message to your backend
       console.log("Sending message:", inputMessage)
       alert(_id)
+      alert(inputMessage)
       setInputMessage("")
-      const result = await conversation({lastMessage:inputMessage,participants:[_id,'66f05d64219621d790f6a4fb']})
+      const result = await conversation({lastMessage:inputMessage,userId:_id,workerId:'66f05d64219621d790f6a4fb'})
     }
   }
 
@@ -72,20 +85,20 @@ export default function Chats() {
           </div>
         </div>
         <div className="overflow-y-auto h-[calc(80vh-120px)]">
-          {conversations.map((conv) => (
-            <div key={conv.id} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer">
+          {conversationsData?.length>0 && conversationsData.map((conv) => (
+            <div key={conv._id} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer">
               <div className="relative">
-                <img src={conv.avatar} alt={conv.name} className="w-10 h-10 rounded-full" />
-                {conv.isOnline && (
+                <img src={conv?.workerId?.Profile} alt={conv?.workerId?.FirstName} className="w-10 h-10 rounded-full" />
+                {false && (
                   <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                 )}
               </div>
               <div className="ml-3 flex-1">
                 <div className="flex justify-between items-baseline">
-                  <h3 className="font-semibold text-sm">{conv.name}</h3>
-                  <span className="text-xs text-gray-500">{conv.timestamp}</span>
+                  <h3 className="font-semibold text-sm">{conv?.workerId?.FirstName}</h3>
+                  <span className="text-xs text-gray-500">{(conv?.updatedAt)?.split('T')[1]?.split('.')[0]}</span>
                 </div>
-                <p className="text-sm text-gray-600 truncate">{conv.lastMessage}</p>
+                <p className="text-sm text-gray-600 truncate">{conv?.lastMessage}</p>
               </div>
             </div>
           ))}
