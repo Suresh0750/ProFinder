@@ -60,6 +60,14 @@ export const userApi = createApi({
                     // 'Content-Type': 'multipart/form-data', 
                 },
             })
+        }),
+        conversation : builder.mutation({
+            query :(data)=>({
+                url:`/user/conversation`,
+                method : 'POST',
+                body : data,
+                headers : getHeaders("user")
+            })
         })
     })
 })
@@ -71,4 +79,5 @@ export const {
     useCheckEmailForgetPassMutation,
     useProfileQuery,
     useUpdateprofileMutation,
+    useConversationMutation
 } = userApi
