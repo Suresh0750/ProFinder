@@ -1,172 +1,186 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import MechImage from "../../../../../public/images/Admin/category/mechanic.jpg";
-import { AiTwotoneEnvironment } from "react-icons/ai";
-import { MdSearch } from "react-icons/md"; // Importing search icon
-import Image from "next/image";
-import { Pagination } from "@mui/material";
-import Footer from "@/components/Footer";
+"use client"
+
+import React, { useState, useEffect } from "react"
+import { AiTwotoneEnvironment } from "react-icons/ai"
+import { MdSearch } from "react-icons/md"
+import Image from "next/image"
+import { Pagination } from "@mui/material"
+import Footer from "@/components/Footer"
 import {
   useGetCategoryNameQuery,
   useListWorkerDataAPIQuery,
-} from "@/lib/features/api/customerApiSlice";
-import { WorkerDatails } from "@/types/workerTypes";
-import {useRouter} from 'next/navigation'
+} from "@/lib/features/api/customerApiSlice"
+import { WorkerDatails } from "@/types/workerTypes"
+import { useRouter } from "next/navigation"
+import { useLoadScript, Autocomplete } from "@react-google-maps/api"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import Checkbox from '@/components/ui/checkbox'
+import { Label } from "@/components/ui/label"
 
-const ServiceWorkerListPage = () => {
-  // console.log(arr.slice((page-1)*8,(page*total)))
+const libraries = ["places"]
 
-  const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showCategory, setShowCategory] = useState<WorkerDatails[]>([]);
-  const [fillCategory,setFillterCategory] = useState<string>('All')
-  const [allCategory, setAllCategory] = useState<WorkerDatails[]>([]);
-  const [categoryName, setCategoryName] = useState<string[]>([]);
+export default function ServiceWorkerListPage() {
+  const [page, setPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [showCategory, setShowCategory] = useState<WorkerDatails[]>([])
+  const [filterCategory, setFilterCategory] = useState<string>("All")
+  const [allCategory, setAllCategory] = useState<WorkerDatails[]>([])
+  const [categoryName, setCategoryName] = useState<string[]>([])
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null)
 
   const Router = useRouter()
-  // * API call fetch all verified worker
-  const { data } = useListWorkerDataAPIQuery("");
-  const { data: GetCategoryName } = useGetCategoryNameQuery("");
+  const { data } = useListWorkerDataAPIQuery("")
+  const { data: GetCategoryName } = useGetCategoryNameQuery("")
 
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    libraries: libraries as any,
+  })
 
-  const total = 8; // * showing the total card
-
-  // * filter category wise
+  const total = 8
 
   const handleFilterCategory = (categoryName: string) => {
-    if (categoryName == "All") {
-      setShowCategory(allCategory);
-      setFillterCategory('All')
+    if (categoryName === "All") {
+      setShowCategory(allCategory)
+      setFilterCategory("All")
     } else {
-      let filterCategory = allCategory.filter(
-        (val) => val?.Category == categoryName
-      );
-      setShowCategory(filterCategory);
-      setFillterCategory(categoryName)
+      let filterCategory = allCategory.filter((val) => val?.Category === categoryName)
+      setShowCategory(filterCategory)
+      setFilterCategory(categoryName)
     }
-  };
+  }
 
-
-  // * handleRedirect workerDetails page
-
-  const handleRedirectWorkerPage = (_id:string)=>{
+  const handleRedirectWorkerPage = (_id: string) => {
     Router.push(`/worker_details/${_id}`)
   }
 
   useEffect(() => {
-    setCategoryName(GetCategoryName?.result);
-  }, [GetCategoryName]);
+    setCategoryName(GetCategoryName?.result)
+  }, [GetCategoryName])
 
   useEffect(() => {
-    setAllCategory(data?.result);
-    setShowCategory(data?.result);
-  }, [data]);
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    setPage(value); // Update the page number with the selected page
-  };
+    setAllCategory(data?.result)
+    setShowCategory(data?.result)
+  }, [data])
 
-  // * handle serch function
+  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value)
+  }
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value); // Update the search term
-    console.log(event.target.value)
-    let {value} = event.target
-    let result ;
-    if(fillCategory=="All"){
-        result = allCategory.filter((val)=>((val?.FirstName).toLocaleLowerCase()).includes((value).toLocaleLowerCase()))
-        setShowCategory(result)
-    }else{
-        result = allCategory.filter((val)=>val?.Category==fillCategory && ((val?.FirstName).toLocaleLowerCase()).includes((value).toLocaleLowerCase()))
-        setShowCategory(result)
+    setSearchTerm(event.target.value)
+    let { value } = event.target
+    let result
+    if (filterCategory === "All") {
+      result = allCategory.filter((val) =>
+        val?.FirstName.toLowerCase().includes(value.toLowerCase())
+      )
+      setShowCategory(result)
+    } else {
+      result = allCategory.filter(
+        (val) =>
+          val?.Category === filterCategory && val?.FirstName.toLowerCase().includes(value.toLowerCase())
+      )
+      setShowCategory(result)
     }
-  };
+  }
+
+  const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
+    setAutocomplete(autocomplete)
+  }
+
+  const onPlaceChanged = () => {
+    if (autocomplete !== null) {
+      const place = autocomplete.getPlace()
+      setSearchTerm(place.formatted_address || "")
+      // You can use place.geometry.location.lat() and place.geometry.location.lng() for coordinates
+    }
+  }
+
+  if (!isLoaded) return <div>Loading...</div>
 
   return (
-    <div className="mt-[75px]">
-      <div className="flex items-center w-[20em] border border-solid border-gray-400 rounded p-1 ml-8 mt-[4em] my-2">
-        <MdSearch className="text-gray-600 mr-2 mx-2" />
-        <input
-          type="search"
-          placeholder="Search by state or city"
-          className="outline-none p-1"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-      </div>
-
-      {/* filter head category wise */}
-
-      <ul className="flex justify-between space-x-4 bg-gray-100 p-3 rounded-lg shadow-md">
-        {categoryName &&
-          ["All", ...categoryName].map((category) => (
-            <li
-              key={category}
-              onClick={() => handleFilterCategory(category)}
-              className="cursor-pointer py-2 px-4 bg-blue-50 rounded-full hover:bg-blue-100 text-gray-700 transition"
-              style={{'cursor':'pointer'}}
-            >
-              {category}
-            </li>
-          ))}
-      </ul>
-
-      {/* container for show all worker */}
-
-      <div className="container px-0 m-7 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {showCategory &&
-          showCategory
-            ?.slice((page - 1) * total, page * total)
-            .map((val, i) => (
-              <div
-                className="card w-full cursor-pointer flex flex-col border border-gray-200 shadow-lg hover:shadow-xl rounded-lg overflow-hidden"
-                key={i}
-                onClick={()=>handleRedirectWorkerPage(val?._id)}
-              >
-                <img
-                  src={val?.Profile}
-                  width={500}
-                  height={256}
-                  className=" object-fill"
-                  alt="Mechanic"
-                />
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    {val?.FirstName}
-                  </h2>
-                  <h2 className="text-sm text-gray-600">Reviews</h2>
-                  <span className="flex items-center text-gray-500 mt-2">
-                    <AiTwotoneEnvironment className="mr-1" />
-                    {/* Kakkanad, Kochi, Kerala */}
-                    {val?.StreetAddress}
-                  </span>
-                  <button className="mt-4 bg-orange-500 text-white p-2 rounded m-1 PX-3 hover:bg-orange-600">
-                    {/* Mechanic */}
-                    {val?.Category}
-                  </button>
-                  <button className="mt-2 bg-gray-900 text-white p-2 rounded m-1 PX-3 hover:bg-gray-700">
-                    Read More
-                  </button>
-                </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row gap-8 mt-10">
+        <aside className="w-full md:w-1/4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Categories</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {["All", ...(categoryName || [])].map((category) => (
+                  <div key={category} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={category}
+                      checked={filterCategory === category}
+                      onCheckedChange={() => handleFilterCategory(category)}
+                    />
+                    <Label htmlFor={category}>{category}</Label>
+                  </div>
+                ))}
               </div>
-            ))}
+            </CardContent>
+          </Card>
+        </aside>
+        <main className="w-full md:w-3/4">
+          <Card className="mb-6">
+            <CardContent className="p-4">
+              <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+                <div className="flex items-center space-x-2">
+                  <MdSearch className="text-gray-600" />
+                  <Input
+                    type="search"
+                    placeholder="Search by location"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="flex-grow"
+                  />
+                </div>
+              </Autocomplete>
+            </CardContent>
+          </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {showCategory &&
+              showCategory.slice((page - 1) * total, page * total).map((val, i) => (
+                <Card key={i} className="cursor-pointer hover:shadow-lg transition-shadow duration-200">
+                  <CardContent className="p-0">
+                    <img
+                      src={val?.Profile || "/placeholder.png"}
+                      width={500}
+                      height={256}
+                      alt={val?.FirstName || "Worker"}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-4">
+                      <h2 className="text-xl font-semibold text-gray-900">{val?.FirstName}</h2>
+                      <p className="text-sm text-gray-600">Reviews</p>
+                      <div className="flex items-center text-gray-500 mt-2">
+                        <AiTwotoneEnvironment className="mr-1" />
+                        <span>{val?.StreetAddress}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between p-4">
+                    <Button variant="secondary">{val?.Category}</Button>
+                    <Button onClick={() => handleRedirectWorkerPage(val?._id || '')}>Read More</Button>
+                  </CardFooter>
+                </Card>
+              ))}
+          </div>
+          <div className="flex justify-center mt-8">
+            <Pagination
+              count={Math.ceil((showCategory?.length || 0) / total)}
+              page={page}
+              onChange={handleChangePage}
+              variant="outlined"
+              color="primary"
+            />
+          </div>
+        </main>
       </div>
-
-      {/* Pagination for show all Worker */}
-      <div className="flex justify-center mb-4">
-        <Pagination
-          count={Math.ceil(showCategory?.length / 8)} // Total number of pages
-          page={page} // Current page number
-          onChange={handleChangePage} // Handle page change
-          variant="outlined"
-          color="primary"
-        />
-      </div>
-
-     
     </div>
-  );
-};
-
-export default ServiceWorkerListPage;
+  )
+}
