@@ -1,15 +1,35 @@
 import { Request,Response,NextFunction, json } from "express";
-import { createUser,ProfileUsecases,EditprofileUsecases} from "../../../app/useCases/user/User";
 import {JwtService} from '../../../infrastructure/service/JwtService'
 import {LoginVerify} from "../../../app/useCases/user/loginVerifyUser"
 import {isCheckUserEmail} from '../../../app/useCases/user/forgetPass'
- 
+
 import { StatusCode } from "../../../domain/entities/commonTypes";
 import { IMulterFile } from "../../../domain/entities/Admin";
 import { uploadImage } from "../../../app/useCases/utils/uploadImage";
 
+import {
+    createUser,
+    ProfileUsecases,
+    EditprofileUsecases,
+    conversationUsecases
+} from "../../../app/useCases/user/User";
+
+// * user conversation
+
+export const conversation = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.body)
+        const result = await conversationUsecases(req.body)
+        return res.status(StatusCode.Success).json({success:true,message:'successfully updated'})
+    } catch (error) {
+        console.log(`Error from Presntation->controllers->conversation \n${error}`)
+        next(error)
+    }
+}
 
 
+
+// * profile
 export const editprofile = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(req.body)

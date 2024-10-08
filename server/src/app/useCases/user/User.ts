@@ -1,5 +1,5 @@
 import { StatusCode } from "../../../domain/entities/commonTypes";
-import { User ,profileTypes} from "../../../domain/entities/User";
+import { User ,profileTypes,conversationTypes} from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { getUserRepository } from "../../../infrastructure/database/mongoose/MongooseUserRepository";
 import { hashPassword } from "../../../shared/utils/encrptionUtils";
@@ -7,7 +7,18 @@ import { OtpService } from "../../services/OtpService";
 import { OtpStoreData } from "../utils/OtpStoreData";
 
 
+// * conversation
 
+export const conversationUsecases = async(data:conversationTypes)=>{
+  try {
+    return getUserRepository().conversationQuery(data)
+  } catch (error) {
+    console.log(`error from usecase in conversationUsecases`, error);
+    throw error;
+  }
+}
+
+// * profile side
 export const EditprofileUsecases = async(data:profileTypes)=>{
   try{
       const {username,email,phone,profile} = data

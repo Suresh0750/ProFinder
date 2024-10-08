@@ -2,8 +2,6 @@
 
 // * using for mention the type 
 
-
-  
 export interface User{
     _id? : string,
     username : string,
@@ -38,4 +36,13 @@ export interface profileTypes{
     profile? : string,
     isImage : boolean
     newImageData ?: string
+}
+
+
+// * conversation types
+
+export interface conversationTypes{
+    id?:string,
+    participants : string[],
+    lastMessage : string
 }

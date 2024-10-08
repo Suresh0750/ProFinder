@@ -1,7 +1,7 @@
 
 
 
-import { User ,editprofileTypes} from "../entities/User";
+import { User ,editprofileTypes,conversationTypes} from "../entities/User";
 
 
 // * Repositories types
@@ -15,4 +15,6 @@ export interface IUserRepository{
     getDataFindById(userId:string) : Promise<User | null>
     Profile(_id:string) : Promise<User | null>
     updateprofile({username,PhoneNumber,EmailAddress,profile}:editprofileTypes) : Promise<void>
+    conversationQuery(data:conversationTypes):Promise<void>
+    fetchConversation(userId:string):Promise<conversationTypes>
 }

@@ -1,8 +1,11 @@
 
 
-import { User,loginDetails,editprofileTypes } from "../../../domain/entities/User";
+import { User,loginDetails,editprofileTypes,conversationTypes } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+
+// * Model
 import {UserModel} from './models/UserModel'
+import {ConversationModel} from './models/ConversationModel'
 
 
 export const getUserRepository = () : IUserRepository =>({
@@ -88,6 +91,23 @@ export const getUserRepository = () : IUserRepository =>({
             }
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->updateprofile\n`,error)
+            throw error
+        }
+    },
+    conversationQuery : async(data:conversationTypes)=>{
+        try {
+            console.log(data)
+            await new ConversationModel(data).save()
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->conversationQuery\n`,error)
+            throw error
+        }
+    },
+    fetchConversation: async(userId:string)=>{
+        try {
+            return await ConversationModel.find({paricipants:{$in:[userId]}})
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->fetcheConversation\n`,error)
             throw error
         }
     }
