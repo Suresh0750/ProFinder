@@ -62,10 +62,9 @@ export const customerApi  = createApi({
             })
         }),
         CustomerLogout : builder.mutation({
-            query : (data )=>({
+            query : ()=>({
                 url : `/customer/cutomerLogout`,
                 method : "POST",
-                body :data,
                 headers : getHeaders('customer')
             })
         }),

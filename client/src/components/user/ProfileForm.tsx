@@ -1,107 +1,89 @@
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Badge } from "@mui/material";
+'use client'
+
+import React, { useState, useEffect } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { MessageCircle, Wallet, LogOut } from "lucide-react"
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const Profile: React.FC<LayoutProps> = ({ children }) => {
-  const [activePath, setActivePath] = useState<string>("profile");
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [profileImage,setProfileImage] = useState<string>('')
-  const [unreadMessagesCount, setUnreadMessagesCount] = useState<number>(0);
+  const [activePath, setActivePath] = useState<string>("profile")
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [profileImage, setProfileImage] = useState<string>('')
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState<number>(3)
 
   useEffect(() => {
-  const customerData = JSON.parse(localStorage.getItem('customerData') || '{}')
-  const userprofile = JSON.parse(localStorage.getItem('userprofile') || '{}')
-  setUserProfile(customerData)
-  setProfileImage(userprofile)
+    const customerData = JSON.parse(localStorage.getItem('customerData') || '{}')
+    const userprofile = JSON.parse(localStorage.getItem('userprofile') || '{}')
+    setUserProfile(customerData)
+    setProfileImage(userprofile)
+  }, [])
 
-  }, []);
-
-  const isActive = (path: string) => activePath === path;
+  const isActive = (path: string) => activePath === path
 
   return (
-    <>
-      <div className="min-h-screen bg-gray-50 pt-16">
-        {/* Profile Header */}
-        <div className="bg-gray-200 py-6 px-4">
-          <div className="max-w-4xl mx-auto flex items-center space-x-6">
-            <div className="w-16 h-16 rounded-full overflow-hidden">
-              {userProfile && (
-                <Image
-                  src={profileImage} // Use a default image if none found
-                  alt="Profile"
-                  width={64}
-                  height={64}
-                  className="object-cover h-[4.2em]"
-                />
-              )}
+    <div className="min-h-screen bg-gray-100 pt-16">
+      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="p-6">
+          <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+            <div className="w-24 h-24 rounded-full overflow-hidden">
+              <Image
+                src={profileImage || "/placeholder.svg?height=96&width=96"}
+                alt="Profile"
+                width={96}
+                height={96}
+                className="object-cover h-full"
+              />
             </div>
-            <h2 className="text-xl font-semibold text-gray-800">
-              {userProfile ? userProfile.customerName : "Loading..."}
-            </h2>
+            <div className="text-center md:text-left">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {userProfile ? userProfile.customerName : "Loading..."}
+              </h2>
+              <p className="text-gray-500">{userProfile?.email}</p>
+            </div>
           </div>
-          <div className="max-w-6xl mx-auto mt-4 border-b border-gray-200 ">
-            <nav className="flex justify-center space-x-6">
-              <Link
-                href="/profile"
-                className={`rounded-lg block text-xl p-3 font-semibold ${
-                  isActive("/profile")
-                    ? "text-white bg-blue-700"
-                    : "hover:bg-gray-200"
-                }`}
-              >
-                Manage account
-              </Link>
-            
-              <Link
-                href="/chat"
-                className={`rounded-lg block text-xl p-3 font-semibold ${
-                  isActive("/chat")
-                    ? "text-white bg-blue-700"
-                    : "hover:bg-gray-200"
-                }`}
-              >
-                <Badge
-                  badgeContent={unreadMessagesCount}
-                  color="secondary"
-                  overlap="circular"
-                >
-                  Message
-                </Badge>
-              </Link>
-              <Link
-                href="/wallet"
-                className={`rounded-lg block text-xl p-3 font-semibold ${
-                  isActive("/wallet")
-                    ? "text-white bg-blue-700"
-                    : "hover:bg-gray-200"
-                }`}
-              >
-                wallet
-              </Link>
-              <Link
-                href="#"
-                className={`rounded-lg block text-xl p-3 font-semibold ${
-                  isActive("#") ? "text-white bg-blue-700" : "hover:bg-gray-200"
-                }`}
-              >
-                Sign out
-              </Link>
-            </nav>
-          </div>
-        </div>
 
-        {/* Page Content */}
-        <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-          {children}
+          <nav className="mt-6">
+            <ul className="flex flex-wrap justify-center md:justify-start gap-4">
+              {[
+                { path: "profile", label: "Manage Account", icon: null },
+                { path: "user/message", label: "Messages", icon: MessageCircle },
+                { path: "wallet", label: "Wallet", icon: Wallet },
+                { path: "signout", label: "Sign Out", icon: LogOut },
+              ].map((item) => (
+                <li key={item.path}>
+                  <Link
+                    href={`/${item.path}`}
+                    className={`flex items-center px-4 py-2 rounded-md transition-colors ${
+                      isActive(item.path)
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                    onClick={() => setActivePath(item.path)}
+                  >
+                    {item.icon && <item.icon className="w-5 h-5 mr-2" />}
+                    {item.label}
+                    {item.path === "chat" && unreadMessagesCount > 0 && (
+                      <span className="ml-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {unreadMessagesCount}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </div>
-    </>
-  );
-};
 
-export default Profile;
+      <div className="max-w-4xl mx-auto mt-8 p-6 bg-white rounded-lg shadow">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+export default Profile

@@ -1,149 +1,151 @@
 'use client'
+
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import dashboard from './nav.module.css'
-
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useRouter, usePathname } from 'next/navigation'
 import { useCustomerLogoutMutation } from '@/lib/features/api/customerApiSlice'
-import { useRouter } from 'next/navigation'
-import { useDispatch } from 'react-redux'
-import { updateWorkerName } from '@/lib/features/slices/siteSlice'
 import Modal from '@/components/Emergency'
+import { Menu, X, ChevronDown, Home, User, Briefcase, FileText, MessageSquare } from 'lucide-react'
 
 
-export const DropDownDashboard = ()=>{
-  const [useDropdown,setUserDropDown] = useState(false)
-  const [workerDropdown,setWorkerDropDown] = useState(false)
-
-  return(
-    <div className={`flex flex-col ${dashboard.dropDowndashboard}`}>
-        <ul className='flex flex-col gap-4 text-gray-800'>
-          <li onClick={()=>setUserDropDown((prev)=>!prev)} className='cursor-pointer'>User</li>
-          <li onClick={()=>setWorkerDropDown((prev)=>!prev)} className='cursor-pointer'>Worker</li>
-          {
-            useDropdown && <ul className={`${dashboard.inelementDowndashboard}`}>
-                              <li  className='p-2 m-2 cursor-pointer'>
-                                <Link href={'/user/login'}>
-                                SignIn
-                                </Link>
-                                </li>
-                              <li   className='p-2 m-2 cursor-pointer'>
-                                <Link href={'/user/signup'}>
-                                SignUp
-                                </Link>
-                                </li>
-                            </ul>
-          }
-           {
-            workerDropdown && <ul className={`${dashboard.inelementDowndashboard}`}>
-                                <li className='p-2 m-2 cursor-pointer'>
-                                  <Link href={'/worker/login'}>
-                                  SignIn
-                                  </Link>
-                                  </li>
-                                <li className='p-2 m-2 cursor-pointer'>
-                                  <Link href={'/worker/signup'}>
-                                  SignUp
-                                  </Link>
-                                  </li>
-                              </ul>
-          } 
-        </ul>
-    </div>
-  )
-}
-
-
-
-const Page = () => {
-  const [role,setRole] = useState('')
-  const [isModalOpen,setIsModalOpen] = useState<boolean>(false)
-  const [isOpenMap,setIsOpenMap] = useState<boolean>(false)
-  const [openProfile,setOpenProfile] = useState(false)
-  console.log(role)
-
-  const [CustomerLogout,{isSuccess}] = useCustomerLogoutMutation()
-
-
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const [role, setRole] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [CustomerLogout] = useCustomerLogoutMutation()
   const router = useRouter()
-    useEffect(()=>{
-      let customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
-      setRole(customerRole?.role)
-    },[role])
+  const pathname = usePathname()
 
- 
-  
 
-  const handleLogout = async ()=>{
+  useEffect(() => {
+    const customerRole = JSON.parse(localStorage.getItem("customerData") || "{}")
+    setRole(customerRole?.role)
+  }, [])
+
+
+  const handleLogout = async () => {
     try {
-
-      console.log(role,"customer otp")
-      const result = await CustomerLogout(role)
-      console.log(result)
-      if(result.data.success){
-        console.log(`is logout`)        
-        localStorage.setItem("customerData",'')
-        setTimeout(()=>{
-              router.push('/homePage')
-            },1000)
-          }
+      const result = await CustomerLogout({})
+      if (result.data.success) {
+        localStorage.setItem("customerData", '')
+        router.push('/homePage')
+      }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
-    return (
-      <>
-        <nav className="bg-[#263238] z-[1] fixed top-0 left-0 w-full text-white flex justify-between items-center px-16 py-3">
-          <div className="font-bold text-xl">
-            ProFinder
-          </div>
-          
-          <ul className="flex justify-between gap-10 items-center w-[30%]">
-            <li className="hover:text-gray-300 cursor-pointer">
-              <Link href={'/homePage'}>
-               Home
-              </Link>
-            </li>
-            <li className="hover:text-gray-300 cursor-pointer">
-              <Link href={'/service-workerlist'}>
-                Service
-              </Link >
-            </li>
-            <li className="hover:text-gray-300 cursor-pointer">
-              Contact
-            </li>
-          </ul>
-          {
-            
-              <>
-              {
-                 !role ? ( <button onClick={()=>setOpenProfile((prev)=>!prev)} className="bg-yellow-500 text-black px-4 py-2 rounded">
-                  
-                 {/* <Link href={'/worker/dashboard/personalInfo'}> */}
-                   Get Started
-                 {/* </Link> */}
-               </button>) : role=='user' ? <><button className='bg-red-700 text-white text-1xl p-2 rounded' onClick={()=>setIsModalOpen((prev)=>!prev)}>Emergency</button> <button><Link href={"/user/profile"}>Dashboard</Link></button> <button onClick={handleLogout}>Logout</button></> :(<>
-                <Link href={"/worker/dashboard/workerdashboard"}>Dashboard</Link> <button onClick={handleLogout}>Logout</button>
-                </>
-                )
-               
-              }
-               
-              {
-                openProfile &&  <DropDownDashboard /> 
-              }
-              
-            </>
-          }
 
-        </nav>
-        {/* Modal component */}
-        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-       
-      </>
-    );
-  }
-  
-  export default Page;
-  
+  const navItems = [
+    { href: '/worker/dashboard/workerdashboard', label: 'Dashboard', icon: Home },
+    { href: '/worker/dashboard/personalInfo', label: 'Personal Info', icon: User },
+    { href: '/worker/dashboard/professionalInfo', label: 'Professional Info', icon: Briefcase },
+    { href: '/worker/dashboard/workerprojectDetails', label: 'Works', icon: FileText },
+    { href: '/worker/dashboard/messages', label: 'Messages', icon: MessageSquare },
+  ]
+
+
+  return (
+    <>
+
+      <nav className="bg-[#111826] text-white fixed top-0 left-0 right-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Link href="/homePage" className="flex-shrink-0">
+                <span className="font-bold text-2xl">ProFinder</span>
+              </Link>
+            </div>
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-4">
+                <Link href="/homePage" className="hover:bg-[#1c2536] px-3 py-2 rounded-md text-sm font-medium">Home</Link>
+                <Link href="/service-workerlist" className="hover:bg-[#1c2536] px-3 py-2 rounded-md text-sm font-medium">Service</Link>
+                <Link href="#" className="hover:bg-[#1c2536] px-3 py-2 rounded-md text-sm font-medium">Contact</Link>
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <div className="ml-4 flex items-center md:ml-6">
+                {!role ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="bg-yellow-500 text-[#111826] px-4 py-2 rounded-md text-sm font-medium flex items-center"
+                    >
+                      Get Started <ChevronDown className="ml-1" size={16} />
+                    </button>
+                    {isDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10">
+                        <Link href="/user/login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Sign In</Link>
+                        <Link href="/user/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">User Sign Up</Link>
+                        <Link href="/worker/login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Worker Sign In</Link>
+                        <Link href="/worker/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Worker Sign Up</Link>
+                      </div>
+                    )}
+                  </div>
+                ) : role === 'user' ? (
+                  <>
+                    <button onClick={() => setIsModalOpen(true)} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-sm font-medium mr-2">Emergency</button>
+                    <Link href="/user/profile" className="bg-[#1c2536] hover:bg-[#2a3649] px-4 py-2 rounded-md text-sm font-medium mr-2">Dashboard</Link>
+                    <button onClick={handleLogout} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium">Logout</button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/worker/dashboard/workerdashboard" className="bg-[#1c2536] hover:bg-[#2a3649] px-4 py-2 rounded-md text-sm font-medium mr-2">Dashboard</Link>
+                    <button onClick={handleLogout} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-md text-sm font-medium">Logout</button>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="-mr-2 flex md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-[#1c2536] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#111826] focus:ring-white"
+              >
+                <span className="sr-only">Open main menu</span>
+                {isMenuOpen ? (
+                  <X className="block h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="block h-6 w-6" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        {isMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+              <Link href="/homePage" className="hover:bg-[#1c2536] block px-3 py-2 rounded-md text-base font-medium">Home</Link>
+              <Link href="/service-workerlist" className="hover:bg-[#1c2536] block px-3 py-2 rounded-md text-base font-medium">Service</Link>
+              <Link href="#" className="hover:bg-[#1c2536] block px-3 py-2 rounded-md text-base font-medium">Contact</Link>
+            </div>
+            <div className="pt-4 pb-3 border-t border-[#2a3649]">
+              <div className="flex items-center px-5">
+                {!role ? (
+                  <Link href="/user/login" className="block w-full text-center bg-yellow-500 text-[#111826] px-4 py-2 rounded-md text-base font-medium">Get Started</Link>
+                ) : role === 'user' ? (
+                  <>
+                    <button onClick={() => setIsModalOpen(true)} className="w-full bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-base font-medium mb-2">Emergency</button>
+                    <Link href="/user/profile" className="w-full bg-[#1c2536] hover:bg-[#2a3649] px-4 py-2 rounded-md text-base font-medium mb-2">Dashboard</Link>
+                    <button onClick={handleLogout} className="w-full bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-md text-base font-medium">Logout</button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/worker/dashboard/workerdashboard" className="w-full bg-[#1c2536] hover:bg-[#2a3649] px-4 py-2 rounded-md text-base font-medium mb-2">Dashboard</Link>
+                    <button onClick={handleLogout} className="w-full bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-md text-base font-medium">Logout</button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+    </>
+  )
+}
