@@ -14,7 +14,7 @@ customerRouter.post("/savePaymentId",authorizeRoles('customer'),paymentIdControl
 
 // * router for Request 
 
-customerRouter.post('/userRequestWorker',authorizeRoles('customer'),userRequestWorkerController)
+customerRouter.post('/userRequestWorker',userRequestWorkerController)
 
 
 customerRouter.post('/verifyOTP',CustomerOtpController)
