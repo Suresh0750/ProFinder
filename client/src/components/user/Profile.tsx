@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Prfile from "./ProfileForm";
+import ProfileHeader from "./ProfileHeader";
 import Footer from "@/components/Footer";
 import { useForm } from "react-hook-form";
 import { toast ,Toaster} from "sonner";
@@ -107,7 +107,7 @@ const ManageAccount: React.FC = () => {
 
   return (
     <>
-      <Prfile>
+      <ProfileHeader>
         <div className="md:flex md:space-x-6">
           <div className="md:w-1/3">
             <div className="flex flex-col items-center">
@@ -197,8 +197,8 @@ const ManageAccount: React.FC = () => {
           </div>
         </div>
         <Toaster richColors position="top-center" />
-      </Prfile>
-      <Footer />
+      </ProfileHeader>
+  
     </>
   );
 };

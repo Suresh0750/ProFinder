@@ -14,6 +14,7 @@ export default function UserLayout({children}:{children:React.ReactNode}){
             <div className='mt-[2.75rem]'>
                {children}
             </div>
+            
         </>
     )
 }

@@ -1,5 +1,5 @@
 import { StatusCode } from "../../../domain/entities/commonTypes";
-import { User ,profileTypes} from "../../../domain/entities/User";
+import { User ,profileTypes,conversationTypes} from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { getUserRepository } from "../../../infrastructure/database/mongoose/MongooseUserRepository";
 import { hashPassword } from "../../../shared/utils/encrptionUtils";
@@ -7,7 +7,36 @@ import { OtpService } from "../../services/OtpService";
 import { OtpStoreData } from "../utils/OtpStoreData";
 
 
+// * user in chat side
 
+export const getConversationUsecases = async(id:string)=>{
+  try {
+    return await getUserRepository().fetchConversation(id)
+  } catch (error) {
+    console.log(`error from usecase in getConversationUsecases`, error);
+    throw error;
+  }
+}
+
+
+export const conversationUsecases = async(data:conversationTypes)=>{
+  try {
+    const chcekExist :conversationTypes|null = await getUserRepository().checkConversation(String(data?.userId))
+    if(chcekExist){
+      await  getUserRepository().updateConversation(data)
+    }else{
+      await getUserRepository().conversationQuery(data)  // * create conversation
+    }
+    const conversationId = await getUserRepository().findconversationId(String(data?.userId))
+    if(data?.lastMessage && conversationId?._id) await getUserRepository().createMessage({conversationId:conversationId?._id,sender:data?.userId,message:data?.lastMessage})
+    return 
+  } catch (error) {
+    console.log(`error from usecase in conversationUsecases`, error);
+    throw error;
+  }
+}
+
+// * profile side
 export const EditprofileUsecases = async(data:profileTypes)=>{
   try{
       const {username,email,phone,profile} = data
@@ -17,8 +46,6 @@ export const EditprofileUsecases = async(data:profileTypes)=>{
         EmailAddress : email,
         profile
       }
-      
-      
       return getUserRepository().updateprofile(userData)
   }catch(error){
     console.log(`error from usecase in editprofileUsecases`, error);

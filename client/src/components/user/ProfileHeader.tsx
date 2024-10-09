@@ -9,7 +9,7 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
-const Profile: React.FC<LayoutProps> = ({ children }) => {
+const ProfileHeader: React.FC<LayoutProps> = ({ children }) => {
   const [activePath, setActivePath] = useState<string>("profile")
   const [userProfile, setUserProfile] = useState<any>(null)
   const [profileImage, setProfileImage] = useState<string>('')
@@ -49,7 +49,7 @@ const Profile: React.FC<LayoutProps> = ({ children }) => {
           <nav className="mt-6">
             <ul className="flex flex-wrap justify-center md:justify-start gap-4">
               {[
-                { path: "profile", label: "Manage Account", icon: null },
+                { path: "user/profile", label: "Manage Account", icon: null },
                 { path: "user/message", label: "Messages", icon: MessageCircle },
                 { path: "wallet", label: "Wallet", icon: Wallet },
                 { path: "signout", label: "Sign Out", icon: LogOut },
@@ -86,4 +86,4 @@ const Profile: React.FC<LayoutProps> = ({ children }) => {
   )
 }
 
-export default Profile
+export default ProfileHeader

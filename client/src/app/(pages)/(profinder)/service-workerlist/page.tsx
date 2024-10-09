@@ -145,7 +145,7 @@ export default function ServiceWorkerListPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {showCategory &&
               showCategory.slice((page - 1) * total, page * total).map((val, i) => (
-                <Card key={i} className="cursor-pointer hover:shadow-lg transition-shadow duration-200">
+                <Card key={i} className="cursor-pointer hover:shadow-lg transition-shadow duration-200" onClick={() => handleRedirectWorkerPage(val?._id || '')}>
                   <CardContent className="p-0">
                     <img
                       src={val?.Profile || "/placeholder.png"}
@@ -165,7 +165,7 @@ export default function ServiceWorkerListPage() {
                   </CardContent>
                   <CardFooter className="flex justify-between p-4">
                     <Button variant="secondary">{val?.Category}</Button>
-                    <Button onClick={() => handleRedirectWorkerPage(val?._id || '')}>Read More</Button>
+                    <Button>Read More</Button>
                   </CardFooter>
                 </Card>
               ))}
