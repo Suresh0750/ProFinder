@@ -1,166 +1,214 @@
-"use client"
-import MaterialCarousel from '@/components/wokerDetailscarousel'
+'use client'
+
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import {useState,useEffect} from 'react'
-import {useGetSingleWorkerDetailsQuery} from '@/lib/features/api/workerApiSlice'
+import { useGetSingleWorkerDetailsQuery } from '@/lib/features/api/workerApiSlice'
 import defaultImage from '../../../../../../public/images/worker/defaultImage.png'
 import ServiceRequestModal from '@/components/serviceModal'
 import PayUComponent from '@/components/PayU'
+import MaterialCarousel from '@/components/wokerDetailscarousel'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { StarIcon, MessageCircleIcon, MessageSquare,MapPinIcon, BriefcaseIcon, CalendarIcon, DollarSignIcon } from 'lucide-react'
 
 
-interface CarouselProps {
-  workImages: string[];
-}
+const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
+  const [workerDetails, setWorkerDetails] = useState<any>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-// {params}:{params:any}
+  const { _id } = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
+  const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
 
-const page = ({params}:{params:string})=>{
+  const { data, refetch } = useGetSingleWorkerDetailsQuery(`${params.workerId}/${_id}`)
 
-    const [workerDetails,setWorkerDetails] = useState([])
-    const [isModalOpen,setIsModalOpen] = useState(false)
+  useEffect(() => {
+    if (data?.result) {
+      setWorkerDetails(data.result)
+      alert(JSON.stringify(data))
+      console.log(JSON.stringify(data))
+    }
+  }, [data])
 
-    const {_id} = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
+  if (!workerDetails) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
 
-    const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
+  const renderRequestButton = () => {
+    if (!data?.requestData) {
+      return (
+        <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto">
+          <MessageCircleIcon className="w-4 h-4 mr-2" />
+          Send Request
+        </Button>
+      )
+    }
+    switch (data.requestData.isAccept) {
+      case "Accepted":
+        return <><Badge variant="success">Accepted</Badge><MessageSquare  className='cursor-pointer'/></>
+      case "Pending":
+        return <Badge variant="warning">Pending</Badge>
+      default:
+        return <Badge variant="destructive">Cancelled</Badge>
+    }
+  }
 
-    const {data,refetch} = useGetSingleWorkerDetailsQuery(`${params?.workerId}/${_id}`)
+  return (
+    <div className="container mx-auto px-4 py-8 mt-[75px]">
+      <Card className="mb-8">
+        <CardContent className="p-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <Avatar className="w-32 h-32">
+              <AvatarImage src={workerDetails.Profile || defaultImage.src} alt={workerDetails.FirstName} />
+              <AvatarFallback>{workerDetails.FirstName[0]}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 text-center sm:text-left">
+              <h1 className="text-3xl font-bold mb-2">{workerDetails.FirstName}</h1>
+              <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                <MapPinIcon className="w-4 h-4 text-gray-500" />
+                <span className="text-gray-600">{workerDetails.City}</span>
+              </div>
+              <div className="flex items-center justify-center sm:justify-start gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <StarIcon key={i} className="w-5 h-5 fill-yellow-400" />
+                ))}
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                {renderRequestButton()}
+                {data?.requestData?.isAccept === "Accepted" && (
+                  <PayUComponent
+                    currUserData={customerData}
+                    requestId={data.requestData._id}
+                    payment={data.requestData.payment || '500'}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-
-    useEffect(()=>{
-        setWorkerDetails(data?.result)
-        console.log(data)
-        console.log(JSON.stringify(workerDetails))
-
-    },[data])
-
-    return(
-
-        <div className="mt-[75px]">
-            <div className="bg-white p-6 mb-6 rounded-lg shadow-lg w-[80%] mx-auto">
-            {/* Profile Section */}
-                <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
-                <div className="flex items-center space-x-4">
-                    <img
-                    src={workerDetails?.Profile || defaultImage}
-                    alt={"worker"}
-                    className="rounded-full w-32 h-32 object-cover"
-                    />
-                        <div>
-                        <h1 className="text-3xl font-bold">{workerDetails?.FirstName}</h1>
-                        <p className="text-gray-600">
-                            <i className="fas fa-map-marker-alt"></i> {workerDetails?.City}
-                        </p>
-                        <p className="text-gray-500">Available: {"worker.availability"}</p>
-                        <div className="flex items-center mt-2">
-                            <span className="text-yellow-500 text-lg">★★★★★</span>
-                        </div>
-                        {
-                           !data?.requestData ? (<button onClick={()=>setIsModalOpen(true)} className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
-                           Add Request 
-                       </button>) : (data?.requestData?.isAccept=="Accepted") ? (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
-                            Accept 
-                        </button>) : (data?.requestData?.isAccept=="Pending") ? (<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
-                            Pending 
-                        </button>) : ((<button  className="bg-blue-500 cursor-none text-white px-4 py-2 rounded-md mt-4 sm:mt-0">
-                            Cancelled 
-                        </button>))
-                        }
-                        
-                        </div>
-                        <br />
-
-                </div>
-                <div>
-                            {
-                                data?.requestData?.isAccept === "Accepted" && (
-                                    <PayUComponent currUserData={customerData} requestId = {data?.requestData?._id} payment={(data?.requestData?.payment) || '500'}/>
-                                    // <button className='p-2 bg-green-500 rounded'>Payment</button>
-                                    
-                                )
-                            }
-                            &nbsp;
-                            {
-                               (data?.requestData?.isAccept === "Accepted")&& (data?.requestData?.payment > 0) && (
-                                    <span>{data?.requestData?.payment}</span>
-                                )
-                            }
-                        </div>
-                </div>
-                {/* Overview Section */}
-                <div className="mb-8">
-                    <h2 className="text-2xl font-semibold mb-4">Overview</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-gray-700">
-                        <div className='flex flex-col gap-1'>
-                            <div>
-                                <p className="font-bold">Services:</p>
-                                <p>{workerDetails?.Category}</p>
-                            </div>
-                            <div>
-                                <p className="font-bold">Experience:</p>
-                                {/* <p>{"worker.experience"}</p> */}
-                                <p>5</p>
-                            </div>
-                            <div>
-                                <p className="font-bold">Availability:</p>
-                                {/* <p>{"worker.availability"}</p> */}
-                                <p>update...</p>
-                            </div>
-                        </div>
+      <Tabs defaultValue="overview" className="mb-8">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="work">Our Work</TabsTrigger>
+          <TabsTrigger value="reviews">Reviews</TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview">
+          <Card>
+            <CardContent className="p-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <BriefcaseIcon className="w-5 h-5 text-primary" />
+                    <div>
+                      <p className="font-semibold">Services:</p>
+                      <p>{workerDetails.Category}</p>
                     </div>
-                </div>
-
-                {/* Carousel Section */}
-                <div className="mt-12">
-                <h2 className="text-2xl font-semibold mb-4 text-center">Our Work</h2>
-                {
-                    data?.result?.WorkerImage.length >0 &&  <MaterialCarousel images={data?.result?.WorkerImage}/> 
-                }
-                </div>
-
-            </div>
-            <button className='p-2 bg-green-600 rounded ml-40'>Post A Review</button>
-            <div className="w-[80%] text-white p-4 rounded-lg mx-auto mb-3  shadow-lg mt-4">
-            <h2 className="text-lg font-semibold">Reviews and Ratings</h2>
-            <div className="flex items-center space-x-2">
-                <div className="bg-green-500 text-white p-2 rounded-md">3.5</div>
-                <div>
-                {/* <!-- Star ratings component here --> */}
-                <span>⭐⭐⭐⭐☆</span>
-                </div>
-            </div>
-  
-            <h3 className="mt-4">Start Your Reviews and Ratings</h3>
-            <div className="flex items-center space-x-2">
-            
-                <span>☆☆☆☆☆</span>
-            </div>
-
-            <h4 className="mt-6">Customer Reviews</h4>
-            <div className="space-y-4 mt-4">
-
-            <div className=" p-4 rounded-lg">
-            <div className="flex justify-between">
-                <div className="flex items-center space-x-2">
-                <img src="path_to_avatar.png" alt="avatar" className="w-10 h-10 rounded-full" />
-                <div>
-                    <p className="font-semibold">Kaif Umar</p>
-                    <div className="flex items-center space-x-1">
-                    <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">4.0</span>
-                    <span>⭐⭐⭐⭐</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CalendarIcon className="w-5 h-5 text-primary" />
+                    <div>
+                      <p className="font-semibold">Experience:</p>
+                      <p>5 years</p>
                     </div>
+                  </div>
                 </div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <DollarSignIcon className="w-5 h-5 text-primary" />
+                    <div>
+                      <p className="font-semibold">Rate:</p>
+                      <p>${data?.requestData?.payment || 'N/A'} per hour</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CalendarIcon className="w-5 h-5 text-primary" />
+                    <div>
+                      <p className="font-semibold">Availability:</p>
+                      <p>Monday - Friday: 9 AM - 5 PM</p>
+                      <p>Saturday: 10 AM - 2 PM</p>
+                      <p>Sunday: Closed</p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-gray-400 text-sm">2024-05-04</p>
-            </div>
-            </div>  
-        </div>
-        </div>
-         <ServiceRequestModal workerDetails={workerDetails} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} refetch={()=>refetch()} />
-    
-        
-        </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="work">
+          <Card>
+            <CardContent className="p-6">
+              {workerDetails.WorkerImage && workerDetails.WorkerImage.length > 0 ? (
+                <MaterialCarousel images={workerDetails.WorkerImage} />
+              ) : (
+                <p className="text-center text-gray-500">No work samples available</p>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="reviews">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <Badge variant="success" className="text-lg p-2">3.5</Badge>
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <StarIcon key={i} className={`w-6 h-6 ${i < 3 ? 'fill-yellow-400' : 'fill-gray-300'}`} />
+                  ))}
+                </div>
+              </div>
+
+              <Button variant="outline" className="mb-6">
+                Write a Review
+              </Button>
+
+              <div className="space-y-6">
+                <div className="border-t pt-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarImage src="/path_to_avatar.png" alt="Kaif Umar" />
+                        <AvatarFallback>KU</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold">Kaif Umar</p>
+                        <div className="flex items-center">
+                          <Badge variant="success" className="mr-2">4.0</Badge>
+                          <div className="flex">
+                            {[...Array(4)].map((_, i) => (
+                              <StarIcon key={i} className="w-4 h-4 fill-yellow-400" />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-gray-500 text-sm">2024-05-04</span>
+                  </div>
+                  <p className="text-gray-600">
+                    Great service! The worker was professional and completed the job efficiently.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      <ServiceRequestModal
+        workerDetails={workerDetails}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        refetch={refetch}
+      />
+    </div>
   )
 }
 
-export default page;
-
+export default WorkerDetailsPage
