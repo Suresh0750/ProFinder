@@ -45,10 +45,7 @@ export default function Chats() {
 
   // * Fetch all conversation
   const {data} = useGetAllconversationQuery(_id)
-  // alert(JSON.stringify(data))
-
   useEffect(()=>{
-    alert(JSON.stringify(data))
     setConversations(data?.result)
   },[data])
 
@@ -57,9 +54,10 @@ export default function Chats() {
     if (inputMessage.trim() !== "") {
       // Here you would typically send the message to your backend
       console.log("Sending message:", inputMessage)
-      alert(_id)
-      alert(inputMessage)
+   
       setInputMessage("")
+      if((inputMessage).trim()=='') return
+      
       const result = await conversation({lastMessage:inputMessage,userId:_id,workerId:'66f05d64219621d790f6a4fb'})
     }
   }
