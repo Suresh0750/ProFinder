@@ -6,6 +6,7 @@ import {PersonalInformation, WorkerInformation,ProjectDetails} from '../../../do
 import { WorkerModel } from './models/workerModel'
 import {RequestModal} from './models/RequestModel'
 import {ResentActivityModal} from './models/RecentActivityModel'
+import { ConversationModel } from './models/ConversationModel'
 
 export const getWorkerRepository = ():WorkerRepository =>({
     createWorker: async(workerData:PersonalInformation)=>{
@@ -142,7 +143,15 @@ export const getWorkerRepository = ():WorkerRepository =>({
         try {
             await ResentActivityModal.updateOne({requestId,paymentId})
         } catch (error) {
-            console.log(`Error from infrastructure->database->mongoose->isRejectWorkQuery->\n`,error)
+            console.log(`Error from infrastructure->database->mongoose->IsActivityQuery->\n`,error)
+            throw error
+        }
+    },
+    getChatsNameQuery : async(workerId:string)=>{
+        try{
+            return await ConversationModel.find({workerId},{ __v: 0 }).populate('userId','username profile').lean(); 
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->getChatesNameQuery->\n`,error)
             throw error
         }
     }

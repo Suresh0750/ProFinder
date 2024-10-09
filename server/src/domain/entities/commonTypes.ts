@@ -1,6 +1,10 @@
 
 // * server status code
 
+import { conversation } from "../../Presentation/http/controllers/UserController";
+import {Types} from 'mongoose'
+
+
 export enum StatusCode {
     Success = 200,
     Created = 201,
@@ -58,5 +62,11 @@ export interface CustomError extends Error {
   statusCode?: number;
 }
 
-
+export type conversationTypes = {
+  userId : Types.ObjectId
+  workerId:Types.ObjectId,
+  lastMessage : string,
+  createAt? : Date,
+  updateAt? : Date
+}
 

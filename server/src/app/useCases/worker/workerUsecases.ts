@@ -9,6 +9,19 @@ import {GeoCoding} from "../../../infrastructure/service/geoCode"
 
 
 
+
+// * get chats usecause 
+export const getChatsNameUsecases = async(_id:string)=>{
+    try{
+        return await getWorkerRepository().getChatsNameQuery(_id)
+    }catch(error){
+        console.log(`Error from useCases->worker->getChatsNameUsecases\n`,error)
+        throw error
+    }
+}
+
+
+
 // * getAll Request data  of worker
 
 export const getRequestUsecases = async (workerId:string)=>{
