@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useGetSingleWorkerDetailsQuery } from '@/lib/features/api/workerApiSlice'
+import { useConversationMutation } from '@/lib/features/api/userApiSlice'
 import defaultImage from '../../../../../../public/images/worker/defaultImage.png'
 import ServiceRequestModal from '@/components/serviceModal'
 import PayUComponent from '@/components/PayU'
@@ -12,8 +13,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {useRouter} from 'next/navigation'
 import { StarIcon, MessageCircleIcon, MessageSquare,MapPinIcon, BriefcaseIcon, CalendarIcon, DollarSignIcon } from 'lucide-react'
-
+import {messageTypes} from '@/types/userTypes'
 
 const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
   const [workerDetails, setWorkerDetails] = useState<any>(null)
@@ -23,11 +25,22 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
   const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
 
   const { data, refetch } = useGetSingleWorkerDetailsQuery(`${params.workerId}/${_id}`)
+  const [conversation] = useConversationMutation()
+
+  const Router = useRouter()
+
+  const handleMessage = async ()=>{
+    const result = await conversation({userId:customerData?._id,lastMessage:'',workerId:data?.result?._id,newMessage:true})
+    // alert(JSON.stringify(result))
+    if(result?.data?.success){
+        Router.push('/user/message')
+    }
+  }
 
   useEffect(() => {
     if (data?.result) {
       setWorkerDetails(data.result)
-      alert(JSON.stringify(data))
+    //   alert(JSON.stringify(data))
       console.log(JSON.stringify(data))
     }
   }, [data])
@@ -51,7 +64,7 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
     }
     switch (data.requestData.isAccept) {
       case "Accepted":
-        return <><Badge variant="success">Accepted</Badge><MessageSquare  className='cursor-pointer'/></>
+        return <><Badge variant="success">Accepted</Badge><MessageSquare onClick={handleMessage}  className='cursor-pointer'/></>
       case "Pending":
         return <Badge variant="warning">Pending</Badge>
       default:

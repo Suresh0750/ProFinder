@@ -25,7 +25,9 @@ export const conversationUsecases = async(data:conversationTypes)=>{
     if(chcekExist){
       await  getUserRepository().updateConversation(data)
     }else{
-      await getUserRepository().conversationQuery(data)  // * create conversation
+      if(!data?.newMessage){   // * user click messge box in single worker details page side here no message
+        await getUserRepository().conversationQuery(data)  // * create conversation
+      }
     }
     const conversationId = await getUserRepository().findconversationId(String(data?.userId))
     if(data?.lastMessage && conversationId?._id) await getUserRepository().createMessage({conversationId:conversationId?._id,sender:data?.userId,message:data?.lastMessage})
