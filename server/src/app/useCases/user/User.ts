@@ -25,9 +25,10 @@ export const conversationUsecases = async(data:conversationTypes)=>{
     if(chcekExist){
       await  getUserRepository().updateConversation(data)
     }else{
-      await getUserRepository().conversationQuery(data)
+      await getUserRepository().conversationQuery(data)  // * create conversation
     }
     const conversationId = await getUserRepository().findconversationId(String(data?.userId))
+    if(data?.lastMessage && conversationId?._id) await getUserRepository().createMessage({conversationId:conversationId?._id,sender:data?.userId,message:data?.lastMessage})
     return 
   } catch (error) {
     console.log(`error from usecase in conversationUsecases`, error);

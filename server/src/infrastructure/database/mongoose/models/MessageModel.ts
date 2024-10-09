@@ -4,7 +4,7 @@ import {Schema,model} from 'mongoose'
 
 
 const MessageSchema = new Schema({
-    conversation:{
+    conversationId:{
         type:Schema.Types.ObjectId,
         required:true
     },

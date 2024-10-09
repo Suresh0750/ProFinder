@@ -52,10 +52,10 @@ export interface conversationTypes{
 }
 
 export interface messageTypes{
-    conversationId :Types.ObjectId,
+    conversationId: string | Types.ObjectId,
     sender:Types.ObjectId,
     message:string,
-    isRead : boolean,
+    isRead? : boolean,
     createdAt?: Date;
     updatedAt?: Date;
 }

@@ -1,4 +1,5 @@
 import {Types} from 'mongoose'
+const { ObjectId } = Types; 
 
 import { User,loginDetails,editprofileTypes,conversationTypes,messageTypes } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
@@ -6,6 +7,7 @@ import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 // * Model
 import {UserModel} from './models/UserModel'
 import {ConversationModel} from './models/ConversationModel'
+import { MessageModel } from './models/MessageModel';
 
 
 export const getUserRepository = () : IUserRepository =>({
@@ -115,7 +117,10 @@ export const getUserRepository = () : IUserRepository =>({
     },
     checkConversation:async(userId:string)=>{
         try {
-            return await ConversationModel.findById({userId})
+            console.log(`check conversation`)
+            console.log(userId)
+
+            return await ConversationModel.findOne({userId:new ObjectId(userId)}) // * for find the document kept ObjectId
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->checkConversation\n`,error)
             throw error
@@ -123,7 +128,7 @@ export const getUserRepository = () : IUserRepository =>({
     },
     updateConversation:async(data:conversationTypes)=>{
         try{
-            await ConversationModel.updateOne({userId:data.userId},{$set:{data}})
+            await ConversationModel.updateOne({userId:new ObjectId(data.userId)},{$set:{lastMessage:data?.lastMessage}})
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->updateConversation\n`,error)
             throw error
@@ -131,15 +136,16 @@ export const getUserRepository = () : IUserRepository =>({
     },
     findconversationId:async(userId:string)=>{
         try{
-            return await ConversationModel.findById({userId},{_id:1})
+            console.log(await ConversationModel.findOne({userId:new ObjectId(userId)},{_id:1}))
+            return await ConversationModel.findOne({userId:new ObjectId(userId)},{_id:1})
         }catch(error){
-            console.log(`Error from infrastructure->mongoseUser->updateConversation\n`,error)
+            console.log(`Error from infrastructure->mongoseUser->findconversationId\n`,error)
             throw error
         }
     },
     createMessage : async(data:messageTypes)=>{
         try {
-            
+            await MessageModel.create(data)
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->createMessage\n`,error)
             throw error
