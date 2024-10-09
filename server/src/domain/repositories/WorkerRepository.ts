@@ -1,5 +1,12 @@
 
-import {PersonalInformation,ProjectDetails,WorkerInformation,getProjectData,workerRequest} from '../entities/Worker'
+import {
+    PersonalInformation,
+    ProjectDetails,
+    WorkerInformation,
+    getProjectData,
+    workerRequest,
+} from '../entities/Worker'
+import {conversationTypes} from '../entities/commonTypes'
 
 export interface WorkerRepository{
     createWorker (workerData:PersonalInformation) : Promise<PersonalInformation | null>
@@ -17,4 +24,5 @@ export interface WorkerRepository{
     isAcceptWorkQuery(_id:string,isPayment:number):Promise<void>
     isRejectWorkQuery(_id:string) : Promise<void>
     IsActivityQuery(requestId:string,paymentId:string) : Promise<void>
+    getChatsNameQuery(workerId:string) : Promise<conversationTypes[]>
 }

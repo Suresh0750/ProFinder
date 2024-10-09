@@ -97,6 +97,21 @@ export const workerApi = createApi({
                 method: "PUT",
                 headers : getHeaders('worker')
             })
+        }),
+        getmessage : builder.query({
+            query :(data:string)=>({
+                url : `/worker/message/${data}`,
+                method: "GET",
+                headers : getHeaders('worker')
+            })
+        }),
+        updateMessage: builder.mutation({
+            query:(data)=>({
+                url:`/worker/message`,
+                method:"PUT",
+                body:data,
+                headers:getHeaders("worker")
+            })
         })
     })
 })
@@ -113,5 +128,6 @@ export const {
     useGetSingleWorkerDetailsQuery,
     useGetAllRequestDataQuery,
     useAcceptWorkAPIMutation,
-    useRejectWorkAPIMutation
+    useRejectWorkAPIMutation,
+    useGetmessageQuery,
 } = workerApi

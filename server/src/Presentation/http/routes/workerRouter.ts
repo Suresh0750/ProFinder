@@ -1,11 +1,29 @@
 import {Router} from "express"
-import { PersonalInformationControll,ProfessionalInfoControll,isCheckEmail,getWorkerDataController,LoginWorkerController,AddProjectDetails, getProjectDetails, getSingleWorkerDetails, getAllRequestController, isAcceptWorkController,isRejectWorkController} from "../controllers/WorkerController"
 import upload from '../../../infrastructure/service/multer'
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 import { customeVerify } from "../middlewares/JWTVerify/customerVerify"
+import {
+    PersonalInformationControll,
+    ProfessionalInfoControll,
+    isCheckEmail,
+    getWorkerDataController,
+    LoginWorkerController,
+    AddProjectDetails,
+    getProjectDetails,
+    getSingleWorkerDetails,
+    getAllRequestController,
+    isAcceptWorkController,
+    isRejectWorkController,
+    getChatsName
+    } from "../controllers/WorkerController"
 
 
 const workerRouter = Router()
+
+
+// * chats in worker side
+
+workerRouter.get('/message/:Id',authorizeRoles('worker'),getChatsName)
 
 
 // * request details or woker

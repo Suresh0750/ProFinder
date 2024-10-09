@@ -17,11 +17,24 @@ import {
     getSingleWorkerDetailsUsecases,
     getRequestUsecases,
     isAcceptUseCasess,
-    isRejectUsecases
+    isRejectUsecases,
+    getChatsNameUsecases
 } from "../../../app/useCases/worker/workerUsecases"
 
 
 
+// * chat Request details
+
+export const getChatsName = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await getChatsNameUsecases(req.params.Id)
+        console.log(JSON.stringify(result))
+        return res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from presentation layer -> http -> getChatsName\n ${error}`);
+        next(error);
+    }
+}
 
 
 // * worker Request details 
@@ -45,9 +58,6 @@ export const getAllRequestController = async (req: Request, res: Response, next:
 
     } catch (error) {
         console.log(`Error from presentation layer -> http -> getAllRequestController\n ${error}`);
-        // Ensure that you're not sending a response after calling next
-        // if (!res.headersSent) {
-        // }
         next(error);
     }
 };

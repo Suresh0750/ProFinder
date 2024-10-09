@@ -12,7 +12,7 @@ const userSchema = new Schema({
     profile :{ type:String}
 },{ timestamps: true })
 
-const UserModel = mongoose.model<User & Document>('UserDatas',userSchema)
+const UserModel = mongoose.model<User & Document>('userdatas',userSchema)
 // UserModel
 
 export {UserModel}
