@@ -40,3 +40,11 @@ export interface editeprofile {
   isImage? : boolean
 }
 
+
+// * user message
+
+export interface messageTypes {
+    conversationId: string,
+    sender:string,
+    message:string,
+}

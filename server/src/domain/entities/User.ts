@@ -49,6 +49,7 @@ export interface conversationTypes{
     lastMessage?: string; 
     createdAt: Date;
     updatedAt: Date;
+    newMessage? : boolean
 }
 
 export interface messageTypes{
@@ -58,4 +59,5 @@ export interface messageTypes{
     isRead? : boolean,
     createdAt?: Date;
     updatedAt?: Date;
+ 
 }
