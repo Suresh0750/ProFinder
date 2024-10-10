@@ -1,5 +1,5 @@
 
-import {PersonalInformation,WorkerInformation,ProjectDetails} from '../../../domain/entities/Worker'
+import {PersonalInformation,WorkerInformation,ProjectDetails,messageTypes} from '../../../domain/entities/Worker'
 import {getWorkerRepository} from "../../../infrastructure/database/mongoose/MongooseWorkerRepository"
 import {OtpService} from '../../services/OtpService'
 import {OtpStoreData} from '../utils/OtpStoreData'
@@ -8,9 +8,29 @@ import {GeoCoding} from "../../../infrastructure/service/geoCode"
 
 
 
-
-
 // * get chats usecause 
+export const fetchMessageUsecases = async(conversationId:string)=>{
+    try{
+        return await getWorkerRepository().fetchMessage(conversationId)
+    }catch(error){
+        console.log(`Error from useCases->worker->fetchMessageUsecases\n`,error)
+        throw error  
+    }
+}
+
+export const messageUsecases = async(data:messageTypes)=>{
+    try {
+        console.log(`Request in message usecases`)
+        console.log(data)
+        const {message,conversationId} = data
+        await getWorkerRepository().messageQuery(data)
+        await getWorkerRepository().updatemessage({_id:conversationId,lastMessage:message})
+        return 
+    } catch (error) {
+        console.log(`Error from useCases->worker->messageUsecases\n`,error)
+        throw error
+    }
+}
 export const getChatsNameUsecases = async(_id:string)=>{
     try{
         return await getWorkerRepository().getChatsNameQuery(_id)

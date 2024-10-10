@@ -68,3 +68,10 @@ export type workerRequest = {
     workerId : string,
     isAccept :string
 }
+
+export type messageTypes = {
+    conversationId : string,
+    message : string,
+    sender : string,
+    lastMessage?: string
+}
