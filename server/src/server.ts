@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import session from 'express-session'
 import bodyParser  from 'body-parser'
+import http,{createServer} from 'http'
+import { Server as serverSocket } from "socket.io"
 
 
 // * database connection
@@ -18,6 +20,9 @@ import { errorHandles } from "./Presentation/http/middlewares/errorHandler";
 import workerRouter from './Presentation/http/routes/workerRouter'
 import commonRouter from './Presentation/http/routes/commonRouter'
 
+
+// * socket
+import {socketHandler} from './infrastructure/service/socket/chat'
 
 const app = express();
 
@@ -76,8 +81,23 @@ app.use(errorHandles);
 
 const PORT = process.env.PORT || 3002;
 
+const httpServer = createServer(app)
+
+export const io=new serverSocket(httpServer,{
+  cors :{
+    origin: 'http://localhost:3000',
+    methods:  ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+  }
+})
+socketHandler(io)
+// connectDB().then(() => {
+//   app.listen(PORT, () => {
+//     console.log(`server running on \n http://localhost:${PORT}`);
+//   });
+// });
+
 connectDB().then(() => {
-  app.listen(PORT, () => {
+  httpServer.listen(PORT, () => {
     console.log(`server running on \n http://localhost:${PORT}`);
   });
 });

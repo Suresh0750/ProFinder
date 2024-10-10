@@ -1,3 +1,4 @@
+
 import { StatusCode } from "../../../domain/entities/commonTypes";
 import { User ,profileTypes,conversationTypes} from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
@@ -5,9 +6,19 @@ import { getUserRepository } from "../../../infrastructure/database/mongoose/Mon
 import { hashPassword } from "../../../shared/utils/encrptionUtils";
 import { OtpService } from "../../services/OtpService";
 import { OtpStoreData } from "../utils/OtpStoreData";
-
+import {io} from '../../../server'
+import { sendMessage } from "../utils/chatUtils";
 
 // * user in chat side
+
+export const getMessageUsecases = async(conversationId:string)=>{
+  try {
+    return await getUserRepository().fetchMessageQuery(conversationId)
+  } catch (error) {
+    console.log(`error from usecase in getMessageUsecases`, error);
+    throw error;
+  }
+}
 
 export const getConversationUsecases = async(id:string)=>{
   try {
@@ -21,6 +32,8 @@ export const getConversationUsecases = async(id:string)=>{
 
 export const conversationUsecases = async(data:conversationTypes)=>{
   try {
+    console.log('conversation Usecases')
+    console.log(data)
     const chcekExist :conversationTypes|null = await getUserRepository().checkConversation(String(data?.userId))
     if(chcekExist){
       await  getUserRepository().updateConversation(data)
@@ -30,7 +43,12 @@ export const conversationUsecases = async(data:conversationTypes)=>{
       }
     }
     const conversationId = await getUserRepository().findconversationId(String(data?.userId))
-    if(data?.lastMessage && conversationId?._id) await getUserRepository().createMessage({conversationId:conversationId?._id,sender:data?.userId,message:data?.lastMessage})
+    if(data?.lastMessage && conversationId?._id) {
+
+     const result =  await getUserRepository().createMessage({conversationId:conversationId?._id,sender:data?.userId,message:data?.lastMessage})
+     console.log(`create the new document`)
+     await sendMessage(result)
+    }
     return 
   } catch (error) {
     console.log(`error from usecase in conversationUsecases`, error);

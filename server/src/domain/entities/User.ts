@@ -44,6 +44,7 @@ export interface profileTypes{
 // * conversation types
 
 export interface conversationTypes{
+    conversationId?:Types.ObjectId
     userId: Types.ObjectId;
     workerId: Types.ObjectId;
     lastMessage?: string; 

@@ -145,9 +145,17 @@ export const getUserRepository = () : IUserRepository =>({
     },
     createMessage : async(data:messageTypes)=>{
         try {
-            await MessageModel.create(data)
+           return await MessageModel.create(data)
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->createMessage\n`,error)
+            throw error
+        }
+    },
+    fetchMessageQuery : async(conversationId:string)=>{
+        try{
+            return await MessageModel.find({conversationId:new ObjectId(conversationId)}).lean()
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->fetchMessageQuery\n`,error)
             throw error
         }
     }

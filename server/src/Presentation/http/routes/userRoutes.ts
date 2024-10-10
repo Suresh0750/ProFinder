@@ -9,7 +9,8 @@ import {
     profile,
     editprofile,
     conversation,
-    getConversation
+    getConversation,
+    getMessage
 } from "../controllers/UserController";
 
 
@@ -35,6 +36,7 @@ userRouter.put('/updateprofile',upload.single('newImageData'),customeVerify,edit
 // * chats
 userRouter.post('/conversation',customeVerify,authorizeRoles('user'),conversation)
 userRouter.get('/conversation:id',customeVerify,authorizeRoles('user'),getConversation)
+userRouter.get('/message:id',customeVerify,authorizeRoles('user'),getMessage)
 // userRouter.route('/conversation').all(customeVerify, authorizeRoles('user')).get(getConversation).post(conversation);  
 
 
