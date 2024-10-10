@@ -12,15 +12,23 @@ import {
     ProfileUsecases,
     EditprofileUsecases,
     conversationUsecases,
-    getConversationUsecases
+    getConversationUsecases,
+    getMessageUsecases
 } from "../../../app/useCases/user/User";
 
 // * user conversation
-export const getConversation = async (req:Request,res:Response,next:NextFunction)=>{
+export const getMessage = async(req:Request,res:Response,next:NextFunction)=>{  /// * get message and show to user
+    try {
+        const result = await getMessageUsecases(req.params.id)
+        return res.status(StatusCode.Success).json({success:true,message:'successfully msg fetched',result})
+    } catch (error) {
+        console.log(`Error from Presntation->controllers->getMessage \n${error}`)
+        next(error)
+    }
+}
+export const getConversation = async (req:Request,res:Response,next:NextFunction)=>{  // * get worker name who are all have connection
     try {
         const result = await getConversationUsecases(req.params.id)
-        console.log('getConversation')
-        console.log(result)
         return res.status(StatusCode.Success).json({success:true,message:'Data successfully fetched',result})
     } catch (error) {
         console.log(`Error from Presntation->controllers->getConversation \n${error}`)
