@@ -24,6 +24,7 @@ const {data:allMessage,refetch:refetchAllMsg} =  useFetchMessageQuery(conversati
 useEffect(()=>{
   setStopFetch(false)
 },[conversationID])
+
 useEffect(()=>{
   setMessages(allMessage?.result)
   console.log(JSON.stringify(allMessage?.result))

@@ -2,7 +2,14 @@
 "use client"
 import React, { useState,useEffect } from 'react'
 import { Search, Send } from 'lucide-react'
-import {useConversationMutation,useGetAllconversationQuery} from '../../lib/features/api/userApiSlice'
+import {
+  useConversationMutation,
+  useGetAllconversationQuery,
+  useGetAllMessageQuery,
+} from '../../lib/features/api/userApiSlice'
+import {conversationData} from '@/types/userTypes'
+import {readMsgType} from '@/types/utilsTypes'
+import {io,Socket} from 'socket.io-client'
 
 interface Message {
   id: number
@@ -10,6 +17,13 @@ interface Message {
   content: string
   timestamp: string
 }
+interface newMessage {
+  _id: string;
+  message: string;
+  userId: any;
+  workerId: any
+}
+
 
 interface Conversation {
   id: number
@@ -20,19 +34,6 @@ interface Conversation {
   isOnline: boolean
 }
 
-const conversations: Conversation[] = [
-  { id: 1, name: "Liston Fermi", avatar: "/placeholder.svg?height=40&width=40", lastMessage: "Yeah sure, tell me zafor", timestamp: "just now", isOnline: true },
-  { id: 2, name: "Kiran Kannan", avatar: "/placeholder.svg?height=40&width=40", lastMessage: "Thank you so much, sir", timestamp: "2 d", isOnline: false },
-  // Add more conversations here...
-]
-
-const messages: Message[] = [
-  { id: 1, sender: "Liston Fermi", content: "Hello and thanks for signing up to the course. If you have any questions about the course or Adobe XD, feel free to get in touch and I'll be happy to help 😊", timestamp: "Today" },
-  { id: 2, sender: "You", content: "Hello, Good Evening", timestamp: "Today" },
-  { id: 3, sender: "You", content: "I'm Zafor", timestamp: "Today" },
-  { id: 4, sender: "You", content: "I only have a small doubt about your lecture, can you give me some time for this?", timestamp: "Today" },
-  { id: 5, sender: "Liston Fermi", content: "Yeah sure, tell me zafor", timestamp: "Today" },
-]
 
 export default function Chats() {
 
@@ -40,15 +41,68 @@ export default function Chats() {
   const [inputMessage, setInputMessage] = useState("")
   const [conversation] = useConversationMutation()
   const [conversationsData,setConversations] = useState([])
-
+  const [conversationID,setConversationID] = useState('')
+  const [stopFetch,setStopFetch] = useState<boolean>(true)
+  const [messages,setMessages] = useState<readMsgType[]>([])
   const {_id} = JSON.parse(localStorage.getItem('customerData') || '{}')
-
+  const customerData = JSON.parse(localStorage.getItem('customerData') || '{}')
+  const [messageBox,setMessageBox] = useState({})
+  const [socket,setSocket] = useState<Socket|null>(null)
+ 
   // * Fetch all conversation
   const {data} = useGetAllconversationQuery(_id)
+  const {data:allMessage} = useGetAllMessageQuery(conversationID,{skip:stopFetch})
+
+  // * connect the socket
+  useEffect(()=>{
+    const socketInstance = io('http://localhost:3001')
+ 
+    setSocket(socketInstance)
+
+    socketInstance.on("connect",()=>{
+      console.log("Socket connected:", socketInstance.id);
+    })
+    return ()=>{
+      socketInstance.disconnect();
+    }
+  },[])
+
+  useEffect(()=>{
+    if (socket && conversationID) {
+      socket.emit("joinRoom", conversationID);
+    }
+  },[socket,conversationID])
+
+  useEffect(()=>{
+    if (socket) {
+      socket.on("message", (newMessage: newMessage) => {
+        setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+      });
+
+      return () => {
+        socket.off("message");
+      };
+    }
+  },[socket])
+  
+  useEffect(()=>{    // * stop to working the RTK query tool get method
+    setStopFetch(false)
+  },[conversationID])
+
+
+  useEffect(()=>{
+    setMessages(allMessage?.result)
+    console.log(JSON.stringify(allMessage?.result))
+  },[allMessage])
+  
   useEffect(()=>{
     setConversations(data?.result)
   },[data])
 
+  const handleShowMsg = (data:conversationData)=>{
+    setConversationID(data?._id)
+    setMessageBox(data)
+  }
   const handleSendMessage =async (e: React.FormEvent) => {
     e.preventDefault()
     if (inputMessage.trim() !== "") {
@@ -57,8 +111,8 @@ export default function Chats() {
    
       setInputMessage("")
       if((inputMessage).trim()=='') return
-      
-      const result = await conversation({lastMessage:inputMessage,userId:_id,workerId:'66f05d64219621d790f6a4fb'})
+  
+      const result = await conversation({lastMessage:inputMessage,userId:_id,workerId:messageBox?.workerId?._id,conversationId:conversationID})
     }
   }
 
@@ -84,7 +138,7 @@ export default function Chats() {
         </div>
         <div className="overflow-y-auto h-[calc(80vh-120px)]">
           {conversationsData?.length>0 && conversationsData.map((conv) => (
-            <div key={conv._id} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer">
+            <div key={conv?._id} onClick={()=>handleShowMsg(conv)} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer">
               <div className="relative">
                 <img src={conv?.workerId?.Profile} alt={conv?.workerId?.FirstName} className="w-10 h-10 rounded-full" />
                 {false && (
@@ -107,23 +161,23 @@ export default function Chats() {
       <div className="flex-1 m-2 flex rounded border-r flex-col">
         {/* Chat header */}
         <div className="bg-white p-4 border-b flex items-center">
-          <img src="/placeholder.svg?height=40&width=40" alt="Liston Fermi" className="w-10 h-10 rounded-full" />
+        <img src={messageBox?.workerId?.Profile} alt={messageBox?.workerId?.FirstName} className="w-10 h-10 rounded-full" />
           <div className="ml-3">
-            <h2 className="font-semibold">Liston Fermi</h2>
+            <h2 className="font-semibold">{messageBox?.workerId?.FirstName}</h2>
             <p className="text-sm text-green-500">Active Now</p>
           </div>
         </div>
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
-            <div key={message.id} className={`flex ${message.sender === "You" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-xs ${message.sender === "You" ? "bg-indigo-600 text-white" : "bg-gray-200"} rounded-lg p-3`}>
-                <p className="text-sm">{message.content}</p>
-                <p className="text-xs text-right mt-1 opacity-70">{message.timestamp}</p>
-              </div>
-            </div>
-          ))}
+          {messages && messages.map((message) => (
+              <div key={message?._id} className={`flex ${message?.sender ==customerData?._id ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-xs ${message?.sender ==customerData?._id ? "bg-indigo-600 text-white" : "bg-gray-200"} rounded-lg p-3`}>
+                  <p className="text-sm">{message?.message}</p>
+                  <p className="text-xs text-right mt-1 opacity-70">{message?.createdAt}</p>
+                </div>
+              </div>  
+            ))}
         </div>
 
         {/* Message input */}

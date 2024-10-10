@@ -69,5 +69,13 @@ export type Point = {
 
 export type IUser = {
     FirstName :string,
-    
+}
+
+
+
+export type readMsgType = {
+    _id:string,
+    message: string;
+    userId: any;
+    workerId: any
 }

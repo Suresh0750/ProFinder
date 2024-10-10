@@ -75,6 +75,13 @@ export const userApi = createApi({
                 method:'GET',
                 headers:getHeaders('user')
             })
+        }),
+        getAllMessage:builder.query({
+            query:(conversationId:string)=>({
+                url:`/user/message${conversationId}`,
+                method:'GET',
+                headers:getHeaders('user')
+            })
         })
     })
 })
@@ -87,5 +94,6 @@ export const {
     useProfileQuery,
     useUpdateprofileMutation,
     useConversationMutation,
-    useGetAllconversationQuery
+    useGetAllconversationQuery,
+    useGetAllMessageQuery
 } = userApi
