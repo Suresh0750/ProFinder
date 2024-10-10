@@ -98,7 +98,7 @@ export const workerApi = createApi({
                 headers : getHeaders('worker')
             })
         }),
-        getmessage : builder.query({
+        getmessage : builder.query({  // * fetch the all user name who all have conection with him.
             query :(data:string)=>({
                 url : `/worker/message/${data}`,
                 method: "GET",
@@ -108,8 +108,15 @@ export const workerApi = createApi({
         updateMessage: builder.mutation({
             query:(data)=>({
                 url:`/worker/message`,
-                method:"PUT",
+                method:"POST",
                 body:data,
+                headers:getHeaders("worker")
+            })
+        }),
+        fetchMessage : builder.query({
+            query : (data:string)=>({
+                url:`/worker/fetchmessage${data}`,
+                method:"GET",
                 headers:getHeaders("worker")
             })
         })
@@ -130,4 +137,6 @@ export const {
     useAcceptWorkAPIMutation,
     useRejectWorkAPIMutation,
     useGetmessageQuery,
+    useUpdateMessageMutation,
+    useFetchMessageQuery,
 } = workerApi
