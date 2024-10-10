@@ -10,7 +10,6 @@ export const LoginVerify = async (EmailAddress:string,Password:string)=>{
             const isCheckPass =  await checkPassword(Password,actualWorker?.Password)
             return isCheckPass ? actualWorker : false 
         }
-
     }catch(err){
         console.log(`Error from useCases->user->loginVerify ${err}`)
        throw err

@@ -18,17 +18,38 @@ import {
     getRequestUsecases,
     isAcceptUseCasess,
     isRejectUsecases,
-    getChatsNameUsecases
+    getChatsNameUsecases,
+    messageUsecases,
+    fetchMessageUsecases
 } from "../../../app/useCases/worker/workerUsecases"
 
 
 
 // * chat Request details
+export const fetchMessage = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await fetchMessageUsecases(req.params.Id)
+        return res.status(StatusCode.Success).json({success:true,message:'message successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from presentation layer -> http -> fetchMessage \n ${error}`);
+        next(error);
+    }
+}
+
+export const messageController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(`Request reached messageController`)
+        const result = await messageUsecases(req.body)
+        return res.status(StatusCode.Success).json({success:true,message:'successfully sent message to user'})
+    } catch (error) {
+        console.log(`Error from presentation layer -> http -> messageController\n ${error}`);
+        next(error);
+    }
+}
 
 export const getChatsName = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         const result = await getChatsNameUsecases(req.params.Id)
-        console.log(JSON.stringify(result))
         return res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
     } catch (error) {
         console.log(`Error from presentation layer -> http -> getChatsName\n ${error}`);
@@ -41,12 +62,8 @@ export const getChatsName = async(req:Request,res:Response,next:NextFunction)=>{
 
 export const getAllRequestController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(`Request reached getAllRequestcontroller`);
-        console.log(req.params.workerId);
-        
         const result = await getRequestUsecases(req.params.workerId);
-        
-        // Check if headers have already been sent
+        // * Check if headers have already been sent
         if (!res.headersSent) {
             return res.status(StatusCode.Success).json({ 
                 success: true, 
@@ -63,10 +80,6 @@ export const getAllRequestController = async (req: Request, res: Response, next:
 };
 export const isAcceptWorkController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(`request isAcceptWorkcontroller`)
-        console.log(req.params.update)
-       
-        console.log(req.body)
         const result = await isAcceptUseCasess(req.params.update)
         return res.status(StatusCode.Success).json({success:true,message:'successfully updated'})
     } catch (error) {
@@ -77,8 +90,6 @@ export const isAcceptWorkController = async(req:Request,res:Response,next:NextFu
 
 export const isRejectWorkController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(`request isRejectWorkController`)
-        const result = await isRejectUsecases(req.params.id)
         return res.status(StatusCode.Success).json({success:true,message:"Project has been cancelled"})
     } catch (error) {
         console.log(`Error from presentation layer-> http->isRejectWorkController\n ${error}`)
@@ -94,12 +105,9 @@ export const isRejectWorkController = async(req:Request,res:Response,next:NextFu
 
 export const getSingleWorkerDetails = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(`Request getSingleWorkerDetails`)
         const requestData = await getUserRequestDataUsecasuse(req.params.userId,req.params.workerid)
         const result = await getSingleWorkerDetailsUsecases(req.params.workerid)
-        console.log(requestData)
         if(requestData) return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result,requestData})
-
         return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result})
     } catch (error) {
         console.log(`Error from presentation layer-> http->getSingleWorkerDetails\n ${error}`)
@@ -123,8 +131,6 @@ export const AddProjectDetails = async(req:Request,res:Response,next:NextFunctio
 }
 export const getProjectDetails = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(`Request reached getProjectDetails`)
-        console.log(req.params)
         const result = await getWorkerProjectData(req.params.id)
         return res.status(StatusCode.Success).json({success:true,message:'Worker Project Data has been Fetched',result})
     } catch (error) {
@@ -135,23 +141,14 @@ export const getProjectDetails = async (req:Request,res:Response,next:NextFuncti
 
 export const PersonalInformationControll = async (req:Request,res:Response, next : NextFunction)=>{
     try{
-        console.log(`Request reached PersonlInformation`)
-        console.log(req.body)
         const checkWorker = await workerExist(req.body) // * check weather the worker exist or not
-        console.log(checkWorker,'WorkerInformation | undefined')
         if(checkWorker && checkWorker.isVerified) throw new Error('Email already exist')
-
-        console.log(`step 1`)
         const file: IMulterFile |any = req.file
         const imageUrl = await uploadImage(file)    // * call uploadImage usecases
-        console.log(`step 2`)
         req.body.Profile = imageUrl
         const bcyptPass = await hashPassword(req.body.Password)   // * hash the password
-        console.log(`step 3`)
         const workerDetails = req.body
         workerDetails.Password = bcyptPass    // * asign the bcrypt pass
-        console.log(`step 4`)
-        console.log(workerDetails)
         return res.status(StatusCode.Success).json({success:true,workerDetails})
     }catch(error){
         console.log(`Error from presentation layer-> http->PersonalInformation\n ${error}`)
@@ -161,13 +158,10 @@ export const PersonalInformationControll = async (req:Request,res:Response, next
 
 export const ProfessionalInfoControll = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-       
         const file: IMulterFile |any = req.file
         const imageUrl = await uploadImage(file)    // * call uploadImage usecases
         req.body.Identity = imageUrl
-        console.log(req.body)
         const workerId = await WorkerUsecase(req.body)
-        console.log(workerId)
         res.status(200).json({success:true,message:'Worker Details has been register',worker : workerId})
     } catch (error) {
         console.log(`Error from presentation layer-> http->ProfessionalInfoControll\n ${error}`)
@@ -178,9 +172,7 @@ export const ProfessionalInfoControll = async (req:Request,res:Response,next:Nex
 
 export const isCheckEmail = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(req.body)
         const userEmailValidation = await isCheckWorkerEmail(req.body.email)
-        console.log("isCheckEmail",JSON.stringify(userEmailValidation.toString()))
         if(userEmailValidation){
             res.status(200).json({success:true,message:'verified success',userEmailValidation})
         }else {
@@ -197,14 +189,10 @@ export const isCheckEmail = async (req:Request,res:Response,next:NextFunction)=>
 
 export const getWorkerDataController = async (req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(`Req reached getWorkerDataController`)
         const {workerToken} = req.cookies
         if(!workerToken) res.status(StatusCode.Forbidden).json({ message: "Unauthenticated" });
-        // console.log(req)
         const workerData = await getWorkerData(workerToken)
-       
         res.status(StatusCode.Success).json({success:true,message:'success',workerData})
-
     } catch (error) {
         console.log(`Error from presentation layer-> http->getWorkerDataController\n ${error}`)
         next(error) 
@@ -213,11 +201,9 @@ export const getWorkerDataController = async (req:Request,res:Response,next:Next
 
 export const LoginWorkerController = async (req:Request,res:Response,next:NextFunction)=>{
     try{
-        console.log(req.body)
         const loginUsecase : WorkerInformation | boolean = await LoginVerify(req.body?.EmailAddress,req.body?.Password)
         if(!loginUsecase) throw new Error('check email and password')
         else if(loginUsecase._id && loginUsecase.isVerified){
-            console.log("loginUsecase",loginUsecase)
         const  {refreshToken,accessToken} = JwtService((loginUsecase?._id).toString(),loginUsecase.FirstName,loginUsecase.EmailAddress,(req.body.role || "worker"))  
         
         // * JWT referesh token setUp

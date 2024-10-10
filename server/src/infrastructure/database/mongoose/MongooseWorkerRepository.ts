@@ -1,13 +1,15 @@
-
+import {Types} from 'mongoose'
 import {WorkerRepository} from '../../../domain/repositories/WorkerRepository'
-import {PersonalInformation, WorkerInformation,ProjectDetails} from '../../../domain/entities/Worker'
+import {PersonalInformation, WorkerInformation,ProjectDetails,messageTypes} from '../../../domain/entities/Worker'
 
 // * model
 import { WorkerModel } from './models/workerModel'
 import {RequestModal} from './models/RequestModel'
 import {ResentActivityModal} from './models/RecentActivityModel'
 import { ConversationModel } from './models/ConversationModel'
+import { MessageModel } from './models/MessageModel'
 
+const {ObjectId} = Types
 export const getWorkerRepository = ():WorkerRepository =>({
     createWorker: async(workerData:PersonalInformation)=>{
         try {
@@ -154,5 +156,33 @@ export const getWorkerRepository = ():WorkerRepository =>({
             console.log(`Error from infrastructure->database->mongoose->getChatesNameQuery->\n`,error)
             throw error
         }
+    },
+    messageQuery : async(data:messageTypes)=>{
+        try {
+            await new MessageModel(data).save()
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->messageQuery->\n`,error)
+            throw error
+        }
+    },
+    updatemessage : async({_id,lastMessage} :{_id:string,lastMessage:string})=>{
+        try {
+            console.log(`update query`)
+            console.log(_id,lastMessage)
+            await ConversationModel.findByIdAndUpdate({_id},{$set:{lastMessage}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->updatemessage->\n`,error)
+            throw error
+        }
+    },
+    fetchMessage:async(conversationId:string)=>{
+        try {
+            return await MessageModel.find({conversationId:new ObjectId(conversationId)}).lean()
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->fetchMessage->\n`,error)
+            throw error
+        }
     }
 })
+
+

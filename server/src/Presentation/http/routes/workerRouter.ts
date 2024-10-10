@@ -14,7 +14,9 @@ import {
     getAllRequestController,
     isAcceptWorkController,
     isRejectWorkController,
-    getChatsName
+    getChatsName,
+    messageController,
+    fetchMessage
     } from "../controllers/WorkerController"
 
 
@@ -24,6 +26,8 @@ const workerRouter = Router()
 // * chats in worker side
 
 workerRouter.get('/message/:Id',authorizeRoles('worker'),getChatsName)
+workerRouter.post('/message',authorizeRoles('worker'),messageController)
+workerRouter.get('/fetchmessage:Id',authorizeRoles('worker'),fetchMessage)
 
 
 // * request details or woker

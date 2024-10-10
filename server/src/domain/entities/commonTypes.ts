@@ -70,3 +70,16 @@ export type conversationTypes = {
   updateAt? : Date
 }
 
+
+// * message 
+
+export interface messageType {
+_id? : Types.ObjectId
+conversationId : Types.ObjectId
+sender : string
+message : string
+isRead : boolean
+createdAt : Date
+updatedAt :Date
+__v ? : number
+}
