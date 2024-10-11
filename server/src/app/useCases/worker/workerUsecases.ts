@@ -11,6 +11,18 @@ import {Types} from 'mongoose'
 export const {ObjectId} = Types
 
 
+export const dashboardUsescases = async(workerId:string)=>{
+    try {
+        const ResentActivity :any = await getWorkerRepository().countResentWorkQuery(workerId)
+        console.log('dashboard')
+        console.log(ResentActivity)
+        return {ResentActivity}
+    } catch (error) {
+        console.log(`Error from useCases->worker->dashboardUsescases\n`,error)
+        throw error  
+    }
+}
+
 
 
 // * get chats usecause 
@@ -62,10 +74,12 @@ export const getRequestUsecases = async (workerId:string)=>{
     }
 }
 
-export const isAcceptUseCasess = async(data:any)=>{
+export const isAcceptUseCasess = async(data:any,workerId:string)=>{
     try {
         const {_id,isPayment} = JSON.parse(data)
-        return await getWorkerRepository().isAcceptWorkQuery(_id,Number(isPayment))
+        
+         await getWorkerRepository().isAcceptWorkQuery(_id,Number(isPayment))
+         return  await getWorkerRepository().isResendActivityQuery(_id,Number(isPayment),workerId)
     } catch (error) {
         console.log(`Error from useCases->worker->isAcceptUseCasess\n`,error)
         throw error

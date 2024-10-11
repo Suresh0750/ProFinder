@@ -16,12 +16,15 @@ import {
     isRejectWorkController,
     getChatsName,
     messageController,
-    fetchMessage
+    fetchMessage,
+    Dashboard
     } from "../controllers/WorkerController"
 
 
 const workerRouter = Router()
 
+// * worker dashboard
+workerRouter.get('/dashboard:Id',customeVerify,authorizeRoles('worker'),Dashboard)
 
 // * chats in worker side
 
@@ -33,7 +36,7 @@ workerRouter.get('/fetchmessage:Id',authorizeRoles('worker'),fetchMessage)
 // * request details or woker
 
 workerRouter.get("/getRequestData:workerId",authorizeRoles('worker'),getAllRequestController)
-workerRouter.put("/isAcceptWork/:update",authorizeRoles('worker'),isAcceptWorkController)
+workerRouter.put("/isAcceptWork/:update",customeVerify,authorizeRoles('worker'),isAcceptWorkController)
 workerRouter.put("/rejectWork/:id",authorizeRoles('worker'),isRejectWorkController)
 
 // * get single worker Details

@@ -20,10 +20,24 @@ import {
     isRejectUsecases,
     getChatsNameUsecases,
     messageUsecases,
-    fetchMessageUsecases
+    fetchMessageUsecases,
+    dashboardUsescases
 } from "../../../app/useCases/worker/workerUsecases"
 
+// * dashboard
 
+export const Dashboard = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.params.Id)
+        const {customerId} = req.session
+        console.log(req.session)
+        const {ResentActivity} = await dashboardUsescases((customerId || ''))
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',ResentActivity})
+    } catch (error) {
+        console.log(`Error from presentation layer -> http -> Dashboard \n ${error}`);
+        next(error);
+    }
+}
 
 // * chat Request details
 export const fetchMessage = async(req:Request,res:Response,next:NextFunction)=>{
@@ -80,7 +94,10 @@ export const getAllRequestController = async (req: Request, res: Response, next:
 };
 export const isAcceptWorkController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        const result = await isAcceptUseCasess(req.params.update)
+        const {customerId} = req.session
+        console.log('isAcceptWorkerController')
+        console.log(customerId)
+        const result = await isAcceptUseCasess(req.params.update,(customerId|| ''))
         return res.status(StatusCode.Success).json({success:true,message:'successfully updated'})
     } catch (error) {
         console.log(`Error from presentation layer-> http->isAcceptWorkController\n ${error}`)

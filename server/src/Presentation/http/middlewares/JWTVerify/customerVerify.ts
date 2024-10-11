@@ -7,8 +7,10 @@ declare module 'express-session' {
     interface SessionData {
         UserData: customerDetails;
         WorkerData: customerDetails;
+        customerId: string;
     }
 }
+
 
 // * Middleware to verify user or worker based on role
 export const customeVerify = (req: Request, res: Response, next: NextFunction) => {
@@ -70,13 +72,16 @@ export const WorkerJWT = async (req: Request, res: Response, next: NextFunction)
         if (!workerAccessToken) {
             // * Attempt to renew token if access token is not present
             if (await renewToken(req, res)) {
+               
                 return next();
             }
             return res.status(StatusCode.Unauthorized).json({success:false, message: 'Access token is missing and renewal failed' });
         }
 
         const WorkerData = jwt.verify(workerAccessToken, String(process.env.ACCESS_TOKEN_SECRET)) as customerDetails;
-        req.session.WorkerData = WorkerData;
+        // req.session.WorkerData = WorkerData;
+        req.session.customerId  = WorkerData?.customerId
+        req.session.save()
         return next();
 
     } catch (error) {
@@ -134,13 +139,14 @@ export const renewToken = async (req: Request, res: Response): Promise<boolean> 
             
             try {
                 workerRefreshTokenData = jwt.verify(refreshToken, String(process.env.REFRESH_TOKEN_SECRET));
+                // req.session.WorkerData = workerRefreshTokenData
             } catch (error) {
                 console.error('Invalid refresh token:', error);
                 return false; // Invalid refresh token
             }
     
             const { customerId, customerName, customerEmail, role } = workerRefreshTokenData as customerDetails;
-    
+            req.session.customerId  = customerId
             // * Generate new access token
             const accessToken = jwt.sign(
                 { customerId, customerName, customerEmail, role },

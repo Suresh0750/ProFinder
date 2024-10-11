@@ -5,7 +5,7 @@ import {PersonalInformation, WorkerInformation,ProjectDetails,messageTypes} from
 // * model
 import { WorkerModel } from './models/workerModel'
 import {RequestModal} from './models/RequestModel'
-import {ResentActivityModal} from './models/RecentActivityModel'
+import {ResentActivityModel} from './models/RecentActivityModel'
 import { ConversationModel } from './models/ConversationModel'
 import { MessageModel } from './models/MessageModel'
 
@@ -143,7 +143,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     IsActivityQuery : async(requestId:string,paymentId:string)=>{
         try {
-            await ResentActivityModal.updateOne({requestId,paymentId})
+            await ResentActivityModel.updateOne({requestId,paymentId})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->IsActivityQuery->\n`,error)
             throw error
@@ -197,6 +197,57 @@ export const getWorkerRepository = ():WorkerRepository =>({
             await ConversationModel.updateOne({conversationId},{$set:{workerUnread:0}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->updateIsReadQuery->\n`,error)
+            throw error 
+        }
+    },
+    isResendActivityQuery : async(requestId:string,payment:number,workerId:string)=>{
+        try {
+            await  ResentActivityModel.create({requestId,payment,workerId})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->isResendActivityQuery->\n`,error)
+            throw error 
+        }
+    },
+    countResentWorkQuery: async(workerId:string)=>{
+        try{
+            // return await ResentActivityModel.find({workerId,isCompleted:false}).countDocuments()
+            return await ResentActivityModel.aggregate([
+                { $match: { workerId } },
+                {
+                    $group: {
+                        _id: null, // Grouping all documents together
+                        countIsCompleteFalse: {
+                            $sum: { $cond: [{ $eq: ["$isCompleted", false] }, 1, 0] }
+                        },
+                        countIsCompleteTrue: {
+                            $sum: { $cond: [{ $eq: ["$isCompleted", true] }, 1, 0] }
+                        },
+                        totalPayment: {
+                            $sum: { $cond: [{ $eq: ["$isCompleted", true] }, "$payment", 0] } // Sum payment where isCompleted is true
+                        },
+                        pendingPayment: {
+                            $sum: { 
+                                $cond: [
+                                    { $and: [{ $eq: ["$paymentId", null] }, { $eq: ["$isCompleted", true] }] }, 
+                                    "$payment", 
+                                    0 
+                                ] 
+                            }
+                        },
+                        pendingCustomer: {
+                            $sum: { 
+                                $cond: [
+                                    { $and: [{ $eq: ["$paymentId", null] }, { $eq: ["$isCompleted", true] }] }, 
+                                    "$_id", 
+                                    0 
+                                ] 
+                            }
+                        }
+                    }
+                }
+            ]);
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->isResendActivityQuery->\n`,error)
             throw error 
         }
     }

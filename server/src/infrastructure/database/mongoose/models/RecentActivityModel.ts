@@ -1,12 +1,13 @@
 
-import {Schema,model} from 'mongoose'
+import {Schema,model,Types} from 'mongoose'
 
 
 const ResentActivitySchema = new Schema({
-    requestId : String,
-    isCompleted: Boolean,
-    paymentId : String,
-   
+    requestId : {type:Types.ObjectId,ref:'RequestCollection',required:true},
+    workerId : {type:String,required:true},
+    isCompleted: {type:Boolean,default:false},
+    paymentId : {type:String},
+    payment : {type:Number}
 },{ timestamps: true })
 
-export const ResentActivityModal = model("ResentActivitySchema",ResentActivitySchema)
+export const ResentActivityModel = model("ResentActivitycollection",ResentActivitySchema)
