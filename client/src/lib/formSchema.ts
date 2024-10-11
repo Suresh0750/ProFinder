@@ -54,7 +54,7 @@ export const FormSchema = z.object({
 // * Form validation schema using Zod
 export  const professionalInfoFormSchema = z.object({
     
-      Category: z.string().min(1, { message: "Category is required." }),
+      Category: z.any(),
       Country: z.string().min(1, { message: "Country is required." }),
       StreetAddress: z.string().min(1, { message: "Street address is required." }),
       City: z.string().min(1, { message: "City is required." }),

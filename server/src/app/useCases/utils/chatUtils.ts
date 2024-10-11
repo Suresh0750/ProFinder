@@ -1,4 +1,5 @@
 
+// * chat application send the message between user and worker
 
 import {io} from '../../../server'
 import {messageType} from '../../../domain/entities/commonTypes'
