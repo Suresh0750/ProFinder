@@ -94,10 +94,30 @@ export default function Chats() {
     setConversations(data?.result)
   },[data])
 
-  const handleShowMsg = (data:conversationData)=>{
-    setConversationID(data?._id)
-    setMessageBox(data)
-  }
+  const handleShowMsg = (data: conversationData) => {
+    if (!data || !data._id) {
+        console.warn("Invalid data or missing ID:", data);
+        return; // Early exit if data is invalid
+    }
+
+    console.log("Showing message for conversation ID:", data._id);
+
+    setConversationID(data._id);
+    setMessageBox(data);
+
+    setConversations((prevConv:any) => {
+       
+        const result = prevConv?.map((conv) => {
+            if (conv._id === data?._id) {
+                console.log("Updating unread count for:", conv);
+                return { ...conv, userUnread: 0 }; // Update unread count
+            }
+            return conv; // Return original conversation
+        });
+
+        return result;
+    });
+};
   const handleSendMessage =async (e: React.FormEvent) => {
     e.preventDefault()
     if (inputMessage.trim() !== "") {
@@ -167,7 +187,7 @@ export default function Chats() {
         <img src={messageBox?.workerId?.Profile} alt={messageBox?.workerId?.FirstName} className="w-10 h-10 rounded-full" />
           <div className="ml-3">
             <h2 className="font-semibold">{messageBox?.workerId?.FirstName}</h2>
-            <p className="text-sm text-green-500">Active Now</p>
+            {/* <p className="text-sm text-green-500">Active Now</p> */}
           </div>
         </div>
 
