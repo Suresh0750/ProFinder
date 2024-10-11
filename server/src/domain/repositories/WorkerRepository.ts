@@ -32,4 +32,6 @@ export interface WorkerRepository{
     fetchMessage(conversationId:string):Promise<messageType[] | null>
     getSingleMsg(message:string):Promise<messageType |null>
     updateIsReadQuery(conversationId:string) :Promise<void>
+    isResendActivityQuery(requestId:string,payment:number,wokerId:string):Promise<void>
+    countResentWorkQuery(workerId:string) :Promise<any>
 }
