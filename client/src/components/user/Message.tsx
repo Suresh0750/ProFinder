@@ -8,7 +8,7 @@ import {
   useGetAllMessageQuery,
 } from '../../lib/features/api/userApiSlice'
 import {conversationData} from '@/types/userTypes'
-import {readMsgType} from '@/types/utilsTypes'
+import {readMsgType,newMessage} from '@/types/utilsTypes'
 import {io,Socket} from 'socket.io-client'
 
 interface Message {
@@ -16,12 +16,6 @@ interface Message {
   sender: string
   content: string
   timestamp: string
-}
-interface newMessage {
-  _id: string;
-  message: string;
-  userId: any;
-  workerId: any
 }
 
 

@@ -47,3 +47,18 @@ export interface MaterialCarouselProps {
                 }
               ];
             }
+
+
+export interface conversationData {
+        _id : string,
+        userId : {
+          _id : string,
+          username:string,
+          profile :string
+        },
+        workerId :string,
+        lastMessage:string,
+        createdAt? :Date | string,
+        updatedAt?:Date | string
+      }
+            

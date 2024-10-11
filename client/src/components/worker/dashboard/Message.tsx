@@ -1,12 +1,14 @@
 "use client"
 import React, { useState,useEffect } from 'react'
 import { Search, Send } from 'lucide-react'
-
+import {conversationData} from '@/types/workerTypes'
 import {
     useGetmessageQuery,
     useUpdateMessageMutation,
     useFetchMessageQuery
 } from '../../../lib/features/api/workerApiSlice'
+import {readMsgType,newMessage} from '@/types/utilsTypes'
+import {io,Socket} from 'socket.io-client'
 
 const Message = ()=>{
 const [inputMessage, setInputMessage] = useState("")
@@ -20,72 +22,85 @@ const [updateMessage] = useUpdateMessageMutation()
 const customerData = JSON.parse((localStorage.getItem("customerData") || '{}'))
 const {data,refetch} = useGetmessageQuery(customerData?._id)
 const {data:allMessage,refetch:refetchAllMsg} =  useFetchMessageQuery(conversationID,{skip:stopFetch})
+const [socket,setSocket] = useState<Socket|null>(null)
+const [messageBox,setMessageBox] = useState<conversationData>({})
 
-useEffect(()=>{
-  setStopFetch(false)
-},[conversationID])
-
-useEffect(()=>{
-  setMessages(allMessage?.result)
-  console.log(JSON.stringify(allMessage?.result))
-},[allMessage])
-
-
-const [messageBox,setMessageBox] = useState({
-    _id: '67065637907ae6d250f820d9',
-    userId: {
-      _id: '66ea91c78f03af0b8231af43',
-      username: 'Suresh',
-      profile: 'https://profinder.s3.eu-north-1.amazonaws.com/uploads/1728278186893_heap 2.png'
-    },
-    workerId: '66f239b0523daeb45fb10a51',
-    lastMessage: '',
-    createdAt: '2024-10-09T10:08:55.636Z',
-    updatedAt: '2024-10-09T13:29:18.381Z'
-  })
-interface Message {
-  id: number
-  sender: string
-  content: string
-  timestamp: string
-}
-
-interface Conversation {
-  id: number
-  name: string
-  avatar: string
-  lastMessage: string
-  timestamp: string
-  isOnline: boolean
+interface newMessage {
+  _id: string;
+  message: string;
+  userId: any;
+  workerId: any
 }
 
 
+ // * connect the socket
+  useEffect(()=>{
+    const socketInstance = io('http://localhost:3001')
+
+    setSocket(socketInstance)
+
+    socketInstance.on("connect",()=>{
+      console.log("Socket connected:", socketInstance.id);
+    })
+    return ()=>{
+      socketInstance.disconnect();
+    }
+  },[])
+
+  useEffect(()=>{
+    if (socket && conversationID) {
+      socket.emit("joinRoom", conversationID);
+    }
+  },[socket,conversationID])
+
+  useEffect(()=>{
+    if (socket) {
+      socket.on("message", (newMessage: newMessage) => {
+ 
+        setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+      });
+
+      return () => {
+        socket.off("message");
+      };
+    }
+  },[socket])
+
+  useEffect(()=>{
+    setStopFetch(false)
+  },[conversationID])
+
+  useEffect(()=>{
+    setMessages(allMessage?.result)
+    console.log(JSON.stringify(allMessage?.result))
+  },[allMessage])
+  
+
+
+
+
 useEffect(()=>{
-    alert(JSON.stringify(data))
-    console.log(JSON.stringify(data?.result))
+    // console.log(JSON.stringify(data?.result))
     setCustomerDatails(data?.result)
 },[data])
+
+
+
+const handleShowMsg = (data:conversationData)=>{
+  setConversationID(data?._id)
+  setMessageBox(data)
+}
 
 const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
     if (inputMessage.trim() !== "") {
       // Here you would typically send the message to your backend
       console.log("Sending message:", inputMessage)
-      alert(inputMessage)
       setInputMessage("")
       const result = updateMessage({conversationId:messageBox?._id,sender:messageBox?.workerId,message:inputMessage})
-      refetch()
-      refetchAllMsg()
     }
   }
 
-// const messages: Message[] = [
-//   { id: 1, sender: "Liston Fermi", content: "Hello and thanks for signing up to the course. If you have any questions about the course or Adobe XD, feel free to get in touch and I'll be happy to help 😊", timestamp: "Today" },
-//   { id: 2, sender: "You", content: "Hello, Good Evening", timestamp: "Today" },
-//   { id: 3, sender: "You", content: "I'm Zafor", timestamp: "Today" },
-//   { id: 4, sender: "You", content: "I only have a small doubt about your lecture, can you give me some time for this?", timestamp: "Today" },
-//   { id: 5, sender: "Liston Fermi", content: "Yeah sure, tell me zafor", timestamp: "Today" },
-// ]
 
     return(
         <>
@@ -109,7 +124,7 @@ const handleSendMessage = (e: React.FormEvent) => {
         </div>
         <div className="overflow-y-auto h-[calc(80vh-120px)]">
           {customerDatails?.length && customerDatails?.map((conv) => (
-            <div key={conv?._id} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer" onClick={()=>setConversationID(conv?._id)}>
+            <div key={conv?._id} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer" onClick={()=>handleShowMsg(conv)}>
               <div className="relative">
                 <img src={conv?.userId?.profile} alt={conv?.userId?.username} className="w-10 h-10 rounded-full" />
                 {false && (
