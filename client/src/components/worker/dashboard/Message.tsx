@@ -59,7 +59,6 @@ interface newMessage {
         setMessages((prevMessage:any)=>[...prevMessage,newMessage])
         setCustomerDatails((prevConv:any)=>{
           const result = prevConv?.map((conv)=>{
-            alert(JSON.stringify(conv))
             if(conv._id==newMessage?.conversationId){
               return {...conv,lastMessage:newMessage?.message}
             }

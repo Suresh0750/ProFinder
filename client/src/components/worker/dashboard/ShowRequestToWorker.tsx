@@ -20,6 +20,7 @@ const FormComponent = ({ onClose }: { onClose: () => void; }) => {
     useEffect(()=>{
         setRequestData(data?.result)
         console.log(JSON.stringify(data))
+        alert(JSON.stringify(data?.result))
     },[])
 
     const handleDropdownClick = (index: number) => {

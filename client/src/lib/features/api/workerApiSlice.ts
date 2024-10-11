@@ -119,6 +119,13 @@ export const workerApi = createApi({
                 method:"GET",
                 headers:getHeaders("worker")
             })
+        }),
+        dashboard : builder.query({
+            query : (data:string)=>({
+                url:`/worker/dashboard${data}`,
+                method:"GET",
+                headers:getHeaders("worker")
+            })
         })
     })
 })
@@ -139,4 +146,5 @@ export const {
     useGetmessageQuery,
     useUpdateMessageMutation,
     useFetchMessageQuery,
+    useDashboardQuery,
 } = workerApi
