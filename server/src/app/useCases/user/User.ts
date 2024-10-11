@@ -6,7 +6,6 @@ import { getUserRepository } from "../../../infrastructure/database/mongoose/Mon
 import { hashPassword } from "../../../shared/utils/encrptionUtils";
 import { OtpService } from "../../services/OtpService";
 import { OtpStoreData } from "../utils/OtpStoreData";
-import {io} from '../../../server'
 import { sendMessage } from "../utils/chatUtils";
 
 // * user in chat side
