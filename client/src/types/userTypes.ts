@@ -10,15 +10,6 @@ export interface ProfileFormData {
                 address: string;
             }
 
-// export type FormValues = {
-//                 username: string;
-//                 email: string;
-//                 phoneNumber: string;
-//                 address: string;
-//                 photo?: FileList;
-//             };
-
- 
 export const userProfileSchema = z.object({
   username: z.string().min(1, 'Username is required'),
   email: z.string().email('Enter a valid email').min(1, 'Email is required'),
@@ -47,4 +38,18 @@ export interface messageTypes {
     conversationId: string,
     sender:string,
     message:string,
+}
+
+export interface conversationData {
+  _id : string,
+  userId : string,
+  workerId : {
+    _id : string,
+    FirstName : string,
+    PhoneNumber : number,
+    Profile : string,
+    lastMessage : string,
+    createdAt : Date | string,
+    updatedAt : Date | string,
+  }
 }
