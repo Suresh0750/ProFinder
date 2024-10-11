@@ -56,8 +56,17 @@ interface newMessage {
   useEffect(()=>{
     if (socket) {
       socket.on("message", (newMessage: newMessage) => {
- 
         setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+        setCustomerDatails((prevConv:any)=>{
+          const result = prevConv?.map((conv)=>{
+            alert(JSON.stringify(conv))
+            if(conv._id==newMessage?.conversationId){
+              return {...conv,lastMessage:newMessage?.message}
+            }
+            return conv
+          })
+          return result
+        })
       });
 
       return () => {
@@ -75,21 +84,34 @@ interface newMessage {
     console.log(JSON.stringify(allMessage?.result))
   },[allMessage])
   
-
-
-
-
 useEffect(()=>{
     // console.log(JSON.stringify(data?.result))
     setCustomerDatails(data?.result)
 },[data])
 
+const handleShowMsg = (data: conversationData) => {
+  if (!data || !data._id) {
+      console.warn("Invalid data or missing ID:", data);
+      return; // Early exit if data is invalid
+  }
 
+  console.log("Showing message for conversation ID:", data._id);
 
-const handleShowMsg = (data:conversationData)=>{
-  setConversationID(data?._id)
-  setMessageBox(data)
-}
+  setConversationID(data._id);
+  setMessageBox(data);
+
+  setCustomerDatails((prevConv:any) => {
+      const result = prevConv?.map((conv) => {
+          if (conv._id === data?._id) {
+              console.log("Updating unread count for:", conv);
+              return { ...conv, workerUnread: 0 }; // Update unread count
+          }
+          return conv; // Return original conversation
+      });
+
+      return result;
+  });
+};
 
 const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
@@ -134,7 +156,14 @@ const handleSendMessage = (e: React.FormEvent) => {
               <div className="ml-3 flex-1">
                 <div className="flex justify-between items-baseline">
                   <h3 className="font-semibold text-sm">{conv?.userId?.username}</h3>
+                  <div>
                   <span className="text-xs text-gray-500">{(conv?.updatedAt)?.split('T')[1]?.split('.')[0]}</span>
+                  <div className=" bottom-0 right-0 text-center bg-green-400 rounded-full border-2 border-white">
+                    {
+                      conv?.workerUnread>0 && <span className='w-3 h-3'>{conv?.workerUnread}</span> 
+                    }
+                  </div>
+                  </div>
                 </div>
                 <p className="text-sm text-gray-600 truncate">{conv.lastMessage}</p>
               </div>

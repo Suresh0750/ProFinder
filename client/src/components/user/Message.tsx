@@ -67,11 +67,33 @@ export default function Chats() {
     }
   },[socket,conversationID])
 
+  // useEffect(()=>{
+  //   if (socket) {
+  //     socket.on("message", (newMessage: newMessage) => {
+  //       // alert(JSON.stringify(newMessage))
+  //       setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+  //     });
+
+  //     return () => {
+  //       socket.off("message");
+  //     };
+  //   }
+  // },[socket])
+
   useEffect(()=>{
     if (socket) {
       socket.on("message", (newMessage: newMessage) => {
-        // alert(JSON.stringify(newMessage))
         setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+        setConversations((prevConv:any)=>{
+          const result = prevConv?.map((conv)=>{
+            alert(JSON.stringify(conv))
+            if(conv._id==newMessage?.conversationId){
+              return {...conv,lastMessage:newMessage?.message}
+            }
+            return conv
+          })
+          return result
+        })
       });
 
       return () => {
@@ -79,6 +101,7 @@ export default function Chats() {
       };
     }
   },[socket])
+
   
   useEffect(()=>{    // * stop to working the RTK query tool get method
     setStopFetch(false)
