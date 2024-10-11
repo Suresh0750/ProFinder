@@ -70,6 +70,7 @@ export default function Chats() {
   useEffect(()=>{
     if (socket) {
       socket.on("message", (newMessage: newMessage) => {
+        // alert(JSON.stringify(newMessage))
         setMessages((prevMessage:any)=>[...prevMessage,newMessage])
       });
 
@@ -142,7 +143,15 @@ export default function Chats() {
               <div className="ml-3 flex-1">
                 <div className="flex justify-between items-baseline">
                   <h3 className="font-semibold text-sm">{conv?.workerId?.FirstName}</h3>
+                  <div>
                   <span className="text-xs text-gray-500">{(conv?.updatedAt)?.split('T')[1]?.split('.')[0]}</span>
+                  <div className=" bottom-0 right-0 text-center bg-green-400 rounded-full border-2 border-white">
+                    {
+                      conv?.userUnread>0 && <span className='w-3 h-3'>{conv?.userUnread}</span> 
+                    }
+                    
+                  </div>
+                  </div>
                 </div>
                 <p className="text-sm text-gray-600 truncate">{conv?.lastMessage}</p>
               </div>

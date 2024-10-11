@@ -78,9 +78,9 @@ export const customerApi  = createApi({
         }),
         customerGoogleVerification : builder.mutation({
             query : (data)=>({
-                url : `/customer/customerGoogleVerification${data}`,
+                url : `/customer/customerGoogleVerification`,
                 method : "POST",
-                body :data,
+                body :JSON.stringify(data),
                 headers : getHeaders('customer')
             })
         }),

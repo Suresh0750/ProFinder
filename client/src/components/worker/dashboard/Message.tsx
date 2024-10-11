@@ -123,7 +123,7 @@ const handleSendMessage = (e: React.FormEvent) => {
           </div>
         </div>
         <div className="overflow-y-auto h-[calc(80vh-120px)]">
-          {customerDatails?.length && customerDatails?.map((conv) => (
+          {customerDatails?.length >0&& customerDatails?.map((conv) => (
             <div key={conv?._id} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer" onClick={()=>handleShowMsg(conv)}>
               <div className="relative">
                 <img src={conv?.userId?.profile} alt={conv?.userId?.username} className="w-10 h-10 rounded-full" />
@@ -150,7 +150,7 @@ const handleSendMessage = (e: React.FormEvent) => {
           <img src={messageBox?.userId?.profile} alt={messageBox?.userId?.username} className="w-10 h-10 rounded-full" />
           <div className="ml-3">
             <h2 className="font-semibold">{messageBox?.userId?.username}</h2>
-            <p className="text-sm text-green-500">Active Now</p>
+            {/* <p className="text-sm text-green-500">Active Now</p> */}
           </div>
         </div>
 
@@ -160,7 +160,7 @@ const handleSendMessage = (e: React.FormEvent) => {
             <div key={message?._id} className={`flex ${message?.sender ==customerData?._id ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-xs ${message?.sender ==customerData?._id ? "bg-indigo-600 text-white" : "bg-gray-200"} rounded-lg p-3`}>
                 <p className="text-sm">{message?.message}</p>
-                <p className="text-xs text-right mt-1 opacity-70">{message?.createdAt}</p>
+                <p className="text-xs text-right mt-1 opacity-70">{(message?.createdAt)?.split('T')[1]?.split('.')[0]}</p>
               </div>
             </div>  
           ))}
