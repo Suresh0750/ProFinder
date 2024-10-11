@@ -211,7 +211,8 @@ export const WorkerGoogleLoginWithRegistrastion = async (req:Request,res:Respons
     try {
         console.log('Request reached WorkerGoogleLoginWithRegistrastion')
         console.log(req.params)
-        const result :(WorkerInformation | null | undefined)= await workerGoogleVerification(req.params.email)
+        console.log(req.body)
+        const result :(WorkerInformation | null | undefined)= await workerGoogleVerification(req.body.email)
         console.log("result",result)
         if(!result) return res.status(StatusCode.NotFound).json({success:false,message:`Worker has't register`,modal:true})
         else{

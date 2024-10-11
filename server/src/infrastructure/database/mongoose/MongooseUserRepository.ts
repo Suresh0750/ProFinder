@@ -128,7 +128,7 @@ export const getUserRepository = () : IUserRepository =>({
     },
     updateConversation:async(data:conversationTypes)=>{
         try{
-            await ConversationModel.updateOne({userId:new ObjectId(data.userId)},{$set:{lastMessage:data?.lastMessage}})
+            await ConversationModel.updateOne({userId:new ObjectId(data.userId)},{$set:{lastMessage:data?.lastMessage},$inc:{workerUnread:1}})
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->updateConversation\n`,error)
             throw error
@@ -153,6 +153,7 @@ export const getUserRepository = () : IUserRepository =>({
     },
     fetchMessageQuery : async(conversationId:string)=>{
         try{
+            await ConversationModel.updateOne({conversationId},{$set:{userUnread:0}})
             return await MessageModel.find({conversationId:new ObjectId(conversationId)}).lean()
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->fetchMessageQuery\n`,error)

@@ -169,7 +169,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
         try {
             console.log(`update query`)
             console.log(_id,lastMessage)
-            await ConversationModel.findByIdAndUpdate({_id},{$set:{lastMessage}})
+            await ConversationModel.findByIdAndUpdate({_id},{$set:{lastMessage},$inc:{userUnread:1}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->updatemessage->\n`,error)
             throw error
@@ -189,6 +189,15 @@ export const getWorkerRepository = ():WorkerRepository =>({
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->getSingleMsg->\n`,error)
             throw error
+        }
+    },
+    updateIsReadQuery : async(conversationId:string)=>{
+        try {
+            await MessageModel.updateMany({conversationId,isRead:false},{$set:{isRead:true}}) // * while worker fetch the data
+            await ConversationModel.updateOne({conversationId},{$set:{workerUnread:0}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->updateIsReadQuery->\n`,error)
+            throw error 
         }
     }
 })

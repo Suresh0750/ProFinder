@@ -16,6 +16,7 @@ export const {ObjectId} = Types
 // * get chats usecause 
 export const fetchMessageUsecases = async(conversationId:string)=>{
     try{
+        await getWorkerRepository().updateIsReadQuery(conversationId)
         return await getWorkerRepository().fetchMessage(conversationId)
     }catch(error){
         console.log(`Error from useCases->worker->fetchMessageUsecases\n`,error)
@@ -38,7 +39,10 @@ export const messageUsecases = async(data:messageType)=>{
 }
 export const getChatsNameUsecases = async(_id:string)=>{
     try{
-        return await getWorkerRepository().getChatsNameQuery(_id)
+        
+        const result = await getWorkerRepository().getChatsNameQuery(_id)
+        console.log(JSON.stringify(result))
+        return result
     }catch(error){
         console.log(`Error from useCases->worker->getChatsNameUsecases\n`,error)
         throw error

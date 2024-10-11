@@ -11,7 +11,9 @@ const ConversationShema = new Schema({
         ref:'workerdetails',
         required:true
     },
-    lastMessage : {type:String,required:true},
+    lastMessage : {type:String},
+    userUnread : {type:Number,default:0},
+    workerUnread : {type:Number,default:0},
 },{timestamps:true})
 
 

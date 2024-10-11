@@ -90,11 +90,6 @@ export const io=new serverSocket(httpServer,{
   }
 })
 socketHandler(io)
-// connectDB().then(() => {
-//   app.listen(PORT, () => {
-//     console.log(`server running on \n http://localhost:${PORT}`);
-//   });
-// });
 
 connectDB().then(() => {
   httpServer.listen(PORT, () => {
