@@ -5,6 +5,11 @@ import {OtpService} from '../../services/OtpService'
 import {OtpStoreData} from '../utils/OtpStoreData'
 import {verifyRefreshToken} from "../../../infrastructure/service/JwtService"
 import {GeoCoding} from "../../../infrastructure/service/geoCode"
+import { sendMessage } from '../utils/chatUtils'
+import { messageType } from '../../../domain/entities/commonTypes'
+import {Types} from 'mongoose'
+export const {ObjectId} = Types
+
 
 
 
@@ -18,13 +23,13 @@ export const fetchMessageUsecases = async(conversationId:string)=>{
     }
 }
 
-export const messageUsecases = async(data:messageTypes)=>{
-    try {
-        console.log(`Request in message usecases`)
-        console.log(data)
+export const messageUsecases = async(data:messageType)=>{
+    try {       
         const {message,conversationId} = data
         await getWorkerRepository().messageQuery(data)
-        await getWorkerRepository().updatemessage({_id:conversationId,lastMessage:message})
+        const result = await getWorkerRepository().getSingleMsg(message)
+        if(result) await sendMessage(result)   // * here call the socket
+        await getWorkerRepository().updatemessage({_id:new ObjectId(conversationId),lastMessage:message})
         return 
     } catch (error) {
         console.log(`Error from useCases->worker->messageUsecases\n`,error)

@@ -1,4 +1,5 @@
-// * worker Project details
+// * worker Project details]
+import {Types} from 'mongoose'
 
 export interface ProjectDetails {
     _id? : string,
@@ -70,8 +71,12 @@ export type workerRequest = {
 }
 
 export type messageTypes = {
-    conversationId : string,
+    conversationId : Types.ObjectId | string,
     message : string,
     sender : string,
     lastMessage?: string
+    isRead ?: boolean
+    createdAt? : Date | string,
+    updatedAt?: Date | string,
+    __v ? : number
 }
