@@ -31,4 +31,5 @@ export interface WorkerRepository{
     updatemessage({_id,lastMessage}:{_id:Types.ObjectId,lastMessage:string}) : Promise<void>
     fetchMessage(conversationId:string):Promise<messageType[] | null>
     getSingleMsg(message:string):Promise<messageType |null>
+    updateIsReadQuery(conversationId:string) :Promise<void>
 }

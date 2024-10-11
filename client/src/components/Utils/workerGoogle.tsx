@@ -89,7 +89,8 @@ const GoogleSignIn: React.FC<{ role: string }> = ({ role }) => {
         Profile: picture,
         EmailAddress: email,
       });
-      const result  = await customerGoogleVerification(email).unwrap();
+      // alert(email)
+      const result  = await customerGoogleVerification({email:email}).unwrap();
 
       console.log(result);
       console.log(result.success);
@@ -112,7 +113,7 @@ const GoogleSignIn: React.FC<{ role: string }> = ({ role }) => {
     }
   };
 
-  // Handle Google login failure
+  // * Handle Google login failure
   const handleLoginFailure = (error: any) => {
     console.log('Login Failed:', error);
   };
@@ -136,7 +137,7 @@ const GoogleSignIn: React.FC<{ role: string }> = ({ role }) => {
         
        console.log('Complete Worker Data:', completeWorkerData);
        console.log('Complete Worker Data:', formData);
-
+        alert(JSON.stringify(formData))
         const result = await CustomerGoogleLogin(formData).unwrap();
         console.log(result)
         if (result?.success) {
