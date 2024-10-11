@@ -159,13 +159,13 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     messageQuery : async(data:messageTypes)=>{
         try {
-            await new MessageModel(data).save()
+            return await new MessageModel(data).save()
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->messageQuery->\n`,error)
             throw error
         }
     },
-    updatemessage : async({_id,lastMessage} :{_id:string,lastMessage:string})=>{
+    updatemessage : async({_id,lastMessage} :{_id:Types.ObjectId,lastMessage:string})=>{
         try {
             console.log(`update query`)
             console.log(_id,lastMessage)
@@ -180,6 +180,14 @@ export const getWorkerRepository = ():WorkerRepository =>({
             return await MessageModel.find({conversationId:new ObjectId(conversationId)}).lean()
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->fetchMessage->\n`,error)
+            throw error
+        }
+    },
+    getSingleMsg : async(message:string)=>{
+        try {
+            return await MessageModel.findOne({message})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getSingleMsg->\n`,error)
             throw error
         }
     }

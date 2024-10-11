@@ -8,6 +8,7 @@ import {
     messageTypes
 } from '../entities/Worker'
 import {conversationTypes,messageType} from '../entities/commonTypes'
+import {Types} from 'mongoose'
 
 export interface WorkerRepository{
     createWorker (workerData:PersonalInformation) : Promise<PersonalInformation | null>
@@ -26,7 +27,8 @@ export interface WorkerRepository{
     isRejectWorkQuery(_id:string) : Promise<void>
     IsActivityQuery(requestId:string,paymentId:string) : Promise<void>
     getChatsNameQuery(workerId:string) : Promise<conversationTypes[]>
-    messageQuery(data:messageTypes) : Promise<void>
-    updatemessage({_id,lastMessage}:{_id:string,lastMessage:string}) : Promise<void>
+    messageQuery(data:messageTypes) : Promise<messageTypes>
+    updatemessage({_id,lastMessage}:{_id:Types.ObjectId,lastMessage:string}) : Promise<void>
     fetchMessage(conversationId:string):Promise<messageType[] | null>
+    getSingleMsg(message:string):Promise<messageType |null>
 }

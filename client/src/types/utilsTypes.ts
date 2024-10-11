@@ -79,3 +79,11 @@ export type readMsgType = {
     userId: any;
     workerId: any
 }
+
+
+export interface newMessage {
+    _id: string;
+    message: string;
+    userId: any;
+    workerId: any
+  }
