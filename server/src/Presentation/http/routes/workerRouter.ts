@@ -24,7 +24,7 @@ import {
 const workerRouter = Router()
 
 // * worker dashboard
-workerRouter.get('/dashboard:Id',authorizeRoles('worker'),Dashboard)
+workerRouter.get('/dashboard:Id',customeVerify,authorizeRoles('worker'),Dashboard)
 
 // * chats in worker side
 
