@@ -137,7 +137,7 @@ const GoogleSignIn: React.FC<{ role: string }> = ({ role }) => {
         
        console.log('Complete Worker Data:', completeWorkerData);
        console.log('Complete Worker Data:', formData);
-        alert(JSON.stringify(formData))
+        // alert(JSON.stringify(formData))
         const result = await CustomerGoogleLogin(formData).unwrap();
         console.log(result)
         if (result?.success) {

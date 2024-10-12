@@ -76,7 +76,7 @@ export default function ProfessionalInfo() {
   })
 
   const onCountryChange = (selectedOption: SingleValue<SelectOption>) => {
-    alert('chenge country')
+    // alert('chenge country')
     form.setValue('Country', selectedOption as SelectOption)
     form.setValue('State', null)
     form.setValue('City', null)

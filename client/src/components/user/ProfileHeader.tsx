@@ -51,7 +51,7 @@ const ProfileHeader: React.FC<LayoutProps> = ({ children }) => {
               {[
                 { path: "user/profile", label: "Manage Account", icon: null },
                 { path: "user/message", label: "Messages", icon: MessageCircle },
-                { path: "wallet", label: "Wallet", icon: Wallet },
+                // { path: "wallet", label: "Wallet", icon: Wallet },
                 { path: "signout", label: "Sign Out", icon: LogOut },
               ].map((item) => (
                 <li key={item.path}>

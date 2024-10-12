@@ -20,7 +20,7 @@ const FormComponent = ({ onClose }: { onClose: () => void; }) => {
     useEffect(()=>{
         setRequestData(data?.result)
         console.log(JSON.stringify(data))
-        alert(JSON.stringify(data?.result))
+        // alert(JSON.stringify(data?.result))
     },[])
 
     const handleDropdownClick = (index: number) => {
@@ -34,7 +34,7 @@ const FormComponent = ({ onClose }: { onClose: () => void; }) => {
     // * handle Cancel 
     const handleCancle = async(_id:string)=>{
         try{
-            alert(_id)
+            // alert(_id)
             if(preventRejectRequest) return 
             
             const res = await rejectWorkAPI(_id).unwrap()
