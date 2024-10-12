@@ -10,9 +10,30 @@ import {userVerification,workerVerification,ForgetPassWordUseCase,customerResent
 import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
-import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,userRequestUsecases} from "../../../app/useCases/utils/customerUtils"
+import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,userRequestUsecases,ReviewUsecases,getReviewUsecases} from "../../../app/useCases/utils/customerUtils"
 import { payment,IsActivityUsecases } from "../../../app/services/PayU"
 
+
+// * Review in worker
+
+export const getReviewController = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await getReviewUsecases(req.params.id)
+        return res.status(StatusCode.Success).json({success:true,message:'fetch all review data',result})
+    } catch (error) {
+        console.log(`Error from getReviewController\n${error}`)
+        next(error)
+    }
+}
+export const ReviewController = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await ReviewUsecases(req.body)
+        return res.status(StatusCode.Success).json({success:true,message:'review successfully updated'})
+    } catch (error) {
+        console.log(`Error from Review\n${error}`)
+        next(error)
+    }
+}
 
 
 // * paymetAPI

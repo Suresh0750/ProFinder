@@ -1,5 +1,5 @@
 
-
+import {Types} from 'mongoose'
 
 
 export interface RequestData {
@@ -13,4 +13,15 @@ export interface RequestData {
     workerId : string,
     isAccept ?: string,
     additionalNotes?:string
+}
+
+export interface getReviewTypes {
+    _id?:Types.ObjectId
+    coment : string,
+    userId :{
+        _id : Types.ObjectId,
+        profile : string,
+        username :string
+    },
+    workerId : Types.ObjectId
 }

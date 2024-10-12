@@ -128,6 +128,21 @@ export const customerApi  = createApi({
                 body : data,
                 headers : getHeaders('customer')
             })
+        }),
+        SubmitReview : builder.mutation({
+            query : (data)=> ({
+                url : `/customer/review`,
+                method : "POST",
+                body : data,
+                headers : getHeaders('customer')
+            })
+        }),
+        getReview : builder.query({
+            query : (workerId:string)=>({
+                url : `/customer/review/${workerId}`,
+                method : "GET",
+                headers : getHeaders('customer')
+            })
         })
     })
 })
@@ -147,5 +162,7 @@ export const {
     useGetNearByworkerListMutation,
     useRequestToWorkerMutation,
     usePayU_APIMutation,
-    useSavePaymentIdMutation
+    useSavePaymentIdMutation,
+    useSubmitReviewMutation,
+    useGetReviewQuery,
 } = customerApi

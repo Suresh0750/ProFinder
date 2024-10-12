@@ -4,9 +4,32 @@ import {CustomerQueryRepository} from '../../../infrastructure/database/mongoose
 
 // * types 
 import { RequestData } from '../../../domain/entities/customerTypes'
-import { CustomError } from '../../../domain/entities/commonTypes';
+import { CustomError,ReviewTypes } from '../../../domain/entities/commonTypes';
 
 
+
+
+
+
+
+
+// * Review useCases 
+export const getReviewUsecases = async(workerId:string)=>{
+    try {
+        return await CustomerQueryRepository().getReview(workerId)
+    } catch (error) {
+        console.log(`Error from useCases->utils-> getReviewUsecases \n${error}`)
+        throw error 
+    }
+}
+export const ReviewUsecases = async(data:ReviewTypes)=>{
+    try {
+        return CustomerQueryRepository().createReview(data)
+    } catch (error) {
+        console.log(`Error from useCases->utils-> ReviewUsecases \n${error}`)
+        throw error 
+    }
+}
 
 // * getUser Request 
 

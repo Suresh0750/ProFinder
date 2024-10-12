@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useGetSingleWorkerDetailsQuery } from '@/lib/features/api/workerApiSlice'
+import { useSubmitReviewMutation ,useGetReviewQuery} from '@/lib/features/api/customerApiSlice'
 import { useConversationMutation } from '@/lib/features/api/userApiSlice'
 import defaultImage from '../../../../../../public/images/worker/defaultImage.png'
 import ServiceRequestModal from '@/components/serviceModal'
+import ReviewModal from '@/components/ReviewModal'
 import PayUComponent from '@/components/PayU'
 import MaterialCarousel from '@/components/wokerDetailscarousel'
 import { Button } from "@/components/ui/button"
@@ -13,35 +15,65 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {useRouter} from 'next/navigation'
-import { StarIcon, MessageCircleIcon, MessageSquare,MapPinIcon, BriefcaseIcon, CalendarIcon, DollarSignIcon } from 'lucide-react'
-import {messageTypes} from '@/types/userTypes'
+import { useRouter } from 'next/navigation'
+import { StarIcon, MessageCircleIcon, MessageSquare, MapPinIcon, BriefcaseIcon, CalendarIcon, DollarSignIcon } from 'lucide-react'
 
 const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
   const [workerDetails, setWorkerDetails] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+  const [reviewDetails,setReviewDetails] = useState([])
+  const [customerRating,setCustomerRating] = useState(0)
 
   const { _id } = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
   const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
 
   const { data, refetch } = useGetSingleWorkerDetailsQuery(`${params.workerId}/${_id}`)
   const [conversation] = useConversationMutation()
-
+  const [submitReview] = useSubmitReviewMutation()
+  const {data:reviewData,refetch:fetchReview} = useGetReviewQuery(params.workerId)
   const Router = useRouter()
 
-  const handleMessage = async ()=>{
-    const result = await conversation({userId:customerData?._id,lastMessage:'',workerId:data?.result?._id,newMessage:true})
-    // alert(JSON.stringify(result))
+
+  useEffect(()=>{
+    setReviewDetails(reviewData?.result)
+    console.log(JSON.stringify(reviewData?.result))
+  },[reviewData])
+
+  // * calculate the total review Rating
+  useEffect(()=>{
+    // alert(JSON.stringify(reviewDetails))
+      setCustomerRating((reviewDetails?.reduce((acc,curr)=>{
+        return acc+=curr?.rating
+    },0))/reviewDetails?.length)
+  },[reviewDetails])
+
+  const handleMessage = async () => {
+    const result = await conversation({userId:customerData?._id, lastMessage:'', workerId:data?.result?._id, newMessage:true})
     if(result?.data?.success){
         Router.push('/user/message')
+    }
+  }
+
+  const handleSubmitReview = async (reviewData: { rating: number, comment: string }) => {
+    try {
+      await submitReview({
+        workerId: params.workerId,
+        userId: customerData._id,
+        ...reviewData
+      })
+      // refetch()
+      fetchReview()
+      setIsReviewModalOpen(false)
+    } catch (error) {
+      console.error('Error submitting review:', error)
     }
   }
 
   useEffect(() => {
     if (data?.result) {
       setWorkerDetails(data.result)
-    //   alert(JSON.stringify(data))
-      console.log(JSON.stringify(data))
+
     }
   }, [data])
 
@@ -64,7 +96,12 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
     }
     switch (data.requestData.isAccept) {
       case "Accepted":
-        return <><Badge variant="success">Accepted</Badge><MessageSquare onClick={handleMessage}  className='cursor-pointer'/></>
+        return (
+          <>
+            <Badge variant="success">Accepted</Badge>
+            <MessageSquare onClick={handleMessage} className='cursor-pointer'/>
+          </>
+        )
       case "Pending":
         return <Badge variant="warning">Pending</Badge>
       default:
@@ -89,8 +126,9 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
               </div>
               <div className="flex items-center justify-center sm:justify-start gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <StarIcon key={i} className="w-5 h-5 fill-yellow-400" />
+                  <StarIcon key={i} className={`w-5 h-5 ${i < Math.round(workerDetails.averageRating || 0) ? 'fill-yellow-400' : 'fill-gray-300'}`} />
                 ))}
+                <span className="ml-2 text-sm text-gray-600">({workerDetails.totalReviews || 0} reviews)</span>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 items-center">
                 {renderRequestButton()}
@@ -170,44 +208,45 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-4 mb-6">
-                <Badge variant="success" className="text-lg p-2">3.5</Badge>
+                <Badge variant="success" className="text-lg p-2">{(customerRating>0 && customerRating?.toFixed(1)) || 'N/A'}</Badge>
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
-                    <StarIcon key={i} className={`w-6 h-6 ${i < 3 ? 'fill-yellow-400' : 'fill-gray-300'}`} />
+                    <StarIcon key={i} className={`w-6 h-6 ${i < Math.round(customerRating || 0) ? 'fill-yellow-400' : 'fill-gray-300'}`} />
                   ))}
                 </div>
+                <span className="text-sm text-gray-600">({reviewDetails?.length || 0} reviews)</span>
               </div>
 
-              <Button variant="outline" className="mb-6">
+              <Button variant="outline" className="mb-6" onClick={() => setIsReviewModalOpen(true)}>
                 Write a Review
               </Button>
 
               <div className="space-y-6">
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src="/path_to_avatar.png" alt="Kaif Umar" />
-                        <AvatarFallback>KU</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold">Kaif Umar</p>
-                        <div className="flex items-center">
-                          <Badge variant="success" className="mr-2">4.0</Badge>
-                          <div className="flex">
-                            {[...Array(4)].map((_, i) => (
-                              <StarIcon key={i} className="w-4 h-4 fill-yellow-400" />
-                            ))}
+                {reviewDetails?.length>0 && reviewDetails?.map((review: any) => (
+                  <div key={review._id} className="border-t pt-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={review.userId.profile || defaultImage.src} alt={review.userId.username} />
+                          <AvatarFallback>{review.userId.username}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold">{review.userId.username}</p>
+                          <div className="flex items-center">
+                            <Badge variant="success" className="mr-2">{review.rating.toFixed(1)}</Badge>
+                            <div className="flex">
+                              {[...Array(5)].map((_, i) => (
+                                <StarIcon key={i} className={`w-4 h-4 ${i < review.rating ? 'fill-yellow-400' : 'fill-gray-300'}`} />
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
+                      <span className="text-gray-500 text-sm">{new Date(review.createdAt).toLocaleDateString()}dfdf</span>
                     </div>
-                    <span className="text-gray-500 text-sm">2024-05-04</span>
+                    <p className="text-gray-600">{review.comment}</p>
                   </div>
-                  <p className="text-gray-600">
-                    Great service! The worker was professional and completed the job efficiently.
-                  </p>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -219,6 +258,12 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         refetch={refetch}
+      />
+
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        onSubmit={handleSubmitReview}
       />
     </div>
   )

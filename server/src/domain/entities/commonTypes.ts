@@ -83,3 +83,13 @@ createdAt : Date
 updatedAt :Date
 __v ? : number
 }
+
+
+// * Review Types
+
+export interface ReviewTypes{
+  comment :string,
+  rating : number,
+  userId : string,
+  workerId : string
+}
