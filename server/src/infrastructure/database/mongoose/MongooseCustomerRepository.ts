@@ -1,5 +1,6 @@
 
-import { RequestData } from "../../../domain/entities/customerTypes";
+import { RequestData } from "../../../domain/entities/customerTypes";  
+import { ReviewTypes } from "../../../domain/entities/commonTypes";  
 import { User,loginDetails } from "../../../domain/entities/User";
 import { WorkerInformation } from "../../../domain/entities/Worker";
 import { CustomerRepository } from "../../../domain/repositories/CustomerRepository";
@@ -9,6 +10,11 @@ import { CategoryModel } from "./models/AdminModel";
 import {UserModel} from './models/UserModel'
 import {WorkerModel} from './models/workerModel'
 import {RequestModal} from './models/RequestModel'
+import {ReviewModel} from './models/ReviewModel'
+
+// * Mongoose types
+import {Types} from 'mongoose'
+const {ObjectId} = Types
 
 export const CustomerQueryRepository = ():CustomerRepository=>({
     UserGoogleLogin : async (user:User) =>{
@@ -80,5 +86,22 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
             console.log(`Error from infrastructure->mongoseUser->checkExitstRequestQuery\n`,error)
             throw error  
         }
+    },
+    createReview : async(data:ReviewTypes)=>{
+        try {
+            await ReviewModel.create(data)
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->createReview\n`,error)
+            throw error  
+        }
+    },
+    getReview : async (workerId:string)=>{
+        try {
+            return ReviewModel.find({workerId:new ObjectId(workerId)}).populate('userId','username profile _id')
+        } catch (error) {
+            console.log(`Error from infrastructure->mongoseUser->getReview\n`,error)
+            throw error
+        }
     }
+    
 })

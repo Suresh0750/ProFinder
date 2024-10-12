@@ -1,11 +1,19 @@
 
 import { Router } from "express";
-import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController, userRequestWorkerController, paymetnAPIController,paymentIdController} from "../controllers/customerController";
+import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController, userRequestWorkerController, paymetnAPIController,paymentIdController,ReviewController,getReviewController} from "../controllers/customerController";
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 import {customeVerify} from '../middlewares/JWTVerify/customerVerify'
 import upload from '../../../infrastructure/service/multer'
 
 const customerRouter = Router()
+
+
+
+
+// * Review of worker
+customerRouter.get("/review/:id",authorizeRoles('customer'),getReviewController)
+customerRouter.post("/review",authorizeRoles('customer'),ReviewController)
+// customerRouter.get("/getReview",getReviewUsecases)
 
 // * payment gatway
 

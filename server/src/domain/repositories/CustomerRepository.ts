@@ -3,8 +3,8 @@
 
 import { User } from "../entities/User";
 import { WorkerInformation } from "../entities/Worker";
-import { getCategoryName } from "../entities/commonTypes";
-import { RequestData } from "../entities/customerTypes";
+import { getCategoryName,ReviewTypes } from "../entities/commonTypes";
+import { RequestData,getReviewTypes } from "../entities/customerTypes";
 
 
 export interface CustomerRepository {
@@ -16,4 +16,6 @@ export interface CustomerRepository {
     getNearByWorkerListQuery (categoryName:string):Promise<WorkerInformation[]>
     userRequestQuery(userRequestDetails:RequestData) : Promise<void>
     checkExitstRequestQuery(userId:string,workerId:string) : Promise<RequestData| null>
+    createReview(data:ReviewTypes) : Promise<void>
+    getReview(workerId:String) :Promise<getReviewTypes[] | undefined>
 }
