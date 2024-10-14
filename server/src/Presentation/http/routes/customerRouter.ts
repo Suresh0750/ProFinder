@@ -35,6 +35,8 @@ customerRouter.post("/cutomerLogout",authorizeRoles('customer'),CustomerLogoutCo
 customerRouter.post("/customerLogIn",customerLogIn) 
 customerRouter.post("/customerGoogleVerification",WorkerGoogleLoginWithRegistrastion)   // * worker login with google
 
+// customerRouter.post
+
 customerRouter.get('/getALLVerifiedWorker',authorizeRoles('customer'),getVerifiedWorkerController)
 
 customerRouter.get('/getCategoryName',authorizeRoles('customer'),getCategoryName)
