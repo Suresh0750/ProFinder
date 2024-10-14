@@ -38,16 +38,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }
 
-
-  const navItems = [
-    { href: '/worker/dashboard/workerdashboard', label: 'Dashboard', icon: Home },
-    { href: '/worker/dashboard/personalInfo', label: 'Personal Info', icon: User },
-    { href: '/worker/dashboard/professionalInfo', label: 'Professional Info', icon: Briefcase },
-    { href: '/worker/dashboard/workerprojectDetails', label: 'Works', icon: FileText },
-    { href: '/worker/dashboard/messages', label: 'Messages', icon: MessageSquare },
-  ]
-
-
   return (
     <>
 

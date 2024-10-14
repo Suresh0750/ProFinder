@@ -52,18 +52,41 @@ export const FormSchema = z.object({
 // * worker professionalInfo schema
 
 // * Form validation schema using Zod
-export  const professionalInfoFormSchema = z.object({
+// export  const professionalInfoFormSchema = z.object({
     
-      Category: z.any(),
-      Country: z.string().min(1, { message: "Country is required." }),
-      StreetAddress: z.string().min(1, { message: "Street address is required." }),
-      City: z.string().min(1, { message: "City is required." }),
-      Identity: z
-      .any()
-      .refine((file) => file instanceof File, {
-        message: "Category image is required and must be a valid file.",
-      }),
-      Apt: z.string().max(10, { message: "Apt/Suite should be less than 10 characters." }),
-      State: z.string().min(1, { message: "State is required." }),
-      PostalCode: z.string().min(1, { message: "Postal code is required." }),
-    })
+//       Category: z.string().min(1, { message: "Category is required." }),
+//       Country: z.string().min(1, { message: "Country is required." }),
+//       StreetAddress: z.string().min(1, { message: "Street address is required." }),
+//       City: z.string().min(1, { message: "City is required." }),
+//       Identity: z
+//       .any()
+//       .refine((file) => file instanceof File, {
+//         message: "Category image is required and must be a valid file.",
+//       }),
+//       Apt: z.string().max(10, { message: "Apt/Suite should be less than 10 characters." }),
+//       State: z.string().min(1, { message: "State is required." }),
+//       PostalCode: z.string().min(1, { message: "Postal code is required." }),
+//     })
+export const professionalInfoFormSchema = z.object({
+  Category: z.string().min(1, { message: "Category is required." }),
+  Country: z.object({
+    value: z.string(),
+    label: z.string()
+  }).nullable(),
+  StreetAddress: z.string().min(1, { message: "Street address is required." }),
+  City: z.object({
+    value: z.string(),
+    label: z.string()
+  }).nullable(),
+  Identity: z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: "Identity document is required and must be a valid file.",
+    }),
+  Apt: z.string().max(10, { message: "Apt/Suite should be less than 10 characters." }).optional(),
+  State: z.object({
+    value: z.string(),
+    label: z.string()
+  }).nullable(),
+  PostalCode: z.string().min(1, { message: "Postal code is required." }),
+})
