@@ -46,7 +46,7 @@ export default function ServiceWorkerListPage() {
   const { data: categoryData } = useGetCategoryNameQuery("")
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API as string,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_PLACE_API as string,
     libraries,
   })
 
