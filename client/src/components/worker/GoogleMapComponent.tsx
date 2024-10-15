@@ -84,7 +84,7 @@ export default function GoogleMapComponent({
     latitude: handleCoords?.latitude || 0,
     longitude: handleCoords?.longitude || 0
   })
-  const [address, setAddress] = useState('')
+  const [address, setAddress] = useState<any>('')
   const [isConfirmEnabled, setIsConfirmEnabled] = useState(false)
 
   useEffect(() => {
@@ -131,7 +131,15 @@ export default function GoogleMapComponent({
         <div className="mt-4">
           <p><strong>Latitude:</strong> {currentPosition.latitude.toFixed(6)}</p>
           <p><strong>Longitude:</strong> {currentPosition.longitude.toFixed(6)}</p>
-          <p><strong>Address:</strong> {address ? JSON.stringify(address) : 'Loading...'}</p>
+          <p><strong>Address:</strong> {address ? (
+            <>
+              {address?.country && <p>Country: {address.country}</p>}
+              {address?.state && <p>State: {address.state}</p>}
+              {address?.state_district && <p>District: {address.state_district}</p>}
+              {address?.postcode && <p>Postcode: {address.postcode}</p>}
+              {address?.town && <p>Town: {address.town}</p>}
+            </>
+          ) : 'Loading...'}</p>
         </div>
         <DialogFooter>
           <Button onClick={handleConfirm} disabled={!isConfirmEnabled}>

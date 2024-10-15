@@ -188,14 +188,15 @@ export default function ProfessionalInfoForm() {
   
   const onSubmit = async (values: FormValues) => {
     try {
-      if (Object.values(getAddress).length <= 0) return alert('Please set your location')
+      if (Object.values(getAddress).length <= 0) return toast.error('Please set your location')
 
       const formData = new FormData()
 
       if (values.Identity instanceof File) {
         formData.append('Identity', values.Identity)
       }
-      formData.append('coord', JSON.stringify(getCoords))
+      formData.append('lat', getCoords.lat)
+      formData.append('lon', getCoords.lon)
       formData.append('mapAddress', JSON.stringify(getAddress))
       
       for (const [key, value] of Object.entries(values)) {
@@ -423,8 +424,9 @@ export default function ProfessionalInfoForm() {
             {isLoading ? <PulseLoader size={6} color="#ffffff" /> : "Submit"}
           </Button>
         </form>
+        <Toaster richColors position="top-center" />
       </Form>
-      <Toaster richColors position="top-right" />
+     
     </div>
   )
 }

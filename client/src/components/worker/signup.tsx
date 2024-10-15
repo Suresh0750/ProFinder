@@ -48,7 +48,7 @@ export default function WorkerSignUp() {
 
   // * Api (or) RTK query
   const [WorkerSignUp] = useWorkerSignUpMutation()
-
+  // <PulseLoader size={6} color="#ffffff" />
 
   const form = useForm<z.infer<typeof signUPformSchema>>({
     resolver: zodResolver(signUPformSchema),

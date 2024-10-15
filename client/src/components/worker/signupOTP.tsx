@@ -58,7 +58,7 @@ const SignupOTP  = ({userId}:{userId:string}) => {
         
         setTimeout(()=>{
           Router.push(`/homePage`)
-        },2000)
+        },1000)
       }
       setSuccessMessage("OTP verified successfully!");
       setErrorMessage("");
