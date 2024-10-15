@@ -44,7 +44,3 @@ customerRouter.post('/getNearByWorkerDetails:categoryName',authorizeRoles('custo
 
 export default customerRouter
 
-
-
-
-
