@@ -51,10 +51,11 @@ export const conversation = async(req:Request,res:Response,next:NextFunction)=>{
 // * profile
 export const editprofile = async(req:Request,res:Response,next:NextFunction)=>{
     try {
+        console.log('editprofile')
         console.log(req.body)
         console.log(req.file)
         const file: IMulterFile |any  = req.file
-        if(req.body.isImage){
+        if(JSON.parse(req.body.isImage)){
             const image = await uploadImage(file)
             req.body.profile = image
         }

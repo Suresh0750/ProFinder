@@ -115,12 +115,12 @@ export const getUserRepository = () : IUserRepository =>({
             throw error
         }
     },
-    checkConversation:async(userId:string)=>{
+    checkConversation:async(userId:string,workerId:string)=>{
         try {
             console.log(`check conversation`)
             console.log(userId)
 
-            return await ConversationModel.findOne({userId:new ObjectId(userId)}) // * for find the document kept ObjectId
+            return await ConversationModel.findOne({userId:new ObjectId(userId),workerId:new ObjectId(workerId)}) // * for find the document kept ObjectId
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->checkConversation\n`,error)
             throw error
@@ -134,10 +134,10 @@ export const getUserRepository = () : IUserRepository =>({
             throw error
         }
     },
-    findconversationId:async(userId:string)=>{
+    findconversationId:async(userId:string,workerId:string)=>{
         try{
             console.log(await ConversationModel.findOne({userId:new ObjectId(userId)},{_id:1}))
-            return await ConversationModel.findOne({userId:new ObjectId(userId)},{_id:1})
+            return await ConversationModel.findOne({userId:new ObjectId(userId),workerId:new ObjectId(workerId)},{_id:1})
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->findconversationId\n`,error)
             throw error

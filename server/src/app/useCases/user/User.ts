@@ -33,9 +33,9 @@ export const conversationUsecases = async(data:conversationTypes)=>{
   try {
     console.log('conversation Usecases')
     console.log(data)
-    const checkExist :conversationTypes|null = await getUserRepository().checkConversation(String(data?.userId))
+    const checkExist :conversationTypes|null = await getUserRepository().checkConversation(String(data?.userId),String(data?.workerId))
     console.log('Checkexist')
-    console.log(JSON.stringify(checkExist))
+    console.log(JSON.stringify(checkExist)) 
     if(checkExist){
       await  getUserRepository().updateConversation(data)
     }else{
