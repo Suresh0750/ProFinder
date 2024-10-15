@@ -12,6 +12,7 @@ import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
 import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,userRequestUsecases,ReviewUsecases,getReviewUsecases} from "../../../app/useCases/utils/customerUtils"
 import { payment,IsActivityUsecases } from "../../../app/services/PayU"
+import { FindNearByWorkers } from "../../../infrastructure/service/workerLocationFilter"
 
 
 // * Review in worker
@@ -89,6 +90,7 @@ export const getNearByWorkerDetailsController = async(req:Request,res:Response,n
         console.log(req.params.categoryName)
         const result = await getNearByWorkerListUtils(req.params.categoryName)
         // console.log(JSON.stringify(result))
+     
         return res.status(StatusCode.Success).json({success:true,message:'successfully fetched near by worker details',result})
     } catch (error) {
         console.log(`Error from getNearByWorkerDetailsController\n${error}`)
@@ -101,7 +103,10 @@ export const getNearByWorkerDetailsController = async(req:Request,res:Response,n
 
 export const getVerifiedWorkerController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-         const result = await getVerifiedWorkerUtils()
+        console.log(`req reached getVerifiedworkerController`)
+        console.log(req.params.lat)
+        console.log(req.params.lon)
+         const result = await getVerifiedWorkerUtils(req.params.lat,req.params.lon)
          if(result) return res.status(StatusCode.Success).json({success:true,message:'Verified worker has been fetched',result})
         
         return res.status(StatusCode.InternalServerError).json({success:false,message:'server error trye again'})

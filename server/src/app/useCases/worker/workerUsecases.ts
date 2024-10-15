@@ -175,7 +175,7 @@ export const WorkerUsecase= async(workerData:ProfessionalInfoData)=>{
             PostalCode,
             StreetAddress,
             latitude : Number(lat),
-            longtitude : Number(lon)
+            longitude : Number(lon)
         }
 
         mapAddress = JSON.parse(mapAddress)
