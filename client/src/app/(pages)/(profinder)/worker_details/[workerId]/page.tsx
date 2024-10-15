@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRouter } from 'next/navigation'
 import { StarIcon, MessageCircleIcon, MessageSquare, MapPinIcon, BriefcaseIcon, CalendarIcon, DollarSignIcon } from 'lucide-react'
-
+import Link from 'next/link'
 const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
   const [workerDetails, setWorkerDetails] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -73,7 +73,7 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
   useEffect(() => {
     if (data?.result) {
       setWorkerDetails(data.result)
-
+      console.log(JSON.stringify(data.result))
     }
   }, [data])
 
@@ -87,11 +87,16 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
 
   const renderRequestButton = () => {
     if (!data?.requestData) {
+      const {_id,Category,FirstName} = workerDetails
+      console.log({_id,Category,FirstName})
+      localStorage.setItem("workerDetails",JSON.stringify({_id,Category,FirstName}))
       return (
-        <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto">
-          <MessageCircleIcon className="w-4 h-4 mr-2" />
-          Send Request
-        </Button>
+          <Link href={`/request`}>
+            <Button className="w-full sm:w-auto">
+              <MessageCircleIcon className="w-4 h-4 mr-2" />
+              Send Request
+            </Button>
+          </Link>
       )
     }
     switch (data.requestData.isAccept) {
