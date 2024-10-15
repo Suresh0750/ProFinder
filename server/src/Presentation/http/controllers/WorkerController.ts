@@ -175,6 +175,8 @@ export const PersonalInformationControll = async (req:Request,res:Response, next
 
 export const ProfessionalInfoControll = async (req:Request,res:Response,next:NextFunction)=>{
     try {
+        console.log('ProfessionalInfo')
+        console.log(req.body)
         const file: IMulterFile |any = req.file
         const imageUrl = await uploadImage(file)    // * call uploadImage usecases
         req.body.Identity = imageUrl

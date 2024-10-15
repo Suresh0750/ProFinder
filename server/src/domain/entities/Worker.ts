@@ -80,3 +80,30 @@ export type messageTypes = {
     updatedAt?: Date | string,
     __v ? : number
 }
+
+export type ProfessionalInfoData = {
+    coord :{
+        lat : number,
+        lon : number
+    },
+    mapAddress : any,
+    Category : string,
+    StreetAddress : string,
+    City : string,
+    Apt : string,
+    State : string,
+    Country : string,
+    PostalCode : string,
+    FirstName : string,
+    LastName : string,
+    PhoneNumber : number,
+    EmailAddress : string,
+    Password : string,
+    Profile : string,
+    Identity : string,
+    latitude : string,
+    longitude : string,
+    lon : string | number,
+    lat : string | number,
+}
+
