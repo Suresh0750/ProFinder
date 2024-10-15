@@ -17,7 +17,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [CustomerLogout] = useCustomerLogoutMutation()
   const router = useRouter()
-  const pathname = usePathname()
 
 
   useEffect(() => {
@@ -31,6 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       const result = await CustomerLogout({})
       if (result.data.success) {
         localStorage.setItem("customerData", '')
+        router.refresh()
         router.push('/homePage')
       }
     } catch (error) {
