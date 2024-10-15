@@ -8,6 +8,7 @@ import {RequestModal} from './models/RequestModel'
 import {ResentActivityModel} from './models/RecentActivityModel'
 import { ConversationModel } from './models/ConversationModel'
 import { MessageModel } from './models/MessageModel'
+import {ReviewModel} from './models/ReviewModel'
 
 const {ObjectId} = Types
 export const getWorkerRepository = ():WorkerRepository =>({
@@ -215,7 +216,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
                 { $match: { workerId } },
                 {
                     $group: {
-                        _id: null, // Grouping all documents together
+                        _id: null, // * Grouping all documents together
                         countIsCompleteFalse: {
                             $sum: { $cond: [{ $eq: ["$isCompleted", false] }, 1, 0] }
                         },
@@ -248,6 +249,30 @@ export const getWorkerRepository = ():WorkerRepository =>({
             ]);
         }catch(error){
             console.log(`Error from infrastructure->database->mongoose->isResendActivityQuery->\n`,error)
+            throw error 
+        }
+    },
+    getRecentActivity : async(workerId:string)=>{
+        try {
+            return await ResentActivityModel.find({workerId:new ObjectId(workerId)}).populate("requestId","user workerId").populate("workerId","Category")
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getRecentActivity->\n`,error)
+            throw error 
+        }
+    },
+    ratingQuery : async(workerId:string)=>{
+        try {
+                return await ReviewModel.aggregate([
+                    { $match: { workerId: {workerId} } },
+                    {
+                        $group: {
+                            _id: null,
+                            sum: { $sum: "$rating" }
+                        }
+                    }
+                ]);
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->ratingQuery->\n`,error)
             throw error 
         }
     }

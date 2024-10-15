@@ -41,6 +41,7 @@ export default function ServiceWorkerListPage() {
   const total = 8
 
   const handleFilterCategory = (categoryName: string) => {
+    alert(categoryName)
     if (categoryName === "All") {
       setShowCategory(allCategory)
       setFilterCategory("All")
@@ -111,12 +112,14 @@ export default function ServiceWorkerListPage() {
             <CardContent>
               <div className="space-y-2">
                 {["All", ...(categoryName || [])].map((category) => (
-                  <div key={category} className="flex items-center space-x-2">
+                  <div key={category} className="flex items-center space-x-2 ">
                     <Checkbox
                       id={category}
                       name={'category'}
                       checked={filterCategory === category}
-                      onCheckedChange={() => handleFilterCategory(category)}
+                      // onCheckedChange={() => handleFilterCategory(category)}
+                      onClick={() => handleFilterCategory(category)}
+                      className={`cursor-pointer`}
                     />
                     <Label htmlFor={category}>{category}</Label>
                   </div>

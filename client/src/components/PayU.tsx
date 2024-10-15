@@ -41,11 +41,11 @@ const PayUComponent = ({ currUserData, requestId ,payment}: props) => {
         // const res = await PayUApiCalls.paymentReq(data);
         const res = await payU_API(data).unwrap();
         setHash(res.hash);
-        console.log(res)
-        alert(JSON.stringify(hash))
+        // console.log(res)
+        // alert(JSON.stringify(hash))
       } catch (error: any) {
         console.error("Payment Error: " + error.message);
-        alert(error.message);
+        // alert(error.message);
       }
     })(data);
   }, [amount, customerEmail, firstname, productinfo, txnid]);

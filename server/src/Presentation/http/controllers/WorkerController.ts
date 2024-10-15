@@ -21,7 +21,8 @@ import {
     getChatsNameUsecases,
     messageUsecases,
     fetchMessageUsecases,
-    dashboardUsescases
+    dashboardUsescases,
+    ratingUsecases,
 } from "../../../app/useCases/worker/workerUsecases"
 
 // * dashboard
@@ -31,8 +32,13 @@ export const Dashboard = async(req:Request,res:Response,next:NextFunction)=>{
         console.log(req.params.Id)
         const {customerId} = req.session
         console.log(req.session)
-        const {ResentActivity} = await dashboardUsescases((customerId || ''))
-        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',ResentActivity})
+        const RatingPromise = await ratingUsecases(req.params.Id);
+        const ResentActivityPromise = await dashboardUsescases(customerId || '');
+        // const RecentActivityData = await 
+        const result = await Promise.all([RatingPromise, ResentActivityPromise]);
+        console.log('dashboard in result')
+        console.log(JSON.stringify(result))
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched', result})
     } catch (error) {
         console.log(`Error from presentation layer -> http -> Dashboard \n ${error}`);
         next(error);

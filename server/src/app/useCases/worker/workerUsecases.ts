@@ -11,12 +11,25 @@ import {Types} from 'mongoose'
 export const {ObjectId} = Types
 
 
+
+// * worker dashboard
+
+export const ratingUsecases = async(workerId:string)=>{
+    try {
+        return getWorkerRepository().ratingQuery(workerId)
+    } catch (error) {
+        console.log(`Error from useCases->worker->rating\n`,error)
+        throw error
+    }
+}
+
 export const dashboardUsescases = async(workerId:string)=>{
     try {
         const ResentActivity :any = await getWorkerRepository().countResentWorkQuery(workerId)
+        const getRecentActivity = await getWorkerRepository().getRecentActivity(workerId)
         console.log('dashboard')
         console.log(ResentActivity)
-        return {ResentActivity}
+        return {ResentActivity,getRecentActivity}
     } catch (error) {
         console.log(`Error from useCases->worker->dashboardUsescases\n`,error)
         throw error  
