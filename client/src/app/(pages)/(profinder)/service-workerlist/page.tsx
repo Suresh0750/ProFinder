@@ -45,10 +45,34 @@ export default function ServiceWorkerListPage() {
   })
   const { data: categoryData } = useGetCategoryNameQuery("")
 
+
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API as string,
     libraries,
   })
+
+  const total = 8
+
+  const handleFilterCategory = (categoryName: string) => {
+    alert(categoryName)
+    if (categoryName === "All") {
+      setShowCategory(allCategory)
+      setFilterCategory("All")
+    } else {
+      let filterCategory = allCategory.filter((val) => val?.Category === categoryName)
+      setShowCategory(filterCategory)
+      setFilterCategory(categoryName)
+    }
+  }
+
+  const handleRedirectWorkerPage = (_id: string) => {
+    Router.push(`/worker_details/${_id}`)
+  }
+
+  useEffect(() => {
+    setCategoryName(GetCategoryName?.result)
+  }, [GetCategoryName])
+
 
   useEffect(() => {
     getCurrentLocation().then(
@@ -127,13 +151,18 @@ export default function ServiceWorkerListPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
+
                 {["All", ...(categoryData?.result || [])].map((category) => (
                   <div key={category} className="flex items-center space-x-2">
+
                     <Checkbox
                       id={category}
                       checked={filterCategory === category}
+
                       onChange={() => handleFilterCategory(category)}
                       className="cursor-pointer"
+
+                     
                     />
                     <Label htmlFor={category} className="cursor-pointer">{category}</Label>
                   </div>
