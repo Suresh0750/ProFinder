@@ -154,7 +154,6 @@ export const workerExist = async (workerData:PersonalInformation) =>{
 export const WorkerUsecase= async(workerData:ProfessionalInfoData)=>{
     try {
         console.log(`Request reached WorkrUsecase`)
-        // console.log(workerData)
         let {FirstName,LastName,PhoneNumber,EmailAddress,PostalCode,Password,lat,lon,Profile,Identity,Category,Country,State,City,StreetAddress,Apt,coord,mapAddress} = workerData
 
         console.log(lat)
@@ -179,8 +178,6 @@ export const WorkerUsecase= async(workerData:ProfessionalInfoData)=>{
             longtitude : Number(lon)
         }
 
-        // console.log(JSON.stringify(data))
-
         mapAddress = JSON.parse(mapAddress)
         console.log(mapAddress)
         if(mapAddress?.Country) data.Country = mapAddress?.Country
@@ -188,8 +185,7 @@ export const WorkerUsecase= async(workerData:ProfessionalInfoData)=>{
         if(mapAddress?.state) data.State = mapAddress?.state
 
         const {createWorker} = getWorkerRepository()
-        // console.log(data)
-        
+      
         const workerDetails = await createWorker(data)
 
         const {customerOTP,customerId} = await OtpService((workerDetails?._id)?.toString(),(workerDetails?.EmailAddress || ''))
