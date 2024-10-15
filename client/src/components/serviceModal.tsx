@@ -67,11 +67,11 @@ const ServiceRequestModal: React.FC<{ workerDetails: any }> = ({ workerDetails, 
         const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}');
         
         try {
-            alert(JSON.stringify(formData))
+            // alert(JSON.stringify(formData))
             const result = await requestToWorker({ ...formData,user:customerData.customerName, userId: customerData._id,    service: workerDetails?.Category,
                 worker: workerDetails?.FirstName, workerId: workerDetails?._id}).unwrap();
 
-            alert(JSON.stringify(result))
+            // alert(JSON.stringify(result))
             if(result?.success){
                 
                 toast.success(result?.message)
