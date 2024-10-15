@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
 import cookieParser from "cookie-parser";
+import cors from 'cors'
 import morgan from "morgan";
 import session from 'express-session'
 import bodyParser  from 'body-parser'
@@ -44,29 +44,22 @@ app.use(cookieParser()); // * cookie parser use to access the cookie from client
 
 app.use(morgan("dev")); // *
 
-app.use(cors({
-  origin: 'http://localhost:3000', 
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // Ensure this is the correct frontend URL
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Role'],
-  credentials: true
-}));
+  credentials: true // Allows cookies and other credentials to be shared
+};
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-//   res.header('Access-Control-Allow-Credentials', 'true');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
+app.use(cors(corsOptions)); // Ensure this is before your routes
 
-
-// * Handle preflight requests
-app.options('*', cors({
-  origin: 'http://localhost:3000',
-  methods:  ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Role'],
-  credentials: true
-}));
-
+// Handle preflight requests for all routes
+app.options('*', cors(corsOptions));
 
 // * application layer
 app.use("/user", userRouter);
@@ -86,7 +79,7 @@ const httpServer = createServer(app)
 export const io=new serverSocket(httpServer,{
   cors :{
     origin: 'http://localhost:3000',
-    methods:  ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+    methods:  ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']
   }
 })
 socketHandler(io)

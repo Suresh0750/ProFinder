@@ -8,8 +8,8 @@ export default function Intro({ coords, workerData }: { coords: CoordsTypes, wor
     const { latitude, longitude } = coords;
     const userPosition = { lat: latitude, lng: longitude };
     const [open, setOpen] = useState(false);
-    const [zoom, setZoom] = useState(9);  // State to control zoom level
-    const [nearbyWorkers, setNearbyWorkers] = useState<Point[]>([]); // State to hold nearby workers
+    const [zoom, setZoom] = useState(9);  
+    const [nearbyWorkers, setNearbyWorkers] = useState<Point[]>([]); // *  State to hold nearby workers
     const mapRef = useRef(null);
     // * Find nearby workers and update state
     useEffect(() => {
@@ -54,20 +54,6 @@ export default function Intro({ coords, workerData }: { coords: CoordsTypes, wor
                 
                 {/* Map component */}
                 <Map zoom={zoom} center={userPosition} mapId={process.env.NEXT_PUBLIC_Map_ID}>
-                    {/* Circle around User Location */}
-                    {/* <Circle 
-                        center={userPosition}
-                        radius={5000}  // Radius in meters, e.g., 5000 meters (5 km)
-                        options={{
-                            strokeColor: '#4A90E2',
-                            strokeOpacity: 0.8,
-                            strokeWeight: 2,
-                            fillColor: '#4A90E2',
-                            fillOpacity: 0.35,
-                        }}
-                    /> */}
-
-                    {/* Marker for User Location */}
                     <AdvancedMarker position={userPosition} onClick={() => setOpen(true)}>
                         <Pin background={'blue'} borderColor={'blue'} glyphColor={"white"} />
                     </AdvancedMarker>

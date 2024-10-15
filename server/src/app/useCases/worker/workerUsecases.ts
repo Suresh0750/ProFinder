@@ -1,5 +1,5 @@
 
-import {PersonalInformation,WorkerInformation,ProjectDetails,messageTypes} from '../../../domain/entities/Worker'
+import {PersonalInformation,WorkerInformation,ProjectDetails,messageTypes,ProfessionalInfoData} from '../../../domain/entities/Worker'
 import {getWorkerRepository} from "../../../infrastructure/database/mongoose/MongooseWorkerRepository"
 import {OtpService} from '../../services/OtpService'
 import {OtpStoreData} from '../utils/OtpStoreData'
@@ -164,20 +164,46 @@ export const workerExist = async (workerData:PersonalInformation) =>{
     }
 }
 
-export const WorkerUsecase= async(workerData:PersonalInformation)=>{
+export const WorkerUsecase= async(workerData:ProfessionalInfoData)=>{
     try {
         console.log(`Request reached WorkrUsecase`)
+        console.log(workerData)
+        let {FirstName,LastName,PhoneNumber,EmailAddress,PostalCode,Password,lat,lon,Profile,Identity,Category,Country,State,City,StreetAddress,Apt,coord,mapAddress} = workerData
+
+        console.log(lat)
+        console.log(lon)
+    
+        let data = {
+            FirstName,
+            LastName,
+            PhoneNumber,
+            EmailAddress,
+            Password,
+            Profile,
+            Identity,
+            Apt ,
+            Category,
+            Country,
+            State,
+            City,
+            PostalCode,
+            StreetAddress,
+            latitude : Number(lat),
+            longtitude : Number(lon)
+        }
+
+        console.log(JSON.stringify(data))
+
+        mapAddress = JSON.parse(mapAddress)
+        console.log(mapAddress)
+        if(mapAddress?.Country) data.Country = mapAddress?.Country
+        if(mapAddress?.postcode) data.PostalCode = mapAddress?.postcode
+        if(mapAddress?.state) data.State = mapAddress?.state
 
         const {createWorker} = getWorkerRepository()
-        const result = await GeoCoding(workerData)
-        const {lat,lon} = result
-        if(!lat || !lon){
-            const error = new Error('Current address is incomplete or invalid. Suggestion contains an improved, verified address up to City.');
-            (error as any).statusCode = 502;
-            throw error;
-        }
+        console.log(data)
         
-        const workerDetails = await createWorker({...workerData,latitude:lat,longitude:lon})
+        const workerDetails = await createWorker(data)
 
         const {customerOTP,customerId} = await OtpService((workerDetails?._id)?.toString(),(workerDetails?.EmailAddress || ''))
         await OtpStoreData(customerId,customerOTP)

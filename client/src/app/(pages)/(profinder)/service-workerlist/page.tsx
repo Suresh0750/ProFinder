@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react"
 import { AiTwotoneEnvironment } from "react-icons/ai"
 import { MdSearch } from "react-icons/md"
-import Image from "next/image"
 import { Pagination } from "@mui/material"
 import Footer from "@/components/Footer"
 import {
@@ -105,8 +104,8 @@ export default function ServiceWorkerListPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8 mt-10">
-        <aside className="w-full md:w-1/4">
-          <Card>
+        <aside className="w-full md:w-1/4 md:sticky md:top-8 md:self-start">
+          <Card className="md:max-h-[calc(100vh-4rem)] overflow-y-auto">
             <CardHeader>
               <CardTitle>Categories</CardTitle>
             </CardHeader>
@@ -116,6 +115,7 @@ export default function ServiceWorkerListPage() {
                   <div key={category} className="flex items-center space-x-2 ">
                     <Checkbox
                       id={category}
+                      name={'category'}
                       checked={filterCategory === category}
                       // onCheckedChange={() => handleFilterCategory(category)}
                       onClick={() => handleFilterCategory(category)}

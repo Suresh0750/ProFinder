@@ -116,6 +116,7 @@ export const getVerifiedWorkerController = async(req:Request,res:Response,next:N
 
 export const getCategoryName = async(req:Request,res:Response,next:Function)=>{
     try {
+        console.log('req reached getCategoryName')
         const result = await getCategoryNameUtils()
         return res.status(StatusCode.Success).json({success:true,message:`Fetch category's name has been success`,result})
     } catch (error) {

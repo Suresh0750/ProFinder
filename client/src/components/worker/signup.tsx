@@ -32,8 +32,8 @@ import Link from 'next/link'
 
 export default function WorkerSignUp() {
 
-  const [isLoading, setLoading] = useState(false);
-  const [signUp] = useSignUpMutation();
+  // const [isLoading, setLoading] = useState(false);
+  const [signUp ,{isLoading}] = useSignUpMutation();
   const router = useRouter();  // # navigation router
   const dispatch = useDispatch()
 
@@ -83,8 +83,6 @@ export default function WorkerSignUp() {
 
       if (isLoading) return;
 
-      setLoading(true); // Handle multiple clicks and show loading
-
       const formData:any = new FormData()
       formData.append('FirstName', values.FirstName);
       formData.append('LastName', values.LastName);
@@ -113,9 +111,7 @@ export default function WorkerSignUp() {
         err?.data?.errorMessage ? toast.error( err.data.errorMessage) : toast.error('Error: Registration failed. Please check your input and try again.');
       }
      
-    } finally {
-      setLoading(false);
-    }
+    } 
   }
 
   return (

@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
 import { useRouter } from 'next/navigation'
-import { Button } from "@/components/ui/button"
 import { Toaster, toast } from 'sonner'
 import {
   Form,
@@ -15,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { PulseLoader } from 'react-spinners'
 import { useSelector } from 'react-redux'
 import { useEffect, useState, useMemo } from 'react'
@@ -23,11 +23,33 @@ import { useGetCategoryNameQuery } from '@/lib/features/api/customerApiSlice'
 import Select, { SingleValue } from 'react-select'
 import countryList from 'react-select-country-list'
 import { City, State, Country } from 'country-state-city'
+import GoogleMapComponent from './GoogleMapComponent'
 
-import { professionalInfoFormSchema } from '@/lib/formSchema'
+// import { professionalInfoFormSchema } from '@/lib/formSchema'
 
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-
+const professionalInfoFormSchema = z.object({
+  Category: z.string().min(1, { message: "Category is required." }),
+  Country: z.object({
+    value: z.string(),
+    label: z.string()
+  }).nullable(),
+  StreetAddress: z.string().min(1, { message: "Street address is required." }),
+  City: z.object({
+    value: z.string(),
+    label: z.string()
+  }).nullable(),
+  Identity: z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: "Identity document is required and must be a valid file.",
+    }),
+  Apt: z.string().max(10, { message: "Apt/Suite should be less than 10 characters." }).optional(),
+  State: z.object({
+    value: z.string(),
+    label: z.string()
+  }).nullable(),
+  PostalCode: z.string().min(1, { message: "Postal code is required." }),
+})
 type SelectOption = {
   value: string
   label: string
@@ -35,12 +57,17 @@ type SelectOption = {
 
 type FormValues = z.infer<typeof professionalInfoFormSchema>
 
-export default function ProfessionalInfo() {
+export default function ProfessionalInfoForm() {
   const [workerSignupDetails, setWorkerSignupDetails] = useState<Record<string, any>>({})
   const [categoryOptions, setCategoryOptions] = useState<SelectOption[]>([])
   const [countryOptions, setCountryOptions] = useState<SelectOption[]>([])
   const [stateOptions, setStateOptions] = useState<SelectOption[]>([])
   const [cityOptions, setCityOptions] = useState<SelectOption[]>([])
+  const [address, setAddress] = useState('')
+  const [coords, setCoords] = useState({ latitude: 0, longitude: 0 })
+  const [getCoords, setGetCoords] = useState({ lat: 0, lon: 0 })
+  const [getAddress, setGetAddress] = useState({})
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const workersignupData = useSelector((state: any) => state.WorkerSignupData)
   const [ProfessionalInfo, { isLoading }] = useProfessionalInfoMutation()
@@ -49,6 +76,22 @@ export default function ProfessionalInfo() {
   const router = useRouter()
 
   const countries = useMemo(() => countryList().getData(), [])
+
+  useEffect(() => {
+    const userLocation = async () => {
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject)
+        })
+        const { latitude, longitude } = position.coords
+        setCoords({ latitude, longitude })
+      } catch (error) {
+        console.error('Error getting user location:', error)
+        setCoords({ latitude: 0, longitude: 0 })
+      }
+    }
+    userLocation()
+  }, [])
 
   useEffect(() => {
     setCountryOptions(countries)
@@ -64,24 +107,39 @@ export default function ProfessionalInfo() {
   const form = useForm<FormValues>({
     resolver: zodResolver(professionalInfoFormSchema),
     defaultValues: {
-      Category: undefined,
-      Country: undefined,
+      Category: "",
+      Country: null,
       StreetAddress: "",
-      City: undefined,
+      City: null,
       Identity: undefined,
       Apt: "",
-      State: undefined,
+      State: null,
       PostalCode: "",
     },
   })
+  type SelectOption = {
+    value: string
+    label: string
+  }
+  
+  type FormValues = z.infer<typeof professionalInfoFormSchema>
+
+  const onCategoryChange = (selectedOption: SingleValue<SelectOption>) => {
+    if (selectedOption) {
+      form.setValue('Category', selectedOption.value)
+    } else {
+      form.setValue('Category', "")
+    }
+  }
+
 
   const onCountryChange = (selectedOption: SingleValue<SelectOption>) => {
-    // alert('chenge country')
-    form.setValue('Country', selectedOption as SelectOption)
+    form.setValue('Country', selectedOption)
     form.setValue('State', null)
     form.setValue('City', null)
     form.setValue('StreetAddress', '')
     form.setValue('PostalCode', '')
+    
     if (selectedOption) {
       const states = State.getStatesOfCountry(selectedOption.value)
       setStateOptions(states.map(state => ({ value: state.isoCode, label: state.name })))
@@ -89,65 +147,57 @@ export default function ProfessionalInfo() {
       setStateOptions([])
     }
     setCityOptions([])
+    updateAddress()
   }
 
   const onStateChange = (selectedOption: SingleValue<SelectOption>) => {
-    form.setValue('State', selectedOption as SelectOption)
+    form.setValue('State', selectedOption)
     form.setValue('City', null)
     form.setValue('StreetAddress', '')
     form.setValue('PostalCode', '')
-    if (selectedOption) {
-      const countryValue = form.getValues('Country')?.value
-      if (countryValue) {
-        const cities = City.getCitiesOfState(countryValue, selectedOption.value)
-        setCityOptions(cities.map(city => ({ value: city.name, label: city.name })))
-      }
+    
+    const countryValue = form.getValues('Country')?.value
+    if (countryValue && selectedOption) {
+      const cities = City.getCitiesOfState(countryValue, selectedOption.value)
+      setCityOptions(cities.map(city => ({ value: city.name, label: city.name })))
     } else {
       setCityOptions([])
     }
+    updateAddress()
   }
 
-  const onCityChange = async (selectedOption: SingleValue<SelectOption>) => {
-    form.setValue('City', selectedOption as SelectOption)
-    if (selectedOption) {
-      const country = form.getValues('Country')?.label
-      const state = form.getValues('State')?.label
-      const city = selectedOption.label
-      
-      if (country && state && city) {
-        try {
-          const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(`${city}, ${state}, ${country}`)}&key=${GOOGLE_MAPS_API_KEY}`)
-          const data = await response.json()
-          
-          if (data.results && data.results.length > 0) {
-            const addressComponents = data.results[0].address_components
-            const streetNumber = addressComponents.find((component: any) => component.types.includes('street_number'))?.long_name || ''
-            const route = addressComponents.find((component: any) => component.types.includes('route'))?.long_name || ''
-            const postalCode = addressComponents.find((component: any) => component.types.includes('postal_code'))?.long_name || ''
-            
-            form.setValue('StreetAddress', `${streetNumber} ${route}`.trim())
-            form.setValue('PostalCode', postalCode)
-          }
-        } catch (error) {
-          console.error('Error fetching address details:', error)
-        }
-      }
-    } else {
-      form.setValue('StreetAddress', '')
-      form.setValue('PostalCode', '')
-    }
+  const onCityChange = (selectedOption: SingleValue<SelectOption>) => {
+    form.setValue('City', selectedOption)
+    updateAddress()
   }
 
+  const updateAddress = () => {
+    const country = form.getValues('Country')?.label || ''
+    const state = form.getValues('State')?.label || ''
+    const city = form.getValues('City')?.label || ''
+    const street = form.getValues('StreetAddress') || ''
+    const postalCode = form.getValues('PostalCode') || ''
+
+    setAddress(`${street}, ${city}, ${state}, ${country}, ${postalCode}`)
+  }
+
+  useEffect(() => {
+    updateAddress()
+  }, [form.watch(['Country', 'State', 'City', 'StreetAddress', 'PostalCode'])])
+
+  
   const onSubmit = async (values: FormValues) => {
     try {
-      if (isLoading) return
+      if (Object.values(getAddress).length <= 0) return alert('Please set your location')
 
-      alert(JSON.stringify(values))
       const formData = new FormData()
+
       if (values.Identity instanceof File) {
         formData.append('Identity', values.Identity)
       }
-     
+      formData.append('coord', JSON.stringify(getCoords))
+      formData.append('mapAddress', JSON.stringify(getAddress))
+      
       for (const [key, value] of Object.entries(values)) {
         if (key !== "Identity") {
           if (value && typeof value === 'object' && 'value' in value) {
@@ -192,17 +242,19 @@ export default function ProfessionalInfo() {
                   <FormItem>
                     <FormLabel>Select category</FormLabel>
                     <Select<SelectOption>
-                      {...field}
                       options={categoryOptions}
                       className="basic-single"
                       classNamePrefix="select"
                       placeholder="Select category"
                       isClearable
+                      onChange={onCategoryChange}
+                      value={categoryOptions.find(option => option.value === field.value) || null}
                     />
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              
               <Controller
                 name="Country"
                 control={form.control}
@@ -210,18 +262,19 @@ export default function ProfessionalInfo() {
                   <FormItem>
                     <FormLabel>Select country</FormLabel>
                     <Select<SelectOption>
-                      {...field}
                       options={countryOptions}
                       className="basic-single"
                       classNamePrefix="select"
                       placeholder="Select country"
                       onChange={onCountryChange}
+                      value={field.value}
                       isClearable
                     />
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              
               <Controller
                 name="State"
                 control={form.control}
@@ -229,12 +282,12 @@ export default function ProfessionalInfo() {
                   <FormItem>
                     <FormLabel>State / Province</FormLabel>
                     <Select<SelectOption>
-                      {...field}
                       options={stateOptions}
                       className="basic-single"
                       classNamePrefix="select"
                       placeholder="Select state"
                       onChange={onStateChange}
+                      value={field.value}
                       isClearable
                       isDisabled={!form.getValues('Country')}
                     />
@@ -242,6 +295,7 @@ export default function ProfessionalInfo() {
                   </FormItem>
                 )}
               />
+              
               <Controller
                 name="City"
                 control={form.control}
@@ -249,12 +303,12 @@ export default function ProfessionalInfo() {
                   <FormItem>
                     <FormLabel>City</FormLabel>
                     <Select<SelectOption>
-                      {...field}
                       options={cityOptions}
                       className="basic-single"
                       classNamePrefix="select"
                       placeholder="Select city"
                       onChange={onCityChange}
+                      value={field.value}
                       isClearable
                       isDisabled={!form.getValues('State')}
                     />
@@ -275,6 +329,10 @@ export default function ProfessionalInfo() {
                         placeholder="Enter your street address"
                         {...field}
                         className="p-2 rounded w-full border border-gray-300"
+                        onChange={(e) => {
+                          field.onChange(e)
+                          updateAddress()
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -309,6 +367,10 @@ export default function ProfessionalInfo() {
                         placeholder="Postal Code"
                         {...field}
                         className="p-2 rounded w-full border border-gray-300"
+                        onChange={(e) => {
+                          field.onChange(e)
+                          updateAddress()
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -339,6 +401,24 @@ export default function ProfessionalInfo() {
               />
             </div>
           </div>
+          <div className="w-full">
+            <Button onClick={(e) => {
+              e.preventDefault();
+              setIsOpen(true);
+            }}>
+              Set Location
+            </Button>
+            {isOpen && ( 
+              <GoogleMapComponent 
+                apiKey={process.env.NEXT_PUBLIC_GOOGLE_API || ''} 
+                onLocationConfirm={() => {}}
+                handleCoords={coords}
+                addressHandle={setGetAddress} 
+                Handlecoords={setGetCoords} 
+                closeModal={() => setIsOpen(false)}
+              />
+            )}
+          </div>
           <Button type="submit" className="w-full mt-4 cursor-pointer">
             {isLoading ? <PulseLoader size={6} color="#ffffff" /> : "Submit"}
           </Button>
@@ -348,3 +428,5 @@ export default function ProfessionalInfo() {
     </div>
   )
 }
+
+

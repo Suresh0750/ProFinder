@@ -10,13 +10,6 @@ const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:3001',
     credentials: 'include',
 });
-// prepareHeaders: (headers, { getState }) => {
-//     headers.set('Content-Type', 'application/json');
-//     return headers;
-// }
-
-
-
 
 // Function to get headers
 const getHeaders = (role: string) => ({
