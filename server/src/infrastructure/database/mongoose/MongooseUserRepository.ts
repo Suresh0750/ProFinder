@@ -8,6 +8,7 @@ import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import {UserModel} from './models/UserModel'
 import {ConversationModel} from './models/ConversationModel'
 import { MessageModel } from './models/MessageModel';
+import {RequestModal} from './models/RequestModel'
 
 
 export const getUserRepository = () : IUserRepository =>({
@@ -156,6 +157,14 @@ export const getUserRepository = () : IUserRepository =>({
             await ConversationModel.updateOne({conversationId},{$set:{userUnread:0}})
             return await MessageModel.find({conversationId:new ObjectId(conversationId)}).lean()
         }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->fetchMessageQuery\n`,error)
+            throw error
+        }
+    },
+    getBooking : async(userId:string)=>{
+        try {
+            return await RequestModal.find({userId:new ObjectId(userId)})
+        } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->fetchMessageQuery\n`,error)
             throw error
         }

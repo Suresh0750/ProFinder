@@ -105,3 +105,21 @@ export interface RecentActivityType{
   updatedAt :Date
   __v ? : number
 }
+
+export interface RequestType{
+  _id : Types.ObjectId,
+  service : string,
+  worker : string,
+  user :string,
+  preferredData : string,
+  preferredTime : string,
+  servicelocation : string,
+  AdditionalNotes : string,
+  userId :  Types.ObjectId,
+  workerId :  Types.ObjectId,
+  isAccept : string,
+  payment : number,
+  createdAt : Date
+  updatedAt :Date
+  __v ? : number
+}
