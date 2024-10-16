@@ -65,10 +65,7 @@ export default function ServiceWorkerListPage() {
     }
   }
 
-  const handleRedirectWorkerPage = (_id: string) => {
-    Router.push(`/worker_details/${_id}`)
-  }
-
+  
   useEffect(() => {
     setCategoryName(GetCategoryName?.result)
   }, [GetCategoryName])
@@ -94,10 +91,7 @@ export default function ServiceWorkerListPage() {
     )
   }, [workerData, filterCategory, searchTerm])
 
-  const handleFilterCategory = useCallback((categoryName: string) => {
-    setFilterCategory(categoryName)
-    setPage(1)
-  }, [])
+
 
   const handleRedirectWorkerPage = useCallback((_id: string) => {
     router.push(`/worker_details/${_id}`)
