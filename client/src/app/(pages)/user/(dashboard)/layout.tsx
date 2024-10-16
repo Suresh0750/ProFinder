@@ -26,6 +26,12 @@ export default function Layout ({children}:{children:React.ReactNode}){
                         Messages
                     </Link>
                 </h2>
+                <h2 className="flex py-2 px-4 text-white hover:bg-gray-700 cursor-pointer">
+                    <Link href="/user/booking">
+                    <MessageSquare className="w-4 h-4 mr-2 text-white inline " />
+                        Booking Details
+                    </Link>
+                </h2>
 
                 </nav>
             </aside>    

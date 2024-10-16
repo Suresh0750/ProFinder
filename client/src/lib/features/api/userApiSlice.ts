@@ -82,6 +82,13 @@ export const userApi = createApi({
                 method:'GET',
                 headers:getHeaders('user')
             })
+        }),
+        booking : builder.query({
+            query : (userId:string)=>({
+                url:`/user/booking/${userId}`,
+                method:'GET',
+                headers:getHeaders('user')
+            })
         })
     })
 })
@@ -95,5 +102,6 @@ export const {
     useUpdateprofileMutation,
     useConversationMutation,
     useGetAllconversationQuery,
-    useGetAllMessageQuery
+    useGetAllMessageQuery,
+    useBookingQuery,
 } = userApi
