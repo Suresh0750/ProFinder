@@ -51,29 +51,7 @@ export default function ServiceWorkerListPage() {
     libraries,
   })
 
-  const total = 8
-
-  const handleFilterCategory = (categoryName: string) => {
-    alert(categoryName)
-    if (categoryName === "All") {
-      setShowCategory(allCategory)
-      setFilterCategory("All")
-    } else {
-      let filterCategory = allCategory.filter((val) => val?.Category === categoryName)
-      setShowCategory(filterCategory)
-      setFilterCategory(categoryName)
-    }
-  }
-
-  const handleRedirectWorkerPage = (_id: string) => {
-    Router.push(`/worker_details/${_id}`)
-  }
-
-  useEffect(() => {
-    setCategoryName(GetCategoryName?.result)
-  }, [GetCategoryName])
-
-
+ 
   useEffect(() => {
     getCurrentLocation().then(
       (coords) => {
