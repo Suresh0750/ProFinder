@@ -78,8 +78,8 @@ export const customerApi  = createApi({
             })
         }),
         listWorkerDataAPI : builder.query({
-            query : ()=>({
-                url : `/customer/getALLVerifiedWorker`,
+            query : (data:{latitude:number,longitude:number})=>({
+                url : `/customer/getALLVerifiedWorker/${data.latitude}/${data.longitude}`,
                 method : "GET",
                 headers : getHeaders('customer')
             })

@@ -6,6 +6,9 @@ import {CustomerQueryRepository} from '../../../infrastructure/database/mongoose
 import { RequestData } from '../../../domain/entities/customerTypes'
 import { CustomError,ReviewTypes } from '../../../domain/entities/commonTypes';
 
+// * Filter the workers according to the user's location
+import {FindNearByWorkers} from '../../../infrastructure/service/workerLocationFilter'
+
 
 
 
@@ -89,10 +92,15 @@ export const getCategoryNameUtils = async()=>{
 }
 
 
-export const getVerifiedWorkerUtils = async()=>{
+export const getVerifiedWorkerUtils = async(lat:string,lon:string)=>{
     try {
-     
-        return await CustomerQueryRepository().getVerifiedWorker()
+        console.log('getVerifiedWorker utils')
+        console.log(lat,lon)
+        const workerData = await CustomerQueryRepository().getVerifiedWorker()
+        const res = await FindNearByWorkers({latitude:Number(lat),longitude:Number(lon)},workerData)
+        // console.log('after filter the worker')
+        // console.log(JSON.stringify(res))
+        return res
     } catch (error) {
         console.log(`Error from useCases->utils-> getCategoryNameUtil \n${error}`)
         throw error

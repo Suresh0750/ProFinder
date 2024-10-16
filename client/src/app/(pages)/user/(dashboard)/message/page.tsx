@@ -4,9 +4,7 @@ import Chats from '@/components/user/Message'
 
 const Message = ()=>{
     return(
-        <ProfileHeader>
-          <Chats />
-        </ProfileHeader>
+      <Chats />
     )
 }
 

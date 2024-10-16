@@ -18,9 +18,9 @@ export interface IUserRepository{
     updateprofile({username,PhoneNumber,EmailAddress,profile}:editprofileTypes) : Promise<void>
     conversationQuery(data:conversationTypes):Promise<void>
     fetchConversation(userId: string): Promise<conversationTypes[] | null>
-    checkConversation(userId:string):Promise<conversationTypes | null>
+    checkConversation(userId:string,workerId:string):Promise<conversationTypes | null>
     updateConversation(data:conversationTypes) : Promise<void>
-    findconversationId(userId:string): Promise<{ _id: string; } | null>
+    findconversationId(userId:string,workerId:string): Promise<{ _id: string; } | null>
     createMessage(data:messageTypes) : Promise<messageType>
     fetchMessageQuery(conversationId:string) :Promise<messageType[]>
 }

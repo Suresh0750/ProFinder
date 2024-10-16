@@ -18,4 +18,4 @@ const Checkbox = ({ checked, onChange, label }:{checked:any,onChange:any,label:s
   );
 };
 
-export default Checkbox;
+export {Checkbox};

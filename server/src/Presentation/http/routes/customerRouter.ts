@@ -21,7 +21,6 @@ customerRouter.post("/paymetAPI",authorizeRoles('customer'), paymetnAPIControlle
 customerRouter.post("/savePaymentId",authorizeRoles('customer'),paymentIdController)
 
 // * router for Request 
-
 customerRouter.post('/userRequestWorker',userRequestWorkerController)
 
 
@@ -37,10 +36,9 @@ customerRouter.post("/customerGoogleVerification",WorkerGoogleLoginWithRegistras
 
 // customerRouter.post
 
-customerRouter.get('/getALLVerifiedWorker',authorizeRoles('customer'),getVerifiedWorkerController)
+customerRouter.get('/getALLVerifiedWorker/:lat/:lon',authorizeRoles('customer'),getVerifiedWorkerController)
 
 customerRouter.get('/getCategoryName',authorizeRoles('customer'),getCategoryName)
 customerRouter.post('/getNearByWorkerDetails:categoryName',authorizeRoles('customer'),getNearByWorkerDetailsController)
 
 export default customerRouter
-

@@ -33,16 +33,16 @@ export const conversationUsecases = async(data:conversationTypes)=>{
   try {
     console.log('conversation Usecases')
     console.log(data)
-    const checkExist :conversationTypes|null = await getUserRepository().checkConversation(String(data?.userId))
+    const checkExist :conversationTypes|null = await getUserRepository().checkConversation(String(data?.userId),String(data?.workerId))
     console.log('Checkexist')
-    console.log(JSON.stringify(checkExist))
+    console.log(JSON.stringify(checkExist)) 
     if(checkExist){
       await  getUserRepository().updateConversation(data)
     }else{
          // * user click messge box in single worker details page side here no message
       await getUserRepository().conversationQuery(data)  // * create conversation
     }
-    const conversationId = await getUserRepository().findconversationId(String(data?.userId))
+    const conversationId = await getUserRepository().findconversationId(String(data?.userId),String(data?.workerId))
     if(data?.lastMessage && conversationId?._id) {
      const result =  await getUserRepository().createMessage({conversationId:conversationId?._id,sender:data?.userId,message:data?.lastMessage})
      console.log(`create the new document`)
