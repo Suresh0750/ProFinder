@@ -1,7 +1,8 @@
 
 "use client"
 import {useState} from 'react'
-import ShowRequest from './ShowRequestToWorker'
+// import ShowRequest from './ShowRequestToWorker'
+import Link from 'next/link'
 
 export const DashboardHeader = ()=>{
 
@@ -20,12 +21,14 @@ export const ViewRequest = ()=>{
     return(
         <div className="bg-white shadow-md p-6 rounded-md text-center">
             <h2 className="text-gray-600 font-medium">New Service Requests</h2>
-            <button onClick={()=>setIsModalOpenRequestModal(true)} className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-md">
-            View Details
-            </button>
-            {
+            <Link href={'/worker/dashboard/service-request'}>
+                <button  className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-md">
+                View Details
+                </button>
+            </Link>
+            {/* {
                 isOpenRequstModal &&   <ShowRequest onClose={()=>setIsModalOpenRequestModal(false)} />
-            }
+            } */}
            
         </div>
     )

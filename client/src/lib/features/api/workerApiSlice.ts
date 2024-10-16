@@ -15,6 +15,8 @@ const getHeaders = (role: string) => ({
     'Content-Type': 'application/json'  // Specify Content-Type header
 });
 
+// useGetUpcomingWorksQuery
+
 
 export const workerApi = createApi({
     reducerPath : "workerApi",
@@ -126,6 +128,20 @@ export const workerApi = createApi({
                 method:"GET",
                 headers:getHeaders("worker")
             })
+        }),
+        getUpcomingWorks: builder.query({
+            query : (data)=>({
+                url : `/worker/upcoming-workers${data}`,
+                method : 'GET',
+                headers : getHeaders('worker')
+            })
+        }),
+        updateWorkStatus: builder.mutation({
+            query :(data:{status:string,_id:string})=>({
+                url : `/worker/markStatus/${data.status}/${data._id}`,
+                method : 'PUT',
+                headers : getHeaders('worker')
+            })
         })
     })
 })
@@ -147,4 +163,6 @@ export const {
     useUpdateMessageMutation,
     useFetchMessageQuery,
     useDashboardQuery,
+    useGetUpcomingWorksQuery,
+    useUpdateWorkStatusMutation,
 } = workerApi

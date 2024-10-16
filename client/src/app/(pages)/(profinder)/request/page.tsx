@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { useRequestToWorkerMutation } from '@/lib/features/api/customerApiSlice'
 import { toast, Toaster } from 'sonner'
 import { useLoadScript, Autocomplete, GoogleMap, Marker } from "@react-google-maps/api"
@@ -11,11 +12,36 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 
-const libraries = ['places']
+interface WorkerDetails {
+  _id: string
+  Category: string
+  FirstName: string
+}
+
+interface FormData {
+  workerId: string
+  service: string
+  worker: string
+  user: string
+  preferredDate: string
+  preferredTime: string
+  servicelocation: string
+  additionalNotes: string
+}
+
+interface ValidationErrors {
+  preferredDate?: string
+  preferredTime?: string
+  servicelocation?: string
+  additionalNotes?: string
+}
+
+const libraries: ("places")[] = ['places']
 
 export default function WorkerRequestPage() {
-    const workerDetails = JSON.parse(localStorage.getItem('workerDetails') || '{}')
-  const [formData, setFormData] = useState({
+  const router = useRouter()
+  const workerDetails: WorkerDetails = JSON.parse(localStorage.getItem('workerDetails') || '{}')
+  const [formData, setFormData] = useState<FormData>({
     workerId: workerDetails?._id || '',
     service: workerDetails?.Category || '',
     worker: workerDetails?.FirstName || '',
@@ -26,16 +52,16 @@ export default function WorkerRequestPage() {
     additionalNotes: '',
   })
 
-  const [validationErrors, setValidationErrors] = useState({})
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
   const [requestToWorker, { isLoading }] = useRequestToWorkerMutation()
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 })
-  const [markerPosition, setMarkerPosition] = useState(null)
+  const [markerPosition, setMarkerPosition] = useState<google.maps.LatLngLiteral | null>(null)
 
-  const autocompleteRef = useRef(null)
-  const mapRef = useRef(null)
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+  const mapRef = useRef<google.maps.Map | null>(null)
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API as string,
     libraries,
   })
 
@@ -55,14 +81,14 @@ export default function WorkerRequestPage() {
     }
   }, [])
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
     setValidationErrors((prev) => ({ ...prev, [name]: '' }))
   }
 
-  const validateForm = () => {
-    const errors = {}
+  const validateForm = (): ValidationErrors => {
+    const errors: ValidationErrors = {}
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
@@ -74,16 +100,24 @@ export default function WorkerRequestPage() {
     
     if (!formData.preferredTime) {
       errors.preferredTime = "Preferred time is required."
+    } else {
+      const [hours, minutes] = formData.preferredTime.split(':').map(Number)
+      if (hours < 8 || hours > 20 || (hours === 20 && minutes > 0)) {
+        errors.preferredTime = "Preferred time must be between 8:00 AM and 8:00 PM."
+      }
     }
     
     if (!formData.servicelocation) {
       errors.servicelocation = "Service location is required."
     }
+    if (!formData.additionalNotes) {
+      errors.additionalNotes = "additionalNotes is required."
+    }
 
     return errors
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (isLoading) return
 
@@ -93,7 +127,7 @@ export default function WorkerRequestPage() {
       return
     }
 
-    const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
+    const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null, "customerName":""}')
     
     try {
       const result = await requestToWorker({
@@ -107,31 +141,29 @@ export default function WorkerRequestPage() {
 
       if (result?.success) {
         toast.success(result?.message)
-     
+        router.push(`/worker_details/${workerDetails?._id}`)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
       toast.error(err?.data?.errorMessage || 'An error occurred while submitting the request.')
     }
   }
 
-  const onLoad = useCallback((autocomplete) => {
+  const onLoad = useCallback((autocomplete: google.maps.places.Autocomplete) => {
     autocompleteRef.current = autocomplete
   }, [])
 
   const onPlaceChanged = () => {
     if (autocompleteRef.current) {
       const place = autocompleteRef.current.getPlace()
-      if (place.geometry) {
-        setFormData((prev) => ({ ...prev, servicelocation: place.formatted_address }))
-        setMapCenter({
+      if (place.geometry && place.geometry.location) {
+        setFormData((prev) => ({ ...prev, servicelocation: place.formatted_address || '' }))
+        const newPosition = {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
-        })
-        setMarkerPosition({
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
-        })
+        }
+        setMapCenter(newPosition)
+        setMarkerPosition(newPosition)
       }
     }
   }
@@ -178,6 +210,7 @@ export default function WorkerRequestPage() {
                   value={formData.preferredDate}
                   onChange={handleChange}
                   min={new Date().toISOString().split("T")[0]}
+                  required
                 />
                 {validationErrors.preferredDate && (
                   <p className="text-sm text-red-500">{validationErrors.preferredDate}</p>
@@ -191,10 +224,14 @@ export default function WorkerRequestPage() {
                   type="time"
                   value={formData.preferredTime}
                   onChange={handleChange}
+                  min="08:00"
+                  max="20:00"
+                  required
                 />
                 {validationErrors.preferredTime && (
                   <p className="text-sm text-red-500">{validationErrors.preferredTime}</p>
                 )}
+               
               </div>
             </div>
             <div className="space-y-2">
@@ -209,6 +246,7 @@ export default function WorkerRequestPage() {
                   value={formData.servicelocation}
                   onChange={handleChange}
                   placeholder="Enter your address"
+                  required
                 />
               </Autocomplete>
               {validationErrors.servicelocation && (
@@ -245,6 +283,9 @@ export default function WorkerRequestPage() {
                 onChange={handleChange}
                 placeholder="Any special instructions or requirements?"
               />
+               {validationErrors.additionalNotes && (
+                  <p className="text-sm text-red-500">{validationErrors.additionalNotes}</p>
+                )}
             </div>
           </form>
         </CardContent>
