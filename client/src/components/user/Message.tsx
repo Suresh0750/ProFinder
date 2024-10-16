@@ -187,7 +187,7 @@ export default function Chats() {
             {/* Messages */}
             <ScrollArea className="flex-1 p-4 space-y-4">
               {messages.map((message) => (
-                <div key={message._id} className={`flex ${message.sender === customerData._id ? "justify-end" : "justify-start"}`}>
+                <div key={message._id} className={`flex ${message.sender === customerData._id ? "justify-end" : "justify-start"} mt-2`}>
                   <div className={`max-w-xs ${message.sender === customerData._id ? "bg-blue-600 text-white" : "bg-gray-200"} rounded-lg p-3`}>
                     <p className="text-sm">{message.message}</p>
                     <p className="text-xs text-right mt-1 opacity-70">

@@ -156,7 +156,7 @@ const handleSendMessage = (e: React.FormEvent) => {
                 <div className="flex justify-between items-baseline">
                   <h3 className="font-semibold text-sm">{conv?.userId?.username}</h3>
                   <div>
-                  <span className="text-xs text-gray-500">{(conv?.updatedAt)?.split('T')[1]?.split('.')[0]}</span>
+                  <span className="text-xs text-gray-500">{new Date(conv?.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   <div className=" bottom-0 right-0 text-center bg-green-400 rounded-full border-2 border-white">
                     {
                       conv?.workerUnread>0 && <span className='w-3 h-3'>{conv?.workerUnread}</span> 
@@ -188,7 +188,7 @@ const handleSendMessage = (e: React.FormEvent) => {
             <div key={message?._id} className={`flex ${message?.sender ==customerData?._id ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-xs ${message?.sender ==customerData?._id ? "bg-indigo-600 text-white" : "bg-gray-200"} rounded-lg p-3`}>
                 <p className="text-sm">{message?.message}</p>
-                <p className="text-xs text-right mt-1 opacity-70">{(message?.createdAt)?.split('T')[1]?.split('.')[0]}</p>
+                <p className="text-xs text-right mt-1 opacity-70">{new Date(message?.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
               </div>
             </div>  
           ))}
