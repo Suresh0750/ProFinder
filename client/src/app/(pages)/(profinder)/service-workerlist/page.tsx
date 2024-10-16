@@ -51,26 +51,7 @@ export default function ServiceWorkerListPage() {
     libraries,
   })
 
-  const total = 8
-
-  const handleFilterCategory = (categoryName: string) => {
-    alert(categoryName)
-    if (categoryName === "All") {
-      setShowCategory(allCategory)
-      setFilterCategory("All")
-    } else {
-      let filterCategory = allCategory.filter((val) => val?.Category === categoryName)
-      setShowCategory(filterCategory)
-      setFilterCategory(categoryName)
-    }
-  }
-
-  
-  useEffect(() => {
-    setCategoryName(GetCategoryName?.result)
-  }, [GetCategoryName])
-
-
+ 
   useEffect(() => {
     getCurrentLocation().then(
       (coords) => {
@@ -91,7 +72,10 @@ export default function ServiceWorkerListPage() {
     )
   }, [workerData, filterCategory, searchTerm])
 
-
+  const handleFilterCategory = useCallback((categoryName: string) => {
+    setFilterCategory(categoryName)
+    setPage(1)
+  }, [])
 
   const handleRedirectWorkerPage = useCallback((_id: string) => {
     router.push(`/worker_details/${_id}`)
