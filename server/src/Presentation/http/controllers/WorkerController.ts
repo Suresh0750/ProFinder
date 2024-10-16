@@ -23,6 +23,8 @@ import {
     fetchMessageUsecases,
     dashboardUsescases,
     ratingUsecases,
+    upcomingWorksUsecases,
+    markasCompleteUsecases
 } from "../../../app/useCases/worker/workerUsecases"
 
 // * dashboard
@@ -44,6 +46,31 @@ export const Dashboard = async(req:Request,res:Response,next:NextFunction)=>{
         next(error);
     }
 }
+export const upcomingWorkers = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.params)
+        const result = await upcomingWorksUsecases(req.params.id)
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
+    } catch (error) {
+        console.log(`Error from presentation layer -> http -> upcomingWorkers \n ${error}`);
+        next(error);
+    }
+}
+// * Mark as complete
+export const workComplete = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+
+        console.log(req.params.id)
+        const result = await markasCompleteUsecases(req.params.id,req.params.status)
+        return res.status(StatusCode.Success).json({ success: true, message: 'Marked as complete successfully'});
+
+    } catch (error) {
+        console.log(`Error from presentation layer -> http -> workComplete \n ${error}`);
+        next(error);
+    }
+}
+
+
 
 // * chat Request details
 export const fetchMessage = async(req:Request,res:Response,next:NextFunction)=>{
@@ -82,8 +109,11 @@ export const getChatsName = async(req:Request,res:Response,next:NextFunction)=>{
 
 export const getAllRequestController = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log('worker get all request')
+        console.log(req.params.workerId)
         const result = await getRequestUsecases(req.params.workerId);
         // * Check if headers have already been sent
+        console.log(result)
         if (!res.headersSent) {
             return res.status(StatusCode.Success).json({ 
                 success: true, 

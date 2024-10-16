@@ -52,8 +52,8 @@ export const userRequestUsecases = async (userRequestDetails:RequestData)=>{
     try {
         const result = await CustomerQueryRepository().checkExitstRequestQuery(userRequestDetails?.userId,userRequestDetails?.workerId);
         console.log(`Request from userRequestUseCases`)
-        console.log(result)
-        if(result){
+        // console.log(result)
+        if(result && result?.isAccept=="Pending"){
            const error:CustomError =  new Error('Request already exist'); // * if the request already exist means
             error.statusCode = 409
             throw error
@@ -61,7 +61,7 @@ export const userRequestUsecases = async (userRequestDetails:RequestData)=>{
 
         const AdditionalNotes = userRequestDetails.additionalNotes // * change the name convention
         delete userRequestDetails.additionalNotes 
-        console.log(userRequestDetails)
+        // console.log(userRequestDetails)
         return await CustomerQueryRepository().userRequestQuery({...userRequestDetails,AdditionalNotes})
 
     } catch (error) {

@@ -201,9 +201,9 @@ export const getWorkerRepository = ():WorkerRepository =>({
             throw error 
         }
     },
-    isResendActivityQuery : async(requestId:string,payment:number,workerId:string)=>{
+    isResendActivityQuery : async(requestId:string,payment:number,workerId:string,userId:string)=>{
         try {
-            await  ResentActivityModel.create({requestId,payment,workerId})
+            await  ResentActivityModel.create({requestId,payment,workerId,userId})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->isResendActivityQuery->\n`,error)
             throw error 
@@ -273,6 +273,33 @@ export const getWorkerRepository = ():WorkerRepository =>({
                 ]);
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->ratingQuery->\n`,error)
+            throw error 
+        }
+    },
+    getUpcomingWorks : async(workerId:string)=>{
+        try {
+            return await ResentActivityModel.find({workerId}).populate('requestId','_id preferredDate preferredTime servicelocation AdditionalNotes payment paymentId').populate('userId','_id username EmailAddress Address PhoneNumber')
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->ratingQuery->\n`,error)
+            throw error 
+        }
+    },
+    workCompleteQuery : async(_id:string,isCompleted:boolean,status:string)=>{
+        try {
+            console.log('worker query')
+            console.log(status)
+            console.log(_id)
+            return await ResentActivityModel.findByIdAndUpdate({_id:new ObjectId(_id)},{$set:{isCompleted: isCompleted,status}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->workComplete->\n`,error)
+            throw error 
+        }
+    },
+    markCompleteQuery : async(_id:string,status:string)=>{
+        try {
+            await RequestModal.findByIdAndUpdate({_id:new ObjectId(_id)},{$set:{isAccept:status}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->workComplete->\n`,error)
             throw error 
         }
     }

@@ -13,7 +13,28 @@ export const {ObjectId} = Types
 
 
 // * worker dashboard
-
+export const markasCompleteUsecases = async(_id:string,status:string)=>{
+    try {
+        console.log('worker usecause')
+        console.log(_id)
+        console.log(status)
+       
+            const res = await getWorkerRepository().workCompleteQuery(_id,status=="Completed",status)
+            return await getWorkerRepository().markCompleteQuery(String(res?.requestId),status)
+    
+    } catch (error) {
+        console.log(`Error from useCases->worker->rating\n`,error)
+        throw error
+    }
+}
+export const upcomingWorksUsecases =  async(workerId:string)=>{
+    try{
+        return getWorkerRepository().getUpcomingWorks(workerId)
+    }catch(error){
+        console.log(`Error from useCases->worker->rating\n`,error)
+        throw error
+    }
+}
 export const ratingUsecases = async(workerId:string)=>{
     try {
         return getWorkerRepository().ratingQuery(workerId)
@@ -89,10 +110,12 @@ export const getRequestUsecases = async (workerId:string)=>{
 
 export const isAcceptUseCasess = async(data:any,workerId:string)=>{
     try {
-        const {_id,isPayment} = JSON.parse(data)
-        
-         await getWorkerRepository().isAcceptWorkQuery(_id,Number(isPayment))
-         return  await getWorkerRepository().isResendActivityQuery(_id,Number(isPayment),workerId)
+        const {_id,isPayment,userId} = JSON.parse(data)
+        console.log('isAcceptUsecases')
+        console.log(data)
+        await getWorkerRepository().isAcceptWorkQuery(_id,Number(isPayment))
+    
+       return  await getWorkerRepository().isResendActivityQuery(_id,Number(isPayment),workerId,userId)
     } catch (error) {
         console.log(`Error from useCases->worker->isAcceptUseCasess\n`,error)
         throw error
