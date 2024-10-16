@@ -72,7 +72,7 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
     userRequestQuery : async(userRequestDetails:RequestData)=>{
         try {
             console.log(`Request reached useRequestQuery`)
-            console.log(userRequestDetails)
+            // console.log(userRequestDetails)
             await RequestModal.create(userRequestDetails)
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->userRequestQuery\n`,error)

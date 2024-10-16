@@ -93,3 +93,15 @@ export interface ReviewTypes{
   userId : string,
   workerId : string
 }
+
+export interface RecentActivityType{
+  requestId : Types.ObjectId,
+  workerId : Types.ObjectId,
+  userId : Types.ObjectId,
+  isCompleted : boolean,
+  paymentId : string,
+  payment : number,
+  createdAt : Date
+  updatedAt :Date
+  __v ? : number
+}

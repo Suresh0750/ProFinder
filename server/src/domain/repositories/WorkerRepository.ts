@@ -5,9 +5,9 @@ import {
     WorkerInformation,
     getProjectData,
     workerRequest,
-    messageTypes
+    messageTypes,
 } from '../entities/Worker'
-import {conversationTypes,messageType} from '../entities/commonTypes'
+import {conversationTypes,messageType,RecentActivityType} from '../entities/commonTypes'
 import {Types} from 'mongoose'
 
 export interface WorkerRepository{
@@ -32,8 +32,11 @@ export interface WorkerRepository{
     fetchMessage(conversationId:string):Promise<messageType[] | null>
     getSingleMsg(message:string):Promise<messageType |null>
     updateIsReadQuery(conversationId:string) :Promise<void>
-    isResendActivityQuery(requestId:string,payment:number,wokerId:string):Promise<void>
+    isResendActivityQuery(requestId:string,payment:number,wokerId:string,userId:string):Promise<void>
     countResentWorkQuery(workerId:string) :Promise<any>
     getRecentActivity(workerId:string) :Promise<any>
     ratingQuery(workerId:string):Promise<any>
+    getUpcomingWorks(workerId:string):Promise<RecentActivityType[]>
+    workCompleteQuery(_id:string,isCompleted:boolean,status:string):Promise<RecentActivityType | null>
+    markCompleteQuery(_id:string,status:string):Promise<void>
 }
