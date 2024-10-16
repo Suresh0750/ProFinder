@@ -13,8 +13,26 @@ import {
     EditprofileUsecases,
     conversationUsecases,
     getConversationUsecases,
-    getMessageUsecases
+    getMessageUsecases,
+    getBookingUsecases
 } from "../../../app/useCases/user/User";
+
+
+
+// * get booking data
+
+export const getBooking = async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        console.log('get booking')
+        console.log(req.params.id)
+        const result = await getBookingUsecases(req.params.id)
+        console.log(JSON.stringify(result))
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
+    }catch(error){
+        console.log(`Error from Presntation->controllers->getBooking \n${error}`)
+        next(error)  
+    }
+}
 
 // * user conversation
 export const getMessage = async(req:Request,res:Response,next:NextFunction)=>{  /// * get message and show to user

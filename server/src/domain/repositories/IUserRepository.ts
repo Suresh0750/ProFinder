@@ -2,7 +2,7 @@
 
 
 import { User ,editprofileTypes,conversationTypes,messageTypes} from "../entities/User";
-import {messageType} from "../entities/commonTypes";
+import {messageType,RequestType} from "../entities/commonTypes";
 
 
 // * Repositories types
@@ -23,4 +23,5 @@ export interface IUserRepository{
     findconversationId(userId:string,workerId:string): Promise<{ _id: string; } | null>
     createMessage(data:messageTypes) : Promise<messageType>
     fetchMessageQuery(conversationId:string) :Promise<messageType[]>
+    getBooking(userId:string) : Promise<RequestType[] | null>
 }

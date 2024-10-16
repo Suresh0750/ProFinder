@@ -8,6 +8,18 @@ import { OtpService } from "../../services/OtpService";
 import { OtpStoreData } from "../utils/OtpStoreData";
 import { sendMessage } from "../utils/chatUtils";
 
+
+// * get booking details usecases
+
+export const getBookingUsecases = async(userId:string)=>{
+  try{
+    return await getUserRepository().getBooking(userId)
+  }catch(error){
+    console.log(`error from usecase in getMessageUsecases`, error);
+    throw error;
+  }
+}
+
 // * user in chat side
 
 export const getMessageUsecases = async(conversationId:string)=>{

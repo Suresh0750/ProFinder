@@ -10,7 +10,8 @@ import {
     editprofile,
     conversation,
     getConversation,
-    getMessage
+    getMessage,
+    getBooking,
 } from "../controllers/UserController";
 
 
@@ -32,6 +33,8 @@ userRouter.post('/checkEmailForgetPass',isEmailValidate,isCheckEmail)   // * che
 userRouter.get('/profile:id',customeVerify,profile)
 // userRouter.put('/updateprofile',customeVerify,upload.single('newImageData'),editprofile)
 userRouter.put('/updateprofile',upload.single('newImageData'),customeVerify,editprofile)
+userRouter.get('/booking/:id',customeVerify,authorizeRoles('user'),getBooking)
+
 
 // * chats
 userRouter.post('/conversation',customeVerify,authorizeRoles('user'),conversation)
