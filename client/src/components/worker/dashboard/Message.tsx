@@ -24,6 +24,7 @@ const {data,refetch} = useGetmessageQuery(customerData?._id)
 const {data:allMessage,refetch:refetchAllMsg} =  useFetchMessageQuery(conversationID,{skip:stopFetch})
 const [socket,setSocket] = useState<Socket|null>(null)
 const [messageBox,setMessageBox] = useState<conversationData>({})
+const [searchUser,setSearchUser] = useState<string>('')
 
 interface newMessage {
   _id: string;
@@ -31,6 +32,7 @@ interface newMessage {
   userId: any;
   workerId: any
 }
+
 
 
  // * connect the socket
@@ -73,6 +75,8 @@ interface newMessage {
       };
     }
   },[socket])
+
+  
 
   useEffect(()=>{
     setStopFetch(false)

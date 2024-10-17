@@ -115,7 +115,7 @@ export const getVerifiedWorkerController = async(req:Request,res:Response,next:N
         next(error)  
     }
 }
-
+    
 
 // * getCategory Name for listing while worker signup page 
 
