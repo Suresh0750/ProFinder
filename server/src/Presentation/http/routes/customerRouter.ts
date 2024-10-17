@@ -18,7 +18,7 @@ customerRouter.post("/review",authorizeRoles('customer'),ReviewController)
 // * payment gatway
 
 customerRouter.post("/paymetAPI",authorizeRoles('customer'), paymetnAPIController)
-customerRouter.post("/savePaymentId",authorizeRoles('customer'),paymentIdController)
+customerRouter.post("/savePaymentId",paymentIdController)
 
 // * router for Request 
 customerRouter.post('/userRequestWorker',userRequestWorkerController)

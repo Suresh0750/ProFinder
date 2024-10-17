@@ -17,5 +17,6 @@ export interface CustomerRepository {
     userRequestQuery(userRequestDetails:RequestData) : Promise<void>
     checkExitstRequestQuery(userId:string,workerId:string) : Promise<RequestData| null>
     createReview(data:ReviewTypes) : Promise<void>
-    getReview(workerId:String) :Promise<getReviewTypes[] | undefined>
+    getReview(workerId:string) :Promise<getReviewTypes[] | undefined>
+    checkUserPayed(workerId:string,userId:string) : Promise<any>
 }

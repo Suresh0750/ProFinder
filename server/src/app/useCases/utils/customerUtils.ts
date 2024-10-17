@@ -39,7 +39,17 @@ export const ReviewUsecases = async(data:ReviewTypes)=>{
 export const getUserRequestDataUsecasuse = async(userId:string,workerId:string)=>{
     try {
       
-        return CustomerQueryRepository().checkExitstRequestQuery(userId,workerId);
+        const {paymentId} = await CustomerQueryRepository().checkUserPayed(workerId,userId)
+        
+        const res = await CustomerQueryRepository().checkExitstRequestQuery(userId,workerId);
+        console.log('usecases getUserRequestDataUsecasuse')
+        console.log(paymentId)
+        console.log(res)
+        if(paymentId){
+            const result = {...res,paymentId}
+            return result
+        }
+        return res
     } catch (error) {
         console.log(`Error from useCases->utils-> getUserRequestDataUsecasuse \n${error}`)
         throw error  

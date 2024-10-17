@@ -14,6 +14,7 @@ import {ReviewModel} from './models/ReviewModel'
 
 // * Mongoose types
 import {Types} from 'mongoose'
+import { ResentActivityModel } from "./models/RecentActivityModel";
 const {ObjectId} = Types
 
 export const CustomerQueryRepository = ():CustomerRepository=>({
@@ -100,6 +101,15 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
             return ReviewModel.find({workerId:new ObjectId(workerId)}).populate('userId','username profile _id')
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->getReview\n`,error)
+            throw error
+        }
+    },
+    checkUserPayed:async(workerId:string,userId:string)=>{
+        try {         
+            return await ResentActivityModel.findOne({workerId:new ObjectId(workerId),userId:new ObjectId(userId)},{paymentId:1,_id:0})
+
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->checkUserPayed\n`,error)
             throw error
         }
     }

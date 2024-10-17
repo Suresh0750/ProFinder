@@ -37,8 +37,9 @@ export const payment = (paymentData:any)=>{
 
     export const IsActivityUsecases = async(data:any)=>{
         try {
-            
-            return await getWorkerRepository().IsActivityQuery(data.requestId,data.paymentId)
+            console.log('usecases')
+            // console.log(data)
+            return await getWorkerRepository().IsActivityQuery(data.productinfo,data.mihpayid)
         } catch (error) {
             console.log("error payment:", error);
             throw error 
