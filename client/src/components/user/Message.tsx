@@ -135,7 +135,7 @@ export default function Chats() {
             <Input
               type="text"
               placeholder="Search conversations"
-              className="pl-10 pr-4 w-full"
+              className="pl-10 pr-4 w-full mt-[7px]"
             />
           </div>
         </div>

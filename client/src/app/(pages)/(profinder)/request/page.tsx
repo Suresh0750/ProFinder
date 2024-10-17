@@ -70,8 +70,10 @@ export default function WorkerRequestPage() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords
-          setMapCenter({ lat: latitude, lng: longitude })
-          setMarkerPosition({ lat: latitude, lng: longitude })
+          // setMapCenter({ lat: latitude, lng: longitude })
+          // setMarkerPosition({ lat: latitude, lng: longitude })
+          setMapCenter({ lat: 11.0128646, lng: 76.9654417 })
+          setMarkerPosition({ lat: 11.0128646, lng: 76.9654417 })
         },
         (error) => {
           console.error("Error getting user's location:", error)

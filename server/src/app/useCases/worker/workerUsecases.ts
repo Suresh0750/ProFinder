@@ -137,7 +137,7 @@ export const isRejectUsecases = async (_id:string)=>{
 
 export const getSingleWorkerDetailsUsecases= async (_id:string)=>{
     try {
-   
+     
         return await getWorkerRepository().getSingleWorkerDetailsQuery(_id)
     } catch (error) {
         console.log(`Error from useCases->worker->getSingleWorkerDetailsUsecases\n`,error)

@@ -1,4 +1,4 @@
-import { User,MessageSquare } from 'lucide-react'
+import { User,MessageSquare,Book } from 'lucide-react'
 
 import Link from 'next/link'
 
@@ -28,7 +28,8 @@ export default function Layout ({children}:{children:React.ReactNode}){
                 </h2>
                 <h2 className="flex py-2 px-4 text-white hover:bg-gray-700 cursor-pointer">
                     <Link href="/user/booking">
-                    <MessageSquare className="w-4 h-4 mr-2 text-white inline " />
+                    
+                    <Book className="w-4 h-4 mr-2 text-white inline " />
                         Booking Details
                     </Link>
                 </h2>

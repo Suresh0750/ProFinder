@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRouter } from 'next/navigation'
-import { StarIcon, MessageCircleIcon, MessageSquare, MapPinIcon, BriefcaseIcon, CalendarIcon, DollarSignIcon } from 'lucide-react'
+import { StarIcon, MessageCircleIcon, MessageSquare, MapPinIcon, BriefcaseIcon, CalendarIcon, DollarSignIcon ,Check} from 'lucide-react'
 import Link from 'next/link'
 const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
   const [workerDetails, setWorkerDetails] = useState<any>(null)
@@ -24,16 +24,20 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
   const [reviewDetails,setReviewDetails] = useState([])
   const [customerRating,setCustomerRating] = useState(0)
+  const [skip,setSkip] = useState(true)
 
   const { _id } = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
   const customerData = JSON.parse(localStorage.getItem("customerData") || '{"_id":null}')
 
-  const { data, refetch } = useGetSingleWorkerDetailsQuery(`${params.workerId}/${_id}`)
+  const { data, refetch } = useGetSingleWorkerDetailsQuery(`${params.workerId}/${_id}`,{skip})
   const [conversation] = useConversationMutation()
   const [submitReview] = useSubmitReviewMutation()
   const {data:reviewData,refetch:fetchReview} = useGetReviewQuery(params.workerId)
   const Router = useRouter()
 
+  useEffect(()=>{
+    setSkip(false)
+  },[])
 
   useEffect(()=>{
     setReviewDetails(reviewData?.result)
@@ -74,6 +78,7 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
     if (data?.result) {
       setWorkerDetails(data.result)
       console.log(JSON.stringify(data.result))
+      console.log(JSON.stringify(data))
     }
   }, [data])
 
@@ -87,6 +92,7 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
 
   const renderRequestButton = () => {
     if (!data?.requestData) {
+      
       const {_id,Category,FirstName} = workerDetails
       console.log({_id,Category,FirstName})
       localStorage.setItem("workerDetails",JSON.stringify({_id,Category,FirstName}))
@@ -99,7 +105,10 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
           </Link>
       )
     }
-    switch (data.requestData.isAccept) {
+    console.log(JSON.stringify(data?.requestData?.isAccept))
+    console.log(JSON.stringify(data?.requestData))
+
+    switch (data?.requestData?._doc?.isAccept) {
       case "Accepted":
         return (
           <>
@@ -109,6 +118,8 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
         )
       case "Pending":
         return <Badge variant="warning">Pending</Badge>
+      case "Completed":
+        return <Badge variant="success">Completed</Badge>
       default:
         return <Badge variant="destructive">Cancelled</Badge>
     }
@@ -137,13 +148,23 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
               </div>
               <div className="flex flex-col sm:flex-row gap-4 items-center">
                 {renderRequestButton()}
-                {data?.requestData?.isAccept === "Accepted" && (
-                  <PayUComponent
-                    currUserData={customerData}
-                    requestId={data.requestData._id}
-                    payment={data.requestData.payment || '500'}
-                  />
-                )}
+                {
+                  (data?.requestData?.paymentId).length ? (
+                    <>
+                    <Check  className='text-green-500'/>
+                    Payment successfully completed
+                    </>
+                  ) : (
+                    data?.requestData?._doc?.isAccept === "Accepted" ? (
+                      <PayUComponent
+                        currUserData={customerData}
+                        requestId={data.requestData._doc?._id}
+                        payment={data.requestData._doc?.payment || '500'}
+                      />
+                    ) : ''
+                  )  
+                }
+               
               </div>
             </div>
           </div>

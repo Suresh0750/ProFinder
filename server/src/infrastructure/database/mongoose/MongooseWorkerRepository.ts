@@ -144,7 +144,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     IsActivityQuery : async(requestId:string,paymentId:string)=>{
         try {
-            await ResentActivityModel.updateOne({requestId,paymentId})
+            await ResentActivityModel.updateOne({requestId:new ObjectId(requestId)},{$set:{paymentId}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->IsActivityQuery->\n`,error)
             throw error
