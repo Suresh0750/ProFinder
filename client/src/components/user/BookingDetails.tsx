@@ -54,7 +54,8 @@ export default function BookingPage() {
 
   useEffect(() => {
     if (requestData?.result && requestData.result.length > 0) {
-      setSelectedWork(requestData.result[0])
+      setSelectedWork(requestData.result)
+      console.log(JSON.stringify(requestData))
     }
   }, [requestData])
 
@@ -126,7 +127,10 @@ export default function BookingPage() {
           <CardDescription>Information about the selected work</CardDescription>
         </CardHeader>
         <Card className="w-full max-w-2xl mx-auto">
-          <CardHeader>
+          {
+            selectedWork && (
+                <>
+                 <CardHeader>
             <div className="flex justify-between items-center">
               <CardTitle className="text-2xl font-bold">{selectedWork?.service} Booking</CardTitle>
               <Badge className={`${getStatusColor(selectedWork?.isAccept || 'pending')} text-white`}>
@@ -166,6 +170,10 @@ export default function BookingPage() {
               </Badge>
             </div>
           </CardContent>
+                </>
+            )
+          }
+         
         </Card>
       </Card>
 
