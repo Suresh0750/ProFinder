@@ -149,7 +149,7 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
               <div className="flex flex-col sm:flex-row gap-4 items-center">
                 {renderRequestButton()}
                 {
-                  (data?.requestData?.paymentId).length ? (
+                  (data?.requestData?.paymentId) ? (
                     <>
                     <Check  className='text-green-500'/>
                     Payment successfully completed
