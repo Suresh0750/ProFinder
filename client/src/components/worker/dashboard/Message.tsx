@@ -12,8 +12,9 @@ import {io,Socket} from 'socket.io-client'
 
 const Message = ()=>{
 const [inputMessage, setInputMessage] = useState("")
-const [customerDatails,setCustomerDatails] = useState([])
-const [conversationID,setConversationID] = useState('')
+const [allCustomer,setAllCustomer] = useState([])
+const [customerDetails,setCustomerDetails] = useState([])
+const [conversationID,setConversationID] = useState<string>('')
 const [stopFetch,setStopFetch] = useState(true)
 const [messages ,setMessages] = useState([])
 
@@ -24,13 +25,14 @@ const {data,refetch} = useGetmessageQuery(customerData?._id)
 const {data:allMessage,refetch:refetchAllMsg} =  useFetchMessageQuery(conversationID,{skip:stopFetch})
 const [socket,setSocket] = useState<Socket|null>(null)
 const [messageBox,setMessageBox] = useState<conversationData>({})
-const [searchUser,setSearchUser] = useState<string>('')
+
 
 interface newMessage {
   _id: string;
   message: string;
   userId: any;
-  workerId: any
+  workerId: any;
+  conversationId? : string
 }
 
 
@@ -51,6 +53,7 @@ interface newMessage {
 
   useEffect(()=>{
     if (socket && conversationID) {
+      localStorage.setItem('conversationId',JSON.stringify(conversationID))
       socket.emit("joinRoom", conversationID);
     }
   },[socket,conversationID])
@@ -58,13 +61,15 @@ interface newMessage {
   useEffect(()=>{
     if (socket) {
       socket.on("message", (newMessage: newMessage) => {
-        console.log('newMessage')
-        console.log(newMessage)
-        setMessages((prevMessage:any)=>[...prevMessage,newMessage])
-        setCustomerDatails((prevConv:any)=>{
+        if(newMessage?.conversationId == JSON.parse(localStorage.getItem('conversationId')||'')){
+          setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+        }
+        setCustomerDetails((prevConv:any)=>{
           const result = prevConv?.map((conv)=>{
-            if(conv._id==newMessage?.conversationId){
-              return {...conv,lastMessage:newMessage?.message}
+            if(conv._id==newMessage?.conversationId && newMessage?.conversationId == JSON.parse(localStorage.getItem('conversationId')||'') ){
+              return {...conv,lastMessage:newMessage?.message,workerUnread:0}
+            }else if(conv._id==newMessage?.conversationId && newMessage?.conversationId ){
+              return {...conv,lastMessage:newMessage?.message,workerUnread:(conv?.workerUnread)+1}  
             }
             return conv
           })
@@ -79,7 +84,7 @@ interface newMessage {
   },[socket])
 
   
-
+// * enable get method RTK query API tool
   useEffect(()=>{
     setStopFetch(false)
   },[conversationID])
@@ -91,21 +96,36 @@ interface newMessage {
   
 useEffect(()=>{
     // console.log(JSON.stringify(data?.result))
-    setCustomerDatails(data?.result)
+    setCustomerDetails(data?.result)
+    setAllCustomer(data?.result)
 },[data])
 
+
+const handleSearch = (e:React.ChangeEvent<HTMLInputElement>)=>{
+  console.log(e.target.value)
+  let searchInput = (e.target.value).toLowerCase()
+  if((e.target.value)?.length>1){
+    const filter = allCustomer?.filter((prevCustomer)=>{
+    return (prevCustomer?.userId?.username).toLowerCase().includes(searchInput)
+  })
+  setCustomerDetails(filter)
+  }else{
+    setCustomerDetails(allCustomer)
+  }
+}
+
 const handleShowMsg = (data: conversationData) => {
-  if (!data || !data._id) {
+  if (!data || !data._id) { 
       console.warn("Invalid data or missing ID:", data);
       return; // Early exit if data is invalid
   }
 
   console.log("Showing message for conversation ID:", data._id);
 
-  setConversationID(data._id);
+  setConversationID(data?._id);
   setMessageBox(data);
 
-  setCustomerDatails((prevConv:any) => {
+  setCustomerDetails((prevConv:any) => {
       const result = prevConv?.map((conv) => {
           if (conv._id === data?._id) {
               // console.log("Updating unread count for:", conv);
@@ -145,12 +165,13 @@ const handleSendMessage = (e: React.FormEvent) => {
               type="text"
               placeholder="Search"
               className="w-full pl-10 pr-4 py-2 border rounded-full"
+              onChange={(e)=>handleSearch(e)}
             />
             <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
           </div>
         </div>
         <div className="overflow-y-auto h-[calc(80vh-120px)]">
-          {customerDatails?.length >0&& customerDatails?.map((conv) => (
+          {customerDetails?.length >0&& customerDetails?.map((conv) => (
             <div key={conv?._id} className="flex items-center p-4 hover:bg-gray-100 cursor-pointer" onClick={()=>handleShowMsg(conv)}>
               <div className="relative">
                 <img src={conv?.userId?.profile} alt={conv?.userId?.username} className="w-10 h-10 rounded-full" />
