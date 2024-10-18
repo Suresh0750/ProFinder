@@ -30,7 +30,8 @@ interface newMessage {
   _id: string;
   message: string;
   userId: any;
-  workerId: any
+  workerId: any,
+  conversationId?:string
 }
 
 
@@ -59,12 +60,17 @@ interface newMessage {
     if (socket) {
       socket.on("message", (newMessage: newMessage) => {
         console.log('newMessage')
-        console.log(newMessage)
-        setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+        if(newMessage.conversationId==conversationID){
+          setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+        }
         setCustomerDatails((prevConv:any)=>{
           const result = prevConv?.map((conv)=>{
             if(conv._id==newMessage?.conversationId){
-              return {...conv,lastMessage:newMessage?.message}
+              console.log(conv)
+              console.log(conv?._id,'count',newMessage?.conversationId)
+              console.log(conv?.userUnread)
+              let inCount = conv?.userUnread+1
+              return {...conv,lastMessage:newMessage?.message,userUnread:inCount}
             }
             return conv
           })
