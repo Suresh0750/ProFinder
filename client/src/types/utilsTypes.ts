@@ -83,7 +83,11 @@ export type readMsgType = {
 
 export interface newMessage {
     _id: string;
-    message: string;
-    userId: any;
-    workerId: any
+    message : string;
+    creatAt : string,
+    updateAt : string,
+    __v : 0,
+    conversationId:string,
+    isRead : boolean,
+    sender :string
   }

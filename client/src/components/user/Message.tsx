@@ -44,7 +44,7 @@ export default function Chats() {
     }
   }, [])
 
-  useEffect(() => {
+  useEffect(() => {   // * change the conversation room according to worker
     if (socket && conversationID) {
       socket.emit("joinRoom", conversationID)
     }
@@ -53,7 +53,11 @@ export default function Chats() {
   useEffect(() => {
     if (socket) {
       const handleNewMessage = (newMessage: newMessage) => {
-        setMessages(prevMessages => [...prevMessages, newMessage])
+        console.log("newMessage")
+        console.log(newMessage.conversationId)
+        if(conversationID==newMessage.conversationId){
+          setMessages(prevMessages => [...prevMessages, newMessage])
+        }
         setConversations(prevConv => 
           prevConv.map(conv => 
             conv._id === newMessage.conversationId 
@@ -77,6 +81,7 @@ export default function Chats() {
 
   useEffect(() => {
     if (allMessageData?.result) {
+      console.log(JSON.stringify(allMessageData?.result[0]))
       setMessages(allMessageData.result)
     }
   }, [allMessageData])
@@ -94,6 +99,7 @@ export default function Chats() {
     }
 
     setConversationID(data._id)
+    
     setMessageBox(data)
 
     setConversations(prevConv => 
