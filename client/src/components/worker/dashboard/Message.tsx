@@ -31,8 +31,13 @@ interface newMessage {
   _id: string;
   message: string;
   userId: any;
+<<<<<<< HEAD
+  workerId: any,
+  conversationId?:string
+=======
   workerId: any;
   conversationId? : string
+>>>>>>> d3d9fcd4dc93ae2ac5d58347f0f2fd25291ff5cf
 }
 
 
@@ -44,7 +49,7 @@ interface newMessage {
     setSocket(socketInstance)
 
     socketInstance.on("connect",()=>{
-      // console.log("Socket connected:", socketInstance.id);
+      console.log("Socket connected:", socketInstance.id);
     })
     return ()=>{
       socketInstance.disconnect();
@@ -61,6 +66,20 @@ interface newMessage {
   useEffect(()=>{
     if (socket) {
       socket.on("message", (newMessage: newMessage) => {
+<<<<<<< HEAD
+        console.log('newMessage')
+        if(newMessage.conversationId==conversationID){
+          setMessages((prevMessage:any)=>[...prevMessage,newMessage])
+        }
+        setCustomerDatails((prevConv:any)=>{
+          const result = prevConv?.map((conv)=>{
+            if(conv._id==newMessage?.conversationId){
+              console.log(conv)
+              console.log(conv?._id,'count',newMessage?.conversationId)
+              console.log(conv?.userUnread)
+              let inCount = conv?.userUnread+1
+              return {...conv,lastMessage:newMessage?.message,userUnread:inCount}
+=======
         if(newMessage?.conversationId == JSON.parse(localStorage.getItem('conversationId')||'')){
           setMessages((prevMessage:any)=>[...prevMessage,newMessage])
         }
@@ -70,6 +89,7 @@ interface newMessage {
               return {...conv,lastMessage:newMessage?.message,workerUnread:0}
             }else if(conv._id==newMessage?.conversationId && newMessage?.conversationId ){
               return {...conv,lastMessage:newMessage?.message,workerUnread:(conv?.workerUnread)+1}  
+>>>>>>> d3d9fcd4dc93ae2ac5d58347f0f2fd25291ff5cf
             }
             return conv
           })
