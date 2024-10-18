@@ -43,7 +43,7 @@ interface newMessage {
     setSocket(socketInstance)
 
     socketInstance.on("connect",()=>{
-      // console.log("Socket connected:", socketInstance.id);
+      console.log("Socket connected:", socketInstance.id);
     })
     return ()=>{
       socketInstance.disconnect();
