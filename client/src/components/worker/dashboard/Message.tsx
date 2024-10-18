@@ -42,7 +42,7 @@ interface newMessage {
     setSocket(socketInstance)
 
     socketInstance.on("connect",()=>{
-      console.log("Socket connected:", socketInstance.id);
+      // console.log("Socket connected:", socketInstance.id);
     })
     return ()=>{
       socketInstance.disconnect();
@@ -58,6 +58,8 @@ interface newMessage {
   useEffect(()=>{
     if (socket) {
       socket.on("message", (newMessage: newMessage) => {
+        console.log('newMessage')
+        console.log(newMessage)
         setMessages((prevMessage:any)=>[...prevMessage,newMessage])
         setCustomerDatails((prevConv:any)=>{
           const result = prevConv?.map((conv)=>{
@@ -84,7 +86,7 @@ interface newMessage {
 
   useEffect(()=>{
     setMessages(allMessage?.result)
-    console.log(JSON.stringify(allMessage?.result))
+    // console.log(JSON.stringify(allMessage?.result))
   },[allMessage])
   
 useEffect(()=>{
@@ -106,7 +108,7 @@ const handleShowMsg = (data: conversationData) => {
   setCustomerDatails((prevConv:any) => {
       const result = prevConv?.map((conv) => {
           if (conv._id === data?._id) {
-              console.log("Updating unread count for:", conv);
+              // console.log("Updating unread count for:", conv);
               return { ...conv, workerUnread: 0 }; // Update unread count
           }
           return conv; // Return original conversation

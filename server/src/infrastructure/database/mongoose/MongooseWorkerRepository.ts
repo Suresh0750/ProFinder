@@ -194,7 +194,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     updateIsReadQuery : async(conversationId:string)=>{
         try {
-            await MessageModel.updateMany({conversationId,isRead:false},{$set:{isRead:true}}) // * while worker fetch the data
+            await MessageModel.updateMany({conversationId:new ObjectId(conversationId),isRead:false},{$set:{isRead:true}}) // * while worker fetch the data
             await ConversationModel.updateOne({conversationId},{$set:{workerUnread:0}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->updateIsReadQuery->\n`,error)
