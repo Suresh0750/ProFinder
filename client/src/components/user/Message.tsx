@@ -56,17 +56,18 @@ export default function Chats() {
       const handleNewMessage = (newMessage: newMessage) => {
         console.log("newMessage")
         console.log(newMessage.conversationId)
-        if(newMessage?.conversationId == JSON.parse(localStorage.getItem('conversationId')||'')){
+        console.log(newMessage)
+        const roomId = JSON.parse(localStorage.getItem('conversationId')||'')
+        if(newMessage?.conversationId == roomId){
           setMessages(prevMessages => [...prevMessages, newMessage])
         }
-        const roomId = JSON.parse(localStorage.getItem('conversationId')||'')
        
         setConversations((prevConv) => {
           const result = prevConv?.map((conv)=>{
             if(conv._id==newMessage?.conversationId && newMessage?.conversationId == roomId){
               return {...conv,lastMessage:newMessage?.message,userUnread:0}
             }else if(conv._id==newMessage?.conversationId ){
-              return {...conv,lastMessage:newMessage?.message,workerUnread:(conv?.userUnread)+1}  
+              return {...conv,lastMessage:newMessage?.message,userUnread:(conv?.userUnread)+1}  
             }
             return conv
           })

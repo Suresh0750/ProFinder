@@ -78,7 +78,7 @@ export default function ServiceWorkerListPage() {
   }, [])
 
   const handleRedirectWorkerPage = useCallback((_id: string) => {
-    router.push(`/worker_details/${_id}`)
+    router.push(`/worker-details/${_id}`)
   }, [router])
 
   const handleChangePage = useCallback((event: React.ChangeEvent<unknown>, value: number) => {

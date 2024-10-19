@@ -75,7 +75,7 @@ export const workerApi = createApi({
         }),
         getSingleWorkerDetails : builder.query({
             query : (data)=>({
-                url:`worker/singleWorkerDetails${data}`,
+                url:`/worker/singleWorkerDetails/${data}`,
                 method:"GET",
             })
         }),
