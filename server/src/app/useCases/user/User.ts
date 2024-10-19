@@ -24,6 +24,7 @@ export const getBookingUsecases = async(userId:string)=>{
 
 export const getMessageUsecases = async(conversationId:string)=>{
   try {
+    await getUserRepository().updateIsReadQuery(conversationId)
     return await getUserRepository().fetchMessageQuery(conversationId)
   } catch (error) {
     console.log(`error from usecase in getMessageUsecases`, error);

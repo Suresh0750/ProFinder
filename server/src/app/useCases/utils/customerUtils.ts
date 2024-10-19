@@ -39,14 +39,14 @@ export const ReviewUsecases = async(data:ReviewTypes)=>{
 export const getUserRequestDataUsecasuse = async(userId:string,workerId:string)=>{
     try {
       
-        const {paymentId} = await CustomerQueryRepository().checkUserPayed(workerId,userId)
+        const payment = await CustomerQueryRepository().checkUserPayed(workerId,userId)
         
         const res = await CustomerQueryRepository().checkExitstRequestQuery(userId,workerId);
         console.log('usecases getUserRequestDataUsecasuse')
-        console.log(paymentId)
+        console.log(payment)
         console.log(res)
-        if(paymentId){
-            const result = {...res,paymentId}
+        if(payment?.paymentId){
+            const result = {...res,paymentId:payment?.paymentId}
             return result
         }
         return res
@@ -62,7 +62,7 @@ export const userRequestUsecases = async (userRequestDetails:RequestData)=>{
     try {
         const result = await CustomerQueryRepository().checkExitstRequestQuery(userRequestDetails?.userId,userRequestDetails?.workerId);
         console.log(`Request from userRequestUseCases`)
-        // console.log(result)
+        console.log(result)
         if(result && result?.isAccept=="Pending"){
            const error:CustomError =  new Error('Request already exist'); // * if the request already exist means
             error.statusCode = 409
