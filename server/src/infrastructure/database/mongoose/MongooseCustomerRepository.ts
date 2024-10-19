@@ -82,7 +82,7 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
     },
     checkExitstRequestQuery : async(userId:string,workerId:string)=>{
         try {
-            return RequestModal.findOne({userId,workerId})
+            return await RequestModal.findOne({userId,workerId,isAccept:"Pending"})
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->checkExitstRequestQuery\n`,error)
             throw error  

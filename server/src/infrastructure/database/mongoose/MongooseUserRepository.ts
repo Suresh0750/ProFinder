@@ -152,9 +152,20 @@ export const getUserRepository = () : IUserRepository =>({
             throw error
         }
     },
+    updateIsReadQuery : async(conversationId:string)=>{
+        try {
+            console.log('updateQuery')
+            console.log(conversationId)
+            await MessageModel.updateMany({conversationId:new ObjectId(conversationId),isRead:false},{$set:{isRead:true}}) // * while worker fetch the data
+            await ConversationModel.findByIdAndUpdate({_id:new ObjectId(conversationId)},{$set:{userUnread:0}})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->updateIsReadQuery->\n`,error)
+            throw error 
+        }
+    },
     fetchMessageQuery : async(conversationId:string)=>{
         try{
-            await ConversationModel.updateOne({conversationId},{$set:{userUnread:0}})
+            // await ConversationModel.updateOne({conversationId:new ObjectId(conversationId)},{$set:{userUnread:0}})
             return await MessageModel.find({conversationId:new ObjectId(conversationId)}).lean()
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->fetchMessageQuery\n`,error)

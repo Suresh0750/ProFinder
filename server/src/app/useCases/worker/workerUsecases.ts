@@ -75,6 +75,7 @@ export const messageUsecases = async(data:messageType)=>{
         const {message,conversationId} = data
         await getWorkerRepository().messageQuery(data)
         const result = await getWorkerRepository().getSingleMsg(message)
+        
         if(result) await sendMessage(result)   // * here call the socket
         await getWorkerRepository().updatemessage({_id:new ObjectId(conversationId),lastMessage:message})
         return 

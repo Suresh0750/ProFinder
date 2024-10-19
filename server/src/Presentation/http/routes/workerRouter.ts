@@ -45,7 +45,7 @@ workerRouter.put("/isAcceptWork/:update",customeVerify,authorizeRoles('worker'),
 workerRouter.put("/rejectWork/:id",authorizeRoles('worker'),isRejectWorkController)
 
 // * get single worker Details
-workerRouter.get('/singleWorkerDetails:workerid/:userId',getSingleWorkerDetails) 
+workerRouter.get('/singleWorkerDetails/:workerid/:userId',getSingleWorkerDetails) 
 
 // * Worker in worker Project upload 
 workerRouter.post("/uploadWorkerProject",upload.single('image'),AddProjectDetails)

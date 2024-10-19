@@ -22,6 +22,7 @@ export interface IUserRepository{
     updateConversation(data:conversationTypes) : Promise<void>
     findconversationId(userId:string,workerId:string): Promise<{ _id: string; } | null>
     createMessage(data:messageTypes) : Promise<messageType>
+    updateIsReadQuery(conversationId:string) :Promise<void>
     fetchMessageQuery(conversationId:string) :Promise<messageType[]>
     getBooking(userId:string) : Promise<RequestType[] | null>
 }

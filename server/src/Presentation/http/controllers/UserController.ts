@@ -2,7 +2,6 @@ import { Request,Response,NextFunction, json } from "express";
 import {JwtService} from '../../../infrastructure/service/JwtService'
 import {LoginVerify} from "../../../app/useCases/user/loginVerifyUser"
 import {isCheckUserEmail} from '../../../app/useCases/user/forgetPass'
-
 import { StatusCode } from "../../../domain/entities/commonTypes";
 import { IMulterFile } from "../../../domain/entities/Admin";
 import { uploadImage } from "../../../app/useCases/utils/uploadImage";
@@ -38,6 +37,7 @@ export const getBooking = async(req:Request,res:Response,next:NextFunction)=>{
 export const getMessage = async(req:Request,res:Response,next:NextFunction)=>{  /// * get message and show to user
     try {
         const result = await getMessageUsecases(req.params.id)
+        console.log(JSON.stringify(result))
         return res.status(StatusCode.Success).json({success:true,message:'successfully msg fetched',result})
     } catch (error) {
         console.log(`Error from Presntation->controllers->getMessage \n${error}`)

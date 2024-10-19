@@ -31,15 +31,14 @@ import {
 
 export const Dashboard = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(req.params.Id)
+
         const {customerId} = req.session
-        console.log(req.session)
+
         const RatingPromise = await ratingUsecases(req.params.Id);
         const ResentActivityPromise = await dashboardUsescases(customerId || '');
-        // const RecentActivityData = await 
+
         const result = await Promise.all([RatingPromise, ResentActivityPromise]);
-        console.log('dashboard in result')
-        console.log(JSON.stringify(result))
+
         return res.status(StatusCode.Success).json({success:true,message:'data has been fetched', result})
     } catch (error) {
         console.log(`Error from presentation layer -> http -> Dashboard \n ${error}`);
@@ -48,7 +47,7 @@ export const Dashboard = async(req:Request,res:Response,next:NextFunction)=>{
 }
 export const upcomingWorkers = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        console.log(req.params)
+
         const result = await upcomingWorksUsecases(req.params.id)
         return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
     } catch (error) {
@@ -60,7 +59,6 @@ export const upcomingWorkers = async(req:Request,res:Response,next:NextFunction)
 export const workComplete = async(req:Request,res:Response,next:NextFunction)=>{
     try {
 
-        console.log(req.params.id)
         const result = await markasCompleteUsecases(req.params.id,req.params.status)
         return res.status(StatusCode.Success).json({ success: true, message: 'Marked as complete successfully'});
 
@@ -109,11 +107,10 @@ export const getChatsName = async(req:Request,res:Response,next:NextFunction)=>{
 
 export const getAllRequestController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log('worker get all request')
-        console.log(req.params.workerId)
+        
         const result = await getRequestUsecases(req.params.workerId);
         // * Check if headers have already been sent
-        console.log(result)
+     
         if (!res.headersSent) {
             return res.status(StatusCode.Success).json({ 
                 success: true, 
@@ -159,7 +156,7 @@ export const isRejectWorkController = async(req:Request,res:Response,next:NextFu
 export const getSingleWorkerDetails = async (req:Request,res:Response,next:NextFunction)=>{
     try {
         const requestData = await getUserRequestDataUsecasuse(req.params.userId,req.params.workerid)
-        console.log(requestData)
+    
         const result = await getSingleWorkerDetailsUsecases(req.params.workerid)
         if(requestData) return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result,requestData})
         return res.status(StatusCode.Success).json({success:true,message:'single worker details has been fetched',result})
