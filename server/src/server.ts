@@ -72,7 +72,7 @@ app.use("/commonAPI",commonRouter)
 // * Error handle middleware
 app.use(errorHandles);
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3002;  
 
 const httpServer = createServer(app)
 

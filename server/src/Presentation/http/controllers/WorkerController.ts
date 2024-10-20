@@ -29,7 +29,7 @@ import {
 
 // * dashboard
 
-export const Dashboard = async(req:Request,res:Response,next:NextFunction)=>{
+export const dashboard = async(req:Request,res:Response,next:NextFunction)=>{
     try {
 
         const {customerId} = req.session
@@ -37,7 +37,11 @@ export const Dashboard = async(req:Request,res:Response,next:NextFunction)=>{
         const RatingPromise = await ratingUsecases(req.params.Id);
         const ResentActivityPromise = await dashboardUsescases(customerId || '');
 
-        const result = await Promise.all([RatingPromise, ResentActivityPromise]);
+        const result = {
+            rating: RatingPromise,
+            resentActivity: ResentActivityPromise?.resentActivity,
+            getRecentActivity : ResentActivityPromise?.getRecentActivity
+          };
 
         return res.status(StatusCode.Success).json({success:true,message:'data has been fetched', result})
     } catch (error) {

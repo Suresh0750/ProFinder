@@ -17,7 +17,7 @@ import {
     getChatsName,
     messageController,
     fetchMessage,
-    Dashboard,
+    dashboard,
     upcomingWorkers,
     workComplete
     } from "../controllers/WorkerController"
@@ -26,7 +26,7 @@ import {
 const workerRouter = Router()
 
 // * worker dashboard
-workerRouter.get('/dashboard:Id',customeVerify,authorizeRoles('worker'),Dashboard)
+workerRouter.get('/dashboard/:Id',customeVerify,authorizeRoles('worker'),dashboard)
 workerRouter.get('/upcoming-workers:id',customeVerify,authorizeRoles('worker'),upcomingWorkers)
 workerRouter.put('/markStatus/:status/:id',customeVerify,authorizeRoles('worker'),workComplete)
 

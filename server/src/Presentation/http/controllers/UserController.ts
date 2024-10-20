@@ -13,11 +13,23 @@ import {
     conversationUsecases,
     getConversationUsecases,
     getMessageUsecases,
-    getBookingUsecases
+    getBookingUsecases,
+    paymentIdUsecases
 } from "../../../app/useCases/user/User";
 
 
 
+
+export const paymentId = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.params.requestId)
+        const result = await paymentIdUsecases(req.params.requestId)
+        return res.status(StatusCode.Success).json({sucess:true,message:'successfully fetched data',result})
+    } catch (error) {
+        console.log(`Error from Presntation->controllers->paymentId \n${error}`)
+        next(error)  
+    }
+}
 // * get booking data
 
 export const getBooking = async(req:Request,res:Response,next:NextFunction)=>{

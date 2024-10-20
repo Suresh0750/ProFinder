@@ -57,7 +57,7 @@ export const paymetnAPIController = async(req:Request,res:Response,next:NextFunc
 export const paymentIdController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(`request reached paymentIdcontroller`)
-        // console.log(req.body)
+        console.log(req.body)
         const result = await IsActivityUsecases(req.body)
         return res.status(StatusCode.Success).json({success:true})
     } catch (error) {

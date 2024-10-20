@@ -12,6 +12,7 @@ import {
     getConversation,
     getMessage,
     getBooking,
+    paymentId,
 } from "../controllers/UserController";
 
 
@@ -20,6 +21,7 @@ import {customeVerify} from '../middlewares/JWTVerify/customerVerify'
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 
 const userRouter = Router()
+
 
 
 
@@ -34,6 +36,7 @@ userRouter.get('/profile:id',customeVerify,profile)
 // userRouter.put('/updateprofile',customeVerify,upload.single('newImageData'),editprofile)
 userRouter.put('/updateprofile',upload.single('newImageData'),customeVerify,editprofile)
 userRouter.get('/booking/:id',customeVerify,authorizeRoles('user'),getBooking)
+userRouter.get('/paymentId/:requestId',paymentId)
 
 
 // * chats
@@ -45,3 +48,5 @@ userRouter.get('/message:id',customeVerify,authorizeRoles('user'),getMessage)
 
 
 export default userRouter
+
+// /user/paymentId/670f5ef8bfa5adee6c612246

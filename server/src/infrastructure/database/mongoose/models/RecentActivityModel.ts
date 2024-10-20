@@ -7,8 +7,8 @@ const ResentActivitySchema = new Schema({
     workerId : {type:Types.ObjectId,ref:'workerdetails',required:true},
     userId : {type:Types.ObjectId,ref:'userdatas',required:true},
     isCompleted: {type:Boolean,default:false},
-    Toaster : {type:String,default:'Pending'},
-    paymentId : {type:String},
+    status : {type:String,default:'Pending'},
+    paymentId : {type:String,default:null},
     payment : {type:Number}
 },{ timestamps: true })
 

@@ -215,7 +215,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
         try{
             // return await ResentActivityModel.find({workerId,isCompleted:false}).countDocuments()
             return await ResentActivityModel.aggregate([
-                { $match: { workerId } },
+                { $match: {workerId: new ObjectId(workerId)} },
                 {
                     $group: {
                         _id: null, // * Grouping all documents together
@@ -231,7 +231,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
                         pendingPayment: {
                             $sum: { 
                                 $cond: [
-                                    { $and: [{ $eq: ["$paymentId", null] }, { $eq: ["$isCompleted", true] }] }, 
+                                    { $and: [{ $eq: ["$isCompleted", true] }, { $eq: ["$paymentId", null] }] }, 
                                     "$payment", 
                                     0 
                                 ] 
@@ -265,11 +265,12 @@ export const getWorkerRepository = ():WorkerRepository =>({
     ratingQuery : async(workerId:string)=>{
         try {
                 return await ReviewModel.aggregate([
-                    { $match: { workerId: {workerId} } },
+                    { $match: { workerId: new ObjectId(workerId)} },
                     {
                         $group: {
                             _id: null,
-                            sum: { $sum: "$rating" }
+                            sum: { $sum: "$rating" },
+                            count : {$count:{}}  // * it is count of total document for calculate the review
                         }
                     }
                 ]);

@@ -25,4 +25,6 @@ export interface IUserRepository{
     updateIsReadQuery(conversationId:string) :Promise<void>
     fetchMessageQuery(conversationId:string) :Promise<messageType[]>
     getBooking(userId:string) : Promise<RequestType[] | null>
+    getPaymentId(requestId:string):Promise<{paymentId:string} | null>
+
 }

@@ -9,6 +9,7 @@ import {UserModel} from './models/UserModel'
 import {ConversationModel} from './models/ConversationModel'
 import { MessageModel } from './models/MessageModel';
 import {RequestModal} from './models/RequestModel'
+import { ResentActivityModel } from './models/RecentActivityModel';
 
 
 export const getUserRepository = () : IUserRepository =>({
@@ -177,6 +178,14 @@ export const getUserRepository = () : IUserRepository =>({
             return await RequestModal.find({userId:new ObjectId(userId)})
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->fetchMessageQuery\n`,error)
+            throw error
+        }
+    },
+    getPaymentId : async(requestId:string)=>{
+        try{
+            return await ResentActivityModel.findOne({requestId:new ObjectId(requestId)},{paymentId:1,_id:0})
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->getPaymentId\n`,error)
             throw error
         }
     }

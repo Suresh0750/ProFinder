@@ -46,11 +46,11 @@ export const ratingUsecases = async(workerId:string)=>{
 
 export const dashboardUsescases = async(workerId:string)=>{
     try {
-        const ResentActivity :any = await getWorkerRepository().countResentWorkQuery(workerId)
+        const resentActivity :any = await getWorkerRepository().countResentWorkQuery(workerId)
         const getRecentActivity = await getWorkerRepository().getRecentActivity(workerId)
         console.log('dashboard')
-        console.log(ResentActivity)
-        return {ResentActivity,getRecentActivity}
+        console.log(resentActivity)
+        return {resentActivity,getRecentActivity}
     } catch (error) {
         console.log(`Error from useCases->worker->dashboardUsescases\n`,error)
         throw error  
@@ -238,9 +238,9 @@ export const getWorkerData = async(token:string)=>{
     try {
         console.log(`req reached WorkrUsecase getWorkerData`)
    
-        const {customerId} :any = verifyRefreshToken(token) 
+        const customer :any = verifyRefreshToken(token) 
         const {getWorkerData} = getWorkerRepository()
-        return getWorkerData(customerId)
+        return getWorkerData(customer?.customerId)
         // getWorkerData
     } catch (error) {
         console.log(`Error from usecases -> getWorkerData`,error)

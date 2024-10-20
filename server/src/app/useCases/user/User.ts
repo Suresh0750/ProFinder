@@ -9,13 +9,23 @@ import { OtpStoreData } from "../utils/OtpStoreData";
 import { sendMessage } from "../utils/chatUtils";
 
 
+
+export const paymentIdUsecases = async(requestId:string)=>{
+  try{
+    return await getUserRepository().getPaymentId(requestId)
+  }catch(error){
+    console.log(`error from usecase in paymentIdUsecases`, error);
+    throw error;
+  }
+}
+
 // * get booking details usecases
 
 export const getBookingUsecases = async(userId:string)=>{
   try{
     return await getUserRepository().getBooking(userId)
   }catch(error){
-    console.log(`error from usecase in getMessageUsecases`, error);
+    console.log(`error from usecase in getBookingUsecases`, error);
     throw error;
   }
 }
