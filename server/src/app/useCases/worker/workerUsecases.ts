@@ -48,9 +48,10 @@ export const dashboardUsescases = async(workerId:string)=>{
     try {
         const resentActivity :any = await getWorkerRepository().countResentWorkQuery(workerId)
         const getRecentActivity = await getWorkerRepository().getRecentActivity(workerId)
+        const totalOffer = await getWorkerRepository().totalOffer(workerId)
         console.log('dashboard')
         console.log(resentActivity)
-        return {resentActivity,getRecentActivity}
+        return {resentActivity,getRecentActivity,totalOffer}
     } catch (error) {
         console.log(`Error from useCases->worker->dashboardUsescases\n`,error)
         throw error  

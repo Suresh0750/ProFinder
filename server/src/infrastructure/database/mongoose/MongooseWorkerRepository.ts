@@ -213,7 +213,6 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     countResentWorkQuery: async(workerId:string)=>{
         try{
-            // return await ResentActivityModel.find({workerId,isCompleted:false}).countDocuments()
             return await ResentActivityModel.aggregate([
                 { $match: {workerId: new ObjectId(workerId)} },
                 {
@@ -226,7 +225,18 @@ export const getWorkerRepository = ():WorkerRepository =>({
                             $sum: { $cond: [{ $eq: ["$isCompleted", true] }, 1, 0] }
                         },
                         totalPayment: {
-                            $sum: { $cond: [{ $eq: ["$isCompleted", true] }, "$payment", 0] } // Sum payment where isCompleted is true
+                            $sum: {
+                                $cond: [
+                                    { 
+                                        $and: [
+                                            { $eq: ["$isCompleted", true] }, 
+                                            { $ne: ["$paymentId", null] } // Check if paymentId is not null
+                                        ] 
+                                    },
+                                    "$payment", 
+                                    0
+                                ]
+                            }
                         },
                         pendingPayment: {
                             $sum: { 
@@ -238,19 +248,32 @@ export const getWorkerRepository = ():WorkerRepository =>({
                             }
                         },
                         pendingCustomer: {
-                            $sum: { 
-                                $cond: [
-                                    { $and: [{ $eq: ["$paymentId", null] }, { $eq: ["$isCompleted", true] }] }, 
-                                    "$_id", 
-                                    0 
-                                ] 
+                            $sum: {
+                              $cond: [
+                                { 
+                                  $and: [
+                                    { $eq: ["$isCompleted", true] },  // * Check if isCompleted is true
+                                    { $eq: ["$paymentId", null] }     // * Check if paymentId is null
+                                  ] 
+                                },
+                                1, // * Add 1 if the document matches the condition, it's increasing count one by  one.
+                                0  // Otherwise, add 0
+                              ]
                             }
-                        }
+                          }
                     }
                 }
             ]);
         }catch(error){
             console.log(`Error from infrastructure->database->mongoose->isResendActivityQuery->\n`,error)
+            throw error 
+        }
+    },
+    totalOffer : async(workerId:string)=>{
+        try {
+            return await RequestModal.countDocuments({workerId:new ObjectId(workerId)}).countDocuments()
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->totalOffer->\n`,error)
             throw error 
         }
     },

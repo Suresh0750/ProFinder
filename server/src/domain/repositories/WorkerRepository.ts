@@ -34,6 +34,7 @@ export interface WorkerRepository{
     updateIsReadQuery(conversationId:string) :Promise<void>
     isResendActivityQuery(requestId:string,payment:number,wokerId:string,userId:string):Promise<void>
     countResentWorkQuery(workerId:string) :Promise<any>
+    totalOffer(workerId:string): Promise<number | null>
     getRecentActivity(workerId:string) :Promise<any>
     ratingQuery(workerId:string):Promise<any>
     getUpcomingWorks(workerId:string):Promise<RecentActivityType[]>

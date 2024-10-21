@@ -34,13 +34,14 @@ export const dashboard = async(req:Request,res:Response,next:NextFunction)=>{
 
         const {customerId} = req.session
 
-        const RatingPromise = await ratingUsecases(req.params.Id);
-        const ResentActivityPromise = await dashboardUsescases(customerId || '');
+        const ratingPromise = await ratingUsecases(req.params.Id);
+        const resentActivityPromise = await dashboardUsescases(customerId || '');
 
         const result = {
-            rating: RatingPromise,
-            resentActivity: ResentActivityPromise?.resentActivity,
-            getRecentActivity : ResentActivityPromise?.getRecentActivity
+            rating: ratingPromise,
+            resentActivity: resentActivityPromise?.resentActivity,
+            getRecentActivity : resentActivityPromise?.getRecentActivity,
+            totalOffer : resentActivityPromise?.totalOffer
           };
 
         return res.status(StatusCode.Success).json({success:true,message:'data has been fetched', result})
