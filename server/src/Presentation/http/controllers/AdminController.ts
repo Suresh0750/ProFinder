@@ -12,11 +12,21 @@ import {AdminWorkerApprovalUseCases,isWorkerApprovalUseCases} from "../../../app
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
+import { dashboard } from "./WorkerController"
 
 
 
+
+// * admin Dashboard side
+export const dashboardOverview = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        
+    } catch (error) {
+         console.log(`Error from isBlcokUser\n${error}`)  
+        next(error)
+    }
+}
 // * admin User side
-
 export const isBlockUserController = async(req:Request,res:Response,next:NextFunction)=>{
     try {
         console.log(`Request reached`)
