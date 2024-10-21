@@ -9,6 +9,8 @@ import {IAdminRepository} from "../../../domain/repositories/AdminRepository"
 import {CategoryModel} from "./models/AdminModel"
 import {WorkerModel} from "./models/workerModel"
 import {UserModel} from "./models/UserModel"
+import { ResentActivityModel } from "./models/RecentActivityModel"
+import { ReviewModel } from "./models/ReviewModel"
 
 
 export const AdminMongoose = () : IAdminRepository =>({
@@ -116,6 +118,46 @@ export const AdminMongoose = () : IAdminRepository =>({
             await UserModel.findByIdAndUpdate({_id:userId},{$set:{isBlock}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->isBlockUser->\n`,error)
+            throw error
+        }
+    },
+    totalRevenue :async()=>{
+        try{
+            return await ResentActivityModel.aggregate([
+                {
+              $group:{_id:null,payment:{$sum:{$cond:[{$ne:["$paymentId",null]},"$payment",0]}}}
+                  }
+              ])
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->totalRevenue->\n`,error)
+            throw error
+        }
+    },
+    totalReview : async()=>{
+        try{
+            return await ReviewModel.countDocuments()
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->totalReview->\n`,error)
+            throw error
+        }
+    },
+    totalWorkers : async()=>{
+        try{
+            return await WorkerModel.countDocuments()
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->totalReview->\n`,error)
+            throw error
+        }
+    },
+    avgRating : async()=>{
+        try {
+            return await ReviewModel.aggregate([
+                {
+              $group:{_id:null,sum:{$sum:"$rating"}, count: { $sum: 1 }  },
+              }
+              ])
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->avgRating->\n`,error)
             throw error
         }
     }
