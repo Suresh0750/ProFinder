@@ -124,7 +124,7 @@ export const workerApi = createApi({
         }),
         dashboard : builder.query({
             query : (data:string)=>({
-                url:`/worker/dashboard${data}`,
+                url:`/worker/dashboard/${data}`,
                 method:"GET",
                 headers:getHeaders("worker")
             })

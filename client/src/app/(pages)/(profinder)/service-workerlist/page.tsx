@@ -185,21 +185,6 @@ export default function ServiceWorkerListPage() {
               </CardContent>
             </Card>
           </div>
-{/* 
-          {markerPosition && (
-            <Card className="mb-6">
-              <CardContent className="p-4">
-                <GoogleMap
-                  mapContainerStyle={{ height: '400px', width: '100%' }}
-                  center={markerPosition}
-                  zoom={15}
-                >
-                  <Marker position={markerPosition} />
-                </GoogleMap>
-              </CardContent>
-            </Card>
-          )} */}
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredWorkers.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE).map((worker: any) => (
               <Card key={worker._id} className="cursor-pointer hover:shadow-lg transition-shadow duration-200" onClick={() => handleRedirectWorkerPage(worker._id)}>

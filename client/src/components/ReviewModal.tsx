@@ -12,7 +12,7 @@ import { StarIcon } from 'lucide-react'
 
 const reviewSchema = z.object({
   rating: z.number().min(1, "Please select a rating").max(5),
-  comment: z.string().min(10, "Comment must be at least 10 characters long").max(500, "Comment must not exceed 500 characters"),
+  comment: z.string().trim().min(10, "Comment must be at least 10 characters long").max(500, "Comment must not exceed 500 characters"),
 })
 
 type ReviewFormValues = z.infer<typeof reviewSchema>

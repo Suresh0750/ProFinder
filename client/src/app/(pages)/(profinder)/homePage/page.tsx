@@ -1,7 +1,4 @@
-// "use client"
-
-
-
+"use client"
 import Image from 'next/image';
 import Link from 'next/link'
 import Navbar from '@/components/Navbar/page'
@@ -13,6 +10,7 @@ import InnovationOfMetallurgy from '../../../../../public/images/InnovationMetal
 import IndustrySociety from '../../../../../public/images/IndustrySociety.jpg'
 import AboutIndustry from '../../../../../public/images/aboutIndustry.jpg'
 import IndustryValue from '../../../../../public/images/IndustryValue.jpg'
+import Head from 'next/head'
 
 
 const Home = () => {
@@ -38,6 +36,7 @@ const Home = () => {
 
 
   return (
+    <>
     <div className='mt-[3em]'>
       {/* Slider Section */}
      <SliderSection />
@@ -94,6 +93,7 @@ const Home = () => {
       </section>
 
     </div>
+    </>
   );
 };
 

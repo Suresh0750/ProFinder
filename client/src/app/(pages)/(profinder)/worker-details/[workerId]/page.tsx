@@ -113,7 +113,7 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
             Send Request
           </Button>
         </Link>
-        <MessageSquare onClick={handleMessage} className="cursor-pointer" />
+         <MessageSquare onClick={handleMessage} className="cursor-pointer" />
         </>
       )
     }
@@ -186,12 +186,12 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
               </div>
               <div className="flex items-center justify-center sm:justify-start gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <StarIcon key={i} className={`w-5 h-5 ${i < Math.round(workerDetails?.averageRating || 0) ? 'fill-yellow-400' : 'fill-gray-300'}`} />
+                  <StarIcon key={i} className={`w-5 h-5 ${i < Math.round(customerRating || 0) ? 'fill-yellow-400' : 'fill-gray-300'}`} />
                 ))}
-                <span className="ml-2 text-sm text-gray-600">({workerDetails?.totalReviews || 0} reviews)</span>
+                <span className="ml-2 text-sm text-gray-600">({reviewDetails?.length || 0} reviews)</span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 items-center">
-                {renderRequestButton()}
+              <div className="flex flex-col sm:flex-row gap-4 items-center">  
+                {/* {renderRequestButton()}
                 {data?.requestData?.paymentId ? (
                   <>
                     <Check className="text-green-500" />
@@ -205,7 +205,13 @@ const WorkerDetailsPage = ({ params }: { params: { workerId: string } }) => {
                       payment={data?.requestData?._doc?.payment || '500'}
                     />
                   ) : null
-                )}
+                )} */}
+                <Link href="/request">
+                  <Button className="w-full sm:w-auto">
+                    <MessageCircleIcon className="w-4 h-4 mr-2" />
+                    Send Request
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

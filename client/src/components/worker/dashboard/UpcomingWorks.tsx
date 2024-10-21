@@ -26,7 +26,7 @@ interface Work {
     preferredTime : string,
     servicelocation : string,
     AdditionalNotes : string,
-    paymentId : string,
+    payment : number
 },
   workerId :string,
   userId : {
@@ -38,7 +38,9 @@ interface Work {
       
   },
   isCompleted: boolean,
+  status : string,
   payment : number,
+  paymentId : string,
   createdAt : string,
   updatedAt : string,
   __v : number
@@ -63,6 +65,7 @@ export default function UpcomingWorksPage() {
   }
 
   const handleWorkSelect = (work: Work) => {
+    console.log(JSON.stringify(work))
     setSelectedWork(work)
   }
 
@@ -72,14 +75,15 @@ export default function UpcomingWorksPage() {
 
   useEffect(()=>{
     // setSelectedWork(upcomingWorks?.result)
+    console.log(JSON.stringify(upcomingWorks))
   },[upcomingWorks])
 
   const handleStatusChange = (_id: string, newStatus:string) => {
 
     if(isLoadingUpdate) return // * handle multiple click
     
-    alert(JSON.stringify(newStatus))
-    if(!(selectedWork?.paymentId) && newStatus=="Completed") return toast.warning(`Payment isn't complete`)
+    // alert(JSON.stringify(newStatus))
+    // if(!(selectedWork?.paymentId) && newStatus=="Completed") return toast.warning(`Payment isn't complete`)
     
     if((selectedWork?.paymentId) && newStatus=="Cancelled") return toast.warning(`Payment has been completed`)
 
@@ -93,7 +97,7 @@ export default function UpcomingWorksPage() {
       cancelButtonColor: "#d33",
       confirmButtonText: `Yes, ${newStatus} it!`,
     }).then(async (res:any) => {     
-      alert(JSON.stringify(res))
+      // alert(JSON.stringify(res))
       const result = updateWorkStatus({status:newStatus,_id})
       console.log(result)
       if(result?.success){
@@ -112,7 +116,7 @@ export default function UpcomingWorksPage() {
   if (error) return <div className="flex justify-center items-center h-screen">Error loading upcoming works</div>
 
   return (
- 
+
         <>
         <Card className="md:col-span-1">
           <CardHeader>
@@ -174,7 +178,6 @@ export default function UpcomingWorksPage() {
                   </Avatar>
                   <div>
                     <h3 className="text-xl font-semibold">{selectedWork?.userId?.username}</h3>
-                    <p className="text-muted-foreground">{"selectedWork.serviceName"}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -203,11 +206,11 @@ export default function UpcomingWorksPage() {
                   }
                   {
                     selectedWork?.paymentId ? (<div className="flex items-center">
-                                                <CheckCircle  className="w-5 h-5 mr-2"  />
-                                                Payment not Completed
+                                                <CheckCircle className="w-5 h-5 mr-2"  />
+                                                Payment Completed
                                               </div>) :(<div className="flex items-center">
                                                 <XCircle  className="w-5 h-5 mr-2"  />
-                                                Payment Completed
+                                                Payment not Completed
                                               </div>)
                   }
                   

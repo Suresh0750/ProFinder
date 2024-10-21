@@ -3,6 +3,7 @@
 
 
 import Navbar from '@/components/Navbar/page'
+import Head from 'next/head'
 
 // import '../../globals.css'
 import '../../globals.css'

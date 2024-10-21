@@ -143,7 +143,7 @@ export default function WorkerRequestPage() {
 
       if (result?.success) {
         toast.success(result?.message)
-        router.push(`/worker_details/${workerDetails?._id}`)
+        router.push(`/worker-details/${workerDetails?._id}`)
       }
     } catch (err: any) {
       console.error(err)

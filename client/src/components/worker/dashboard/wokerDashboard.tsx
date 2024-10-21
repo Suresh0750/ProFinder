@@ -15,9 +15,6 @@ export const DashboardHeader = ()=>{
 }
 
 export const ViewRequest = ()=>{
-
-    const [isOpenRequstModal,setIsModalOpenRequestModal] = useState<boolean>(false)
-
     return(
         <div className="bg-white shadow-md p-6 rounded-md text-center">
             <h2 className="text-gray-600 font-medium">New Service Requests</h2>

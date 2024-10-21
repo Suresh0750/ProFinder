@@ -89,6 +89,13 @@ export const userApi = createApi({
                 method:'GET',
                 headers:getHeaders('user')
             })
+        }),
+        paymentId : builder.query({
+            query : (requestId:string)=>({
+                url:`/user/paymentId/${requestId}`,
+                method:'GET',   
+                headers:getHeaders('user')
+            })
         })
     })
 })
@@ -104,4 +111,5 @@ export const {
     useGetAllconversationQuery,
     useGetAllMessageQuery,
     useBookingQuery,
+    usePaymentIdQuery,
 } = userApi

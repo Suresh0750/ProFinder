@@ -67,7 +67,7 @@ const PayUComponent = ({ currUserData, requestId ,payment}: props) => {
         <button
           type="submit"
           value="submit"
-          className="bg-rootBg hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus-shadow-outline"
+          className="bg-rootBg bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus-shadow-outline"
         >
           Pay with PayU
         </button>
