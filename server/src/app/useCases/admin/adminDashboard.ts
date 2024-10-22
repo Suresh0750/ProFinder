@@ -1,5 +1,27 @@
 
+import { json } from 'body-parser'
 import {AdminMongoose} from '../../../infrastructure/database/mongoose/MongooseAdminRepository'
+
+
+
+
+
+export const adminWorkerUsecases = async()=>{
+    try {
+        const [getComplete,getTopWorker] = await Promise.all([
+            AdminMongoose().getCompletedWorkerCount(),
+            AdminMongoose().getTopWorker()
+        ])
+        console.log('getCompleted worker')
+        console.log(JSON.stringify(getComplete))
+        console.log('get top worker')
+        console.log(JSON.stringify(getTopWorker))
+        return 
+    } catch (error) {
+        console.log(`Error from useCases->admin->adminWorkerUsecause\n`,error)
+        throw error
+    }
+}
 
 export const adminOverviewUsecases = async()=>{
     try {

@@ -16,6 +16,7 @@ import {
     EditCategoryUseCases
 } from "../../../app/useCases/admin/Category"
 import {
+    adminWorkerUsecases,
     adminOverviewUsecases,
     dashboardUsecases
 } from '../../../app/useCases/admin/adminDashboard'
@@ -27,6 +28,17 @@ import { StatusCode } from "../../../domain/entities/commonTypes"
 
 
 
+// * admin worker dashboard side
+
+export const workerDashboard = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await adminWorkerUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched'})
+    } catch (error) {
+        console.log(`Error from workerDashboard\n${error}`)  
+        next(error)  
+    }
+}
 
 // * admin Dashboard side
 export const dashboardOverview = async(req:Request,res:Response,next:NextFunction)=>{
@@ -34,7 +46,7 @@ export const dashboardOverview = async(req:Request,res:Response,next:NextFunctio
         const result = await adminOverviewUsecases()
         return res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
     } catch (error) {
-         console.log(`Error from dashboardOverview\n${error}`)  
+        console.log(`Error from dashboardOverview\n${error}`)  
         next(error)
     }
 }

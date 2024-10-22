@@ -190,5 +190,65 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->jobStatus->\n`,error)
             throw error
         }
+    },
+    getCompletedWorkerCount :async()=>{
+        try {
+            return await ResentActivityModel.aggregate([
+                {
+                  $group: {
+                    _id: "$workerId",   
+                    count: { $sum: 1 },
+                    earning: { $sum: "$payment" } 
+                  }
+                },
+                {
+                  $lookup: {
+                    from: "workerdetails",
+                    localField: "_id", 
+                    foreignField: "_id",
+                    as: "workerDetails"
+                  }
+                },
+                {
+                  $unwind: "$workerDetails"
+                },
+                {
+                  $project: {
+                    _id: 1, 
+                    count: 1,
+                    earning: 1,
+                    "workerDetails.FirstName": 1, 
+                    "workerDetails.Category": 1, 
+                  }
+                }
+              ]);
+              
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getCompletedWorkerCount->\n`,error)
+            throw error
+        }
+    },
+    getTopWorker : async()=>{   // * filer for get top performance worker
+        try {
+            return await ReviewModel.aggregate([
+                {
+                  $group: {
+                    _id: "$workerId", 
+                    totalRating: { $sum: "$rating" },
+                    reviewCount: { $sum: 1 }
+                  }
+                },
+                {
+                  $sort: { totalRating: -1 } 
+                },
+                {
+                  $limit: 5 
+                }
+              ])
+              
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getTopWorker->\n`,error)
+            throw error
+        }
     }
 })

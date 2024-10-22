@@ -17,7 +17,8 @@ import {
     getAllUnApprovalWorkerlist, 
     isWorkerApproval,
     dashboardOverview,
-    dashboard
+    dashboard,
+    workerDashboard
 } from "../controllers/AdminController"
 
 const adminRoutes = Router()
@@ -27,6 +28,7 @@ const adminRoutes = Router()
 // * Admin / dashboard side
 adminRoutes.get('/dashboardOverview',verify,authorizeRoles('admin'),dashboardOverview)
 adminRoutes.get('/dashboard',verify,authorizeRoles('admin'),dashboard)
+adminRoutes.get('/dashboardWorker',verify,authorizeRoles('admin'),workerDashboard)
 
 
 // * admin / User side

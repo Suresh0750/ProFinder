@@ -24,4 +24,6 @@ export interface IAdminRepository{
     paymentData() : Promise<any[]>
     workerDistribution() : Promise<any[]>
     jobStatus() : Promise<any[]>
+    getCompletedWorkerCount() : Promise<any[]>
+    getTopWorker() : Promise<any[]>
 }
