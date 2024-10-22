@@ -26,4 +26,5 @@ export interface IAdminRepository{
     jobStatus() : Promise<any[]>
     getCompletedWorkerCount() : Promise<any[]>
     getTopWorker() : Promise<any[]>
+    getRecentReview() : Promise<any[]>
 }

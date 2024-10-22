@@ -1,22 +1,25 @@
 
 import { json } from 'body-parser'
 import {AdminMongoose} from '../../../infrastructure/database/mongoose/MongooseAdminRepository'
+import {getWorkerData} from '../../../infrastructure/service/topWorkelist'
 
 
+export const reviewUsecases = async()=>{
+    try {
+        return await AdminMongoose().getRecentReview()
+    } catch (error) {
+        console.log(`Error from useCases->admin->adminWorkerUsecause\n`,error)
+        throw error
+    }
+}
 
-
-
-export const adminWorkerUsecases = async()=>{
+export const workerUsecases = async()=>{
     try {
         const [getComplete,getTopWorker] = await Promise.all([
             AdminMongoose().getCompletedWorkerCount(),
             AdminMongoose().getTopWorker()
         ])
-        console.log('getCompleted worker')
-        console.log(JSON.stringify(getComplete))
-        console.log('get top worker')
-        console.log(JSON.stringify(getTopWorker))
-        return 
+        return await getWorkerData(getComplete,getTopWorker)
     } catch (error) {
         console.log(`Error from useCases->admin->adminWorkerUsecause\n`,error)
         throw error

@@ -16,7 +16,8 @@ import {
     EditCategoryUseCases
 } from "../../../app/useCases/admin/Category"
 import {
-    adminWorkerUsecases,
+    reviewUsecases,
+    workerUsecases,
     adminOverviewUsecases,
     dashboardUsecases
 } from '../../../app/useCases/admin/adminDashboard'
@@ -26,14 +27,24 @@ import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
 
 
+// * admin in review dashboard data
 
+export const reviewDashboard = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await reviewUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
+    } catch (error) {
+        console.log(`Error from reviewDashboard\n${error}`)  
+        next(error)  
+    }
+}
 
 // * admin worker dashboard side
 
 export const workerDashboard = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        const result = await adminWorkerUsecases()
-        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched'})
+        const result = await workerUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
     } catch (error) {
         console.log(`Error from workerDashboard\n${error}`)  
         next(error)  

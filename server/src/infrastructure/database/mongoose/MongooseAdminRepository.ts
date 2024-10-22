@@ -250,5 +250,13 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->getTopWorker->\n`,error)
             throw error
         }
+    },
+    getRecentReview : async()=>{
+        try {
+            return await ReviewModel.find({}).populate('userId','username').populate('workerId','FirstName Profile').sort({createAt:-1}).limit(6)
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
     }
 })
