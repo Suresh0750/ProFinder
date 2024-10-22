@@ -20,11 +20,11 @@ export default function Aside(){
         navigation.push(url)
     }
     return (
-        <aside className="w-[75px] h-[91vh] bg-gray-900 shadow-lg">
+        <aside className="w-[75px] h-[91vh] sticky bg-gray-900 shadow-lg">
             <section className="text-white pt-[3em] w-full">
                 <ul className="flex flex-col justify-evenly items-center gap-6 text-white">
                     {/* Dashboard Icon */}
-                    <li className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
+                    <li onClick={()=>handleNavigation('/admin/dashboard')} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
                         <Tooltip title="Dashboard" placement="right">
                             <DashboardIcon sx={{ width: '38px', height: '38px' }} />
                         </Tooltip>
