@@ -21,4 +21,7 @@ export interface IAdminRepository{
     totalReview() : Promise<number>
     totalWorkers() : Promise<number>
     avgRating() : Promise<any[]>
+    paymentData() : Promise<any[]>
+    workerDistribution() : Promise<any[]>
+    jobStatus() : Promise<any[]>
 }

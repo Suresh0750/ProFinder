@@ -4,15 +4,26 @@ import {AdminVerifyUseCases} from '../../../app/useCases/admin/AdminVerify'
 import Jwt from 'jsonwebtoken'
 // * useCases
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
-import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
 import {getALLWorkerUseCases}  from '../../../app/useCases/admin/AdminwokerSide'
 import {getAllUserUseCase,isBlockUserUseCases} from '../../../app/useCases/admin/AdminUserSide'
 import {AdminWorkerApprovalUseCases,isWorkerApprovalUseCases} from "../../../app/useCases/admin/AdminWorkerApprovalSide"
+import {
+    AddCategoryUseCases,
+    CheckExistCategory,
+    getAllCategoryUseCases, 
+    isListedProductUsecases,
+    deleteProductUsecases,
+    EditCategoryUseCases
+} from "../../../app/useCases/admin/Category"
+import {
+    adminOverviewUsecases,
+    dashboardUsecases
+} from '../../../app/useCases/admin/adminDashboard'
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
-import { dashboard } from "./WorkerController"
+
 
 
 
@@ -20,12 +31,25 @@ import { dashboard } from "./WorkerController"
 // * admin Dashboard side
 export const dashboardOverview = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        
+        const result = await adminOverviewUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
     } catch (error) {
-         console.log(`Error from isBlcokUser\n${error}`)  
+         console.log(`Error from dashboardOverview\n${error}`)  
         next(error)
     }
 }
+export const dashboard = async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        console.log('req entered dashboard')
+        const result = await dashboardUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched successfully',result})
+    }catch(error){
+        console.log(`Error from dashboard\n${error}`)  
+        next(error)
+    }
+}
+
+
 // * admin User side
 export const isBlockUserController = async(req:Request,res:Response,next:NextFunction)=>{
     try {

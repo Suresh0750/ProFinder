@@ -11,6 +11,8 @@ import {WorkerModel} from "./models/workerModel"
 import {UserModel} from "./models/UserModel"
 import { ResentActivityModel } from "./models/RecentActivityModel"
 import { ReviewModel } from "./models/ReviewModel"
+import { PaymentModel } from "./models/paymentModel"
+import { RequestModel } from "./models/RequestModel"
 
 
 export const AdminMongoose = () : IAdminRepository =>({
@@ -158,6 +160,34 @@ export const AdminMongoose = () : IAdminRepository =>({
               ])
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->avgRating->\n`,error)
+            throw error
+        }
+    },
+    paymentData : async()=>{
+        try {
+            return await PaymentModel.find()
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->paymentData->\n`,error)
+            throw error
+        }
+    },
+    workerDistribution : async()=>{
+        try {
+            return await WorkerModel.aggregate([
+                {$group:{_id:"$Category",count:{$sum:1}}}
+              ])
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->workerDistribution->\n`,error)
+            throw error
+        }
+    },
+    jobStatus : async()=>{
+        try {
+            return await RequestModel.aggregate([
+                {$group:{_id:"$isAccept",value:{$sum:1}}}
+              ])
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->jobStatus->\n`,error)
             throw error
         }
     }
