@@ -26,6 +26,7 @@ export interface WorkerRepository{
     isAcceptWorkQuery(_id:string,isPayment:number):Promise<void>
     isRejectWorkQuery(_id:string) : Promise<void>
     IsActivityQuery(requestId:string,paymentId:string) : Promise<void>
+    paymentData (requestId:string,payment:number,paymentId:number) : Promise<void>
     getChatsNameQuery(workerId:string) : Promise<conversationTypes[]>
     messageQuery(data:messageTypes) : Promise<messageTypes>
     updatemessage({_id,lastMessage}:{_id:Types.ObjectId,lastMessage:string}) : Promise<void>

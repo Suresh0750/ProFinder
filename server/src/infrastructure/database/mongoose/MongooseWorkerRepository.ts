@@ -9,6 +9,7 @@ import {ResentActivityModel} from './models/RecentActivityModel'
 import { ConversationModel } from './models/ConversationModel'
 import { MessageModel } from './models/MessageModel'
 import {ReviewModel} from './models/ReviewModel'
+import {PaymentModel} from './models/paymentModel'
 
 const {ObjectId} = Types
 export const getWorkerRepository = ():WorkerRepository =>({
@@ -147,6 +148,14 @@ export const getWorkerRepository = ():WorkerRepository =>({
             await ResentActivityModel.updateOne({requestId:new ObjectId(requestId)},{$set:{paymentId}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->IsActivityQuery->\n`,error)
+            throw error
+        }
+    },
+    paymentData : async(requestId:string,payment:number,paymentId:number)=>{
+        try {
+            await PaymentModel.create({requestId,payment,paymentId})
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->paymentData->\n`,error)
             throw error
         }
     },
