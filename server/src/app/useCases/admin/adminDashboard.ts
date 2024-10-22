@@ -7,6 +7,5 @@ export const adminOverviewUsecases = async()=>{
     } catch (error) {
         console.log(`Error from useCases->admin->getALLWorkerUseCases\n`,error)
         throw error
-        
     }
 }

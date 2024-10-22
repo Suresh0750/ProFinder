@@ -29,8 +29,7 @@ export async function POST(req: any, res: NextApiResponse) {
   } catch (error: any) {
     console.log(error.message);
   }
-  redirect(
-    `/PaymentSuccess`
-    // `/post/promote/paymentCompleted/?status=${data.status}&mihpayid=${data.mihpayid}`
+  redirect( 
+    `/PaymentSuccess/${data?.productinfo}`
   );
 }

@@ -108,6 +108,13 @@ export const adminApi = createApi({
                 method: 'PUT',
                 headers: getHeaders('admin') 
             })
+        }),
+        dashboardOverview : builder.query({
+            query:()=>({
+                url: `/admin/dashboardOverview`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
