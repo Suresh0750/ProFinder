@@ -115,6 +115,20 @@ export const adminApi = createApi({
                 method: 'GET',
                 headers: getHeaders('admin') 
             })
+        }),
+        dashboard : builder.query({
+            query:()=>({
+                url: `/admin/dashboard`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
+        }),
+        dashbordWorker : builder.query({
+            query:()=>({
+                url: `/admin/dashboardWorker`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
@@ -133,4 +147,6 @@ export const {
     useIsUserBlockMutation,
     useGetAllUnApprovalWorkerlistQuery,
     useIsWorkerApprovalMutation,
+    useDashboardOverviewQuery,
+    useDashboardQuery
 } = adminApi;
