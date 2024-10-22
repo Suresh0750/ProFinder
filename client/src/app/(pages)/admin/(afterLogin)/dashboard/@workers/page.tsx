@@ -1,6 +1,16 @@
+
+"use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Star } from "lucide-react"
+
+// * hook
+
+import {useState,useEffect} from 'react'
+
+
+// * api call
+import {useDashboardWorkerQuery} from '@/lib/features/api/adminApiSlice'
 
 const topWorkers = [
   { id: 1, name: "Alice Smith", trade: "Electrician", rating: 4.9, jobs: 120, earnings: 15000 },
@@ -11,6 +21,15 @@ const topWorkers = [
 ]
 
 export default function WorkersPage() {
+
+  const [worker,setWorker] = useState({})
+
+  // useEffect(()=>{
+
+  // })
+
+  const {data} = useDashboardWorkerQuery({})
+
   return (
     <Card>
       <CardHeader>
