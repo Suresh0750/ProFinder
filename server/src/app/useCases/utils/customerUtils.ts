@@ -13,6 +13,16 @@ import {FindNearByWorkers} from '../../../infrastructure/service/workerLocationF
 
 
 
+// * payment details
+export const paymentUsecases = async(requesId:string)=>{
+    try {
+        return await CustomerQueryRepository().paymentDetails(requesId)
+    } catch (error) {
+        console.log(`Error from useCases->utils-> paymentUsecases \n${error}`)
+        throw error 
+    }
+}
+
 
 
 

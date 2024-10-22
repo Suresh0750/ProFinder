@@ -8,7 +8,7 @@ import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import {UserModel} from './models/UserModel'
 import {ConversationModel} from './models/ConversationModel'
 import { MessageModel } from './models/MessageModel';
-import {RequestModal} from './models/RequestModel'
+import {RequestModel} from './models/RequestModel'
 import { ResentActivityModel } from './models/RecentActivityModel';
 
 
@@ -175,7 +175,7 @@ export const getUserRepository = () : IUserRepository =>({
     },
     getBooking : async(userId:string)=>{
         try {
-            return await RequestModal.find({userId:new ObjectId(userId)})
+            return await RequestModel.find({userId:new ObjectId(userId)})
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->fetchMessageQuery\n`,error)
             throw error

@@ -10,7 +10,7 @@ import {userVerification,workerVerification,ForgetPassWordUseCase,customerResent
 import { uploadImage } from "../../../app/useCases/utils/uploadImage"
 import { IMulterFile } from "../../../domain/entities/Admin"
 import { hashPassword } from "../../../shared/utils/encrptionUtils"
-import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,userRequestUsecases,ReviewUsecases,getReviewUsecases} from "../../../app/useCases/utils/customerUtils"
+import { getCategoryNameUtils, getNearByWorkerListUtils, getVerifiedWorkerUtils,userRequestUsecases,ReviewUsecases,getReviewUsecases,paymentUsecases} from "../../../app/useCases/utils/customerUtils"
 import { payment,IsActivityUsecases } from "../../../app/services/PayU"
 import { FindNearByWorkers } from "../../../infrastructure/service/workerLocationFilter"
 
@@ -66,6 +66,15 @@ export const paymentIdController = async(req:Request,res:Response,next:NextFunct
     }
 }
 
+export const paymentDetails = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await paymentUsecases(req.params.requestId)
+        return res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from paymentDetails\n${error}`)
+        next(error)  
+    }
+}
 
 // * user Request to worker
 

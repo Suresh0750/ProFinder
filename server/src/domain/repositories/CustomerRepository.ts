@@ -19,4 +19,5 @@ export interface CustomerRepository {
     createReview(data:ReviewTypes) : Promise<void>
     getReview(workerId:string) :Promise<getReviewTypes[] | undefined>
     checkUserPayed(workerId:string,userId:string) : Promise<any>
+    paymentDetails(requestId:string) : Promise<any>
 }

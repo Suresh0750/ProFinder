@@ -1,9 +1,26 @@
 
 import { Router } from "express";
-import { CustomerOtpController,ResentOTP,ForgetPassWordController ,GoogleLogin,CustomerLogoutController,customerLogIn, WorkerGoogleLoginWithRegistrastion, getCategoryName,getVerifiedWorkerController, getNearByWorkerDetailsController, userRequestWorkerController, paymetnAPIController,paymentIdController,ReviewController,getReviewController} from "../controllers/customerController";
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 import {customeVerify} from '../middlewares/JWTVerify/customerVerify'
 import upload from '../../../infrastructure/service/multer'
+import {
+    CustomerOtpController,
+    ResentOTP,
+    ForgetPassWordController ,
+    GoogleLogin,
+    CustomerLogoutController,
+    customerLogIn,
+     WorkerGoogleLoginWithRegistrastion, 
+    getCategoryName,
+    getVerifiedWorkerController,
+     getNearByWorkerDetailsController, 
+    userRequestWorkerController, 
+    paymetnAPIController,
+    paymentIdController,
+    ReviewController,
+    getReviewController,
+    paymentDetails
+} from "../controllers/customerController";
 
 const customerRouter = Router()
 
@@ -19,6 +36,7 @@ customerRouter.post("/review",authorizeRoles('customer'),ReviewController)
 
 customerRouter.post("/paymetAPI",authorizeRoles('customer'), paymetnAPIController)
 customerRouter.post("/savePaymentId",paymentIdController)
+customerRouter.get("/payment-details/:requestId",authorizeRoles('customer'), paymentDetails)
 
 // * router for Request 
 customerRouter.post('/userRequestWorker',userRequestWorkerController)

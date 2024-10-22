@@ -9,12 +9,13 @@ import { CustomerRepository } from "../../../domain/repositories/CustomerReposit
 import { CategoryModel } from "./models/AdminModel";
 import {UserModel} from './models/UserModel'
 import {WorkerModel} from './models/workerModel'
-import {RequestModal} from './models/RequestModel'
+import {RequestModel} from './models/RequestModel'
 import {ReviewModel} from './models/ReviewModel'
 
 // * Mongoose types
 import {Types} from 'mongoose'
 import { ResentActivityModel } from "./models/RecentActivityModel";
+import { request } from "@esri/arcgis-rest-request";
 const {ObjectId} = Types
 
 export const CustomerQueryRepository = ():CustomerRepository=>({
@@ -74,7 +75,7 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
         try {
             console.log(`Request reached useRequestQuery`)
             // console.log(userRequestDetails)
-            await RequestModal.create(userRequestDetails)
+            await RequestModel.create(userRequestDetails)
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->userRequestQuery\n`,error)
             throw error  
@@ -82,7 +83,7 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
     },
     checkExitstRequestQuery : async(userId:string,workerId:string)=>{
         try {
-            return await RequestModal.findOne({userId,workerId,isAccept:"Pending"})
+            return await RequestModel.findOne({userId,workerId,isAccept:"Pending"})
         } catch (error) {
             console.log(`Error from infrastructure->mongoseUser->checkExitstRequestQuery\n`,error)
             throw error  
@@ -110,6 +111,14 @@ export const CustomerQueryRepository = ():CustomerRepository=>({
 
         }catch(error){
             console.log(`Error from infrastructure->mongoseUser->checkUserPayed\n`,error)
+            throw error
+        }
+    },
+    paymentDetails : async(requestId:string)=>{
+        try{
+            return await RequestModel.findOne({_id:new ObjectId(requestId)})
+        }catch(error){
+            console.log(`Error from infrastructure->mongoseUser->paymentDetails\n`,error)
             throw error
         }
     }

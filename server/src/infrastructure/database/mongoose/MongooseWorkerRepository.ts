@@ -4,7 +4,7 @@ import {PersonalInformation, WorkerInformation,ProjectDetails,messageTypes} from
 
 // * model
 import { WorkerModel } from './models/workerModel'
-import {RequestModal} from './models/RequestModel'
+import {RequestModel} from './models/RequestModel'
 import {ResentActivityModel} from './models/RecentActivityModel'
 import { ConversationModel } from './models/ConversationModel'
 import { MessageModel } from './models/MessageModel'
@@ -121,7 +121,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     // * Request of worker side
     getAllRequestQuery : async(workerId:string)=>{
         try {
-            return await RequestModal.find({workerId,isAccept:"Pending"})
+            return await RequestModel.find({workerId,isAccept:"Pending"})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->getAllRequestQuery->\n`,error)
             throw error
@@ -129,7 +129,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     isAcceptWorkQuery : async(_id:string,isPayment:number)=>{
         try {
-            await RequestModal.findByIdAndUpdate({_id},{$set:{isAccept:"Accepted",payment:isPayment}})
+            await RequestModel.findByIdAndUpdate({_id},{$set:{isAccept:"Accepted",payment:isPayment}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->isAcceptWorkQuery->\n`,error)
             throw error
@@ -137,7 +137,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     isRejectWorkQuery : async(_id:string)=>{
         try {
-            await RequestModal.findByIdAndUpdate({_id},{$set:{isAccept:"Cancelled"}})
+            await RequestModel.findByIdAndUpdate({_id},{$set:{isAccept:"Cancelled"}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->isRejectWorkQuery->\n`,error)
             throw error
@@ -280,7 +280,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     totalOffer : async(workerId:string)=>{
         try {
-            return await RequestModal.countDocuments({workerId:new ObjectId(workerId)}).countDocuments()
+            return await RequestModel.countDocuments({workerId:new ObjectId(workerId)}).countDocuments()
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->totalOffer->\n`,error)
             throw error 
@@ -332,7 +332,7 @@ export const getWorkerRepository = ():WorkerRepository =>({
     },
     markCompleteQuery : async(_id:string,status:string)=>{
         try {
-            await RequestModal.findByIdAndUpdate({_id:new ObjectId(_id)},{$set:{isAccept:status}})
+            await RequestModel.findByIdAndUpdate({_id:new ObjectId(_id)},{$set:{isAccept:status}})
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->workComplete->\n`,error)
             throw error 

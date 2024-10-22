@@ -23,4 +23,4 @@ const RequestSchema = new Schema({
 },{ timestamps: true })
 
 
-export const RequestModal = model("RequestCollection",RequestSchema)
+export const RequestModel = model("RequestCollection",RequestSchema)
