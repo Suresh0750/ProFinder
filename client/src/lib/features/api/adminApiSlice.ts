@@ -129,6 +129,13 @@ export const adminApi = createApi({
                 method: 'GET',
                 headers: getHeaders('admin') 
             })
+        }),
+        dashboardReview : builder.query({
+            query:()=>({
+                url: `/admin/dashboard-review`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
@@ -149,5 +156,6 @@ export const {
     useIsWorkerApprovalMutation,
     useDashboardOverviewQuery,
     useDashboardQuery,
-    useDashboardWorkerQuery
+    useDashboardWorkerQuery,
+    useDashboardReviewQuery
 } = adminApi;

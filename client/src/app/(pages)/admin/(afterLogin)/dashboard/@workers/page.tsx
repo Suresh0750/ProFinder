@@ -24,11 +24,12 @@ export default function WorkersPage() {
 
   const [worker,setWorker] = useState({})
 
-  // useEffect(()=>{
-
-  // })
-
   const {data} = useDashboardWorkerQuery({})
+
+  useEffect(()=>{
+    setWorker(data?.result)
+  },[data])
+
 
   return (
     <Card>
@@ -47,8 +48,8 @@ export default function WorkersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {topWorkers.map((worker) => (
-              <TableRow key={worker.id}>
+            {worker?.length>0 && worker?.map((worker) => (
+              <TableRow key={worker._id}>
                 <TableCell className="font-medium">{worker.name}</TableCell>
                 <TableCell>{worker.trade}</TableCell>
                 <TableCell>
