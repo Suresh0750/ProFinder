@@ -136,6 +136,13 @@ export const customerApi  = createApi({
                 method : "GET",
                 headers : getHeaders('customer')
             })
+        }),
+        paymentDetails : builder.query({ // * show  to user worker details
+            query : (requestId:string)=>({
+                url : `/customer/payment-details/${requestId}`,
+                method : "GET",
+                headers : getHeaders('customer')
+            })
         })
     })
 })
@@ -158,4 +165,5 @@ export const {
     useSavePaymentIdMutation,
     useSubmitReviewMutation,
     useGetReviewQuery,
+    usePaymentDetailsQuery
 } = customerApi

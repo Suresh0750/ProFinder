@@ -77,7 +77,7 @@ export default function BookingPage() {
   };
 
   const handleWorkSelect = (work: Work) => {
-    alert(work?._id);
+    // alert(work?._id);
     setSelectedWork(work);
   };
   useEffect(() => {

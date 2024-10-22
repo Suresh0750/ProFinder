@@ -27,6 +27,7 @@ export async function POST(req: any, res: NextApiResponse) {
   }
 
   redirect(
-    `/post/promote/paymentCompleted/?status=${data.status}&mihpayid=${data.mihpayid}`
+    `/PaymentFailure`
+    // `/post/promote/paymentCompleted/?status=${data.status}&mihpayid=${data.mihpayid}`
   );
 }

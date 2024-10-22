@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -8,11 +8,20 @@ import { CheckCircle, ArrowRight, Calendar, DollarSign, MapPin, Clock } from "lu
 import Link from "next/link"
 import { motion } from "framer-motion"
 
-export default function EnhancedPaymentSuccessPage({params}:{params:{id:string}}) {
-  const [isExpanded, setIsExpanded] = useState(false)
+// * API
+import {usePaymentDetailsQuery} from '@/lib/features/api/customerApiSlice'
 
+export default function EnhancedPaymentSuccessPage({params}:{params:{id:string}}) {
+
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [paymentData, setPaymentData] = useState({})
+  const {data} = usePaymentDetailsQuery(params?.id)
   console.log('params id')
   console.log(params?.id)
+  useEffect(()=>{
+    console.log(JSON.stringify(data?.result))
+    setPaymentData(data?.result)
+  },[data])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 flex items-center justify-center p-4 mt-[4em]">
@@ -48,28 +57,28 @@ export default function EnhancedPaymentSuccessPage({params}:{params:{id:string}}
                     {/* <Tool className="mr-3 h-5 w-5" /> */}
                     <div>
                       <p className="font-medium">Service</p>
-                      <p className="text-sm">Plumbing Repair</p>
+                      <p className="text-sm">{paymentData?.service || ''}</p>
                     </div>
                   </div>
                   <div className="flex items-center text-blue-600">
                     <Calendar className="mr-3 h-5 w-5" />
                     <div>
                       <p className="font-medium">Date & Time</p>
-                      <p className="text-sm">July 15, 2023 at 10:00 AM</p>
+                      <p className="text-sm">{paymentData?.preferredDate}{paymentData?.preferredTime}</p>
                     </div>
                   </div>
                   <div className="flex items-center text-blue-600">
                     <DollarSign className="mr-3 h-5 w-5" />
                     <div>
                       <p className="font-medium">Total Paid</p>
-                      <p className="text-sm">$150.00</p>
+                      <p className="text-sm">${(paymentData?.payment)?.toFixed(2)}</p>
                     </div>
                   </div>
                   <div className="flex items-center text-blue-600">
                     <MapPin className="mr-3 h-5 w-5" />
                     <div>
                       <p className="font-medium">Location</p>
-                      <p className="text-sm">123 Main St, Anytown, USA</p>
+                      <p className="text-sm">{paymentData?.servicelocation || ''}</p>
                     </div>
                   </div>
                 </div>
@@ -79,7 +88,7 @@ export default function EnhancedPaymentSuccessPage({params}:{params:{id:string}}
                   <AccordionTrigger>What's Next?</AccordionTrigger>
                   <AccordionContent>
                     <ul className="list-disc list-inside space-y-2 text-gray-600">
-                      <li>You'll receive a confirmation email with all the details.</li>
+                      {/* <li>You'll receive a confirmation email with all the details.</li> */}
                       <li>The assigned worker will contact you before the appointment.</li>
                       <li>Prepare the work area for easy access.</li>
                       <li>Have any relevant documents or information ready.</li>
@@ -91,13 +100,13 @@ export default function EnhancedPaymentSuccessPage({params}:{params:{id:string}}
           </CardContent>
           <CardFooter className="flex justify-between flex-wrap gap-4 px-6 py-6 bg-gray-50">
             <Button asChild variant="outline">
-              <Link href="/dashboard" className="flex items-center">
+              <Link href="/user/booking" className="flex items-center">
                 <Clock className="mr-2 h-4 w-4" />
                 View Booking Details
               </Link>
             </Button>
             <Button asChild>
-              <Link href="/" className="flex items-center">
+              <Link href="/homePage" className="flex items-center">
                 Return to Home
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
