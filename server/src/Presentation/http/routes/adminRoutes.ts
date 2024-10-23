@@ -4,6 +4,7 @@ import {verify} from '../middlewares/JWTVerify/adminVerify'
 import {authorizeRoles} from '../middlewares/authorizeRoles'
 import upload from '../../../infrastructure/service/multer'
 import {
+    salesReport,
     reviewDashboard,
     addCategoryController,
     AdminVerify,
@@ -19,12 +20,17 @@ import {
     isWorkerApproval,
     dashboardOverview,
     dashboard,
-    workerDashboard
+    workerDashboard,
+    categoryList
 } from "../controllers/AdminController"
 
 const adminRoutes = Router()
 
 
+
+// * ADMIN SALES - REPORT 
+adminRoutes.get('/sales-report',verify,authorizeRoles('admin'),salesReport)
+adminRoutes.get('/categoryList',verify,authorizeRoles('admin'),categoryList)
 
 // * Admin / dashboard side
 adminRoutes.get('/dashboardOverview',verify,authorizeRoles('admin'),dashboardOverview)

@@ -13,7 +13,7 @@ import {
     getAllCategoryUseCases, 
     isListedProductUsecases,
     deleteProductUsecases,
-    EditCategoryUseCases
+    EditCategoryUseCases,
 } from "../../../app/useCases/admin/Category"
 import {
     reviewUsecases,
@@ -21,12 +21,44 @@ import {
     adminOverviewUsecases,
     dashboardUsecases
 } from '../../../app/useCases/admin/adminDashboard'
+import {
+    salesUsecases,
+    getCategory,
+} from '../../../app/useCases/admin/salesReport'
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
+import { Result } from "express-validator"
 
 
+// * admin in sales Report side
+
+export const salesReport = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await salesUsecases(req.body)
+        console.log('sales report')
+        console.log(JSON.stringify(result))
+        return await res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from salesReport\n${error}`)  
+        next(error)   
+    }
+}
+
+export const categoryList = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await getCategory()
+        return await res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
+
+    } catch (error) {
+        console.log(`Error from getCategory\n${error}`)  
+        next(error)  
+    }
+}
+
+
+// * --- ADMIN DASHBORD---//
 // * admin in review dashboard data
 
 export const reviewDashboard = async(req:Request,res:Response,next:NextFunction)=>{

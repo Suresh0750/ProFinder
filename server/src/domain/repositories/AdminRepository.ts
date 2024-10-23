@@ -1,4 +1,4 @@
-import { AddCategory,addCategoryData } from "../entities/Admin";
+import { AddCategory,addCategoryData,filterSales} from "../entities/Admin";
 import {WorkerInformation} from "../entities/Worker"
 import {User} from "../entities/User"
 
@@ -27,4 +27,7 @@ export interface IAdminRepository{
     getCompletedWorkerCount() : Promise<any[]>
     getTopWorker() : Promise<any[]>
     getRecentReview() : Promise<any[]>
+    getSalesDatas(data:any) : Promise<any[]>
+    getSalesDatasCount(data:any) : Promise<any>
+    getAllCategory() : Promise<string[]>
 }

@@ -49,3 +49,15 @@ export interface AdminCredentials {
     adminPass : string
 }
 
+
+
+export interface filterSales {
+    query : {
+        service : string | null,
+        username : string | null,
+        worker : string | null,
+        preferredDate : string | null,
+    }
+    skip : number,
+    limit : number
+}

@@ -1,6 +1,6 @@
 
 // * Object types
-import { AddCategory,addCategoryData } from "../../../domain/entities/Admin"
+import { AddCategory,addCategoryData,filterSales } from "../../../domain/entities/Admin"
 
 // * Repository types
 import {IAdminRepository} from "../../../domain/repositories/AdminRepository"
@@ -256,6 +256,30 @@ export const AdminMongoose = () : IAdminRepository =>({
             return await ReviewModel.find({}).populate('userId','username').populate('workerId','FirstName Profile').sort({createAt:-1}).limit(6)
         } catch (error) {
             console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    getSalesDatas : async(data:filterSales | any)=>{
+        try{
+            return await RequestModel.find(data?.query,{_id:1,user:1,worker:1,service:1,preferredDate:1,isAccept:1,payment:1}).skip(0).limit(10).lean()
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    getSalesDatasCount : async(data:filterSales | any)=>{
+        try{
+            return await RequestModel.find(data?.query).countDocuments()
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    getAllCategory : async()=>{
+        try {
+            return await CategoryModel.distinct('categoryName')
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getAllCategory->\n`,error)
             throw error
         }
     }
