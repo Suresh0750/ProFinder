@@ -33,3 +33,12 @@ export interface showCategory {
 }
 
 
+export interface salesReport{
+    _id : string,
+    service : string,
+    worker : string,
+    user : string,
+    preferredDate : string,
+    isAccept : string,
+    payment : number
+}

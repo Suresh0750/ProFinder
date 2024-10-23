@@ -48,7 +48,7 @@ export default function Aside(){
                         </Tooltip>
                     </li>
                     {/* Report Icon */}
-                    <li className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
+                    <li onClick={()=>handleNavigation('/admin/sales-report')} className="hover:text-blue-400 transition-all duration-300 ease-in-out cursor-pointer">
                         <Tooltip title="Reports" placement="right">
                             <ReportIcon sx={{ width: '48px', height: '48px' }} />
                         </Tooltip>

@@ -40,7 +40,7 @@ export default function OverviewPage() {
   const {data} = useDashboardOverviewQuery({})
   useEffect(()=>{
     setDashboard(data?.result)
-    console.log(JSON.stringify(data?.result?.revenueData))
+    // console.log(JSON.stringify(data?.result?.revenueData))
     setRevenue(revenueCalculation(data?.result?.revenueData))
     setJobStatus(jobStatusService(data?.result?.jobStatus))
     setWorkerdata(getWorkerDistribution(data?.result?.workerDistribution))

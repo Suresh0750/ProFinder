@@ -136,6 +136,21 @@ export const adminApi = createApi({
                 method: 'GET',
                 headers: getHeaders('admin') 
             })
+        }),
+        salesReport : builder.query({
+            query:(data)=>({
+                url: `/admin/sales-report`,
+                method: 'GET',
+                params : data,
+                headers: getHeaders('admin') 
+            })
+        }),
+        categoryList : builder.query({
+            query:()=>({
+                url: `/admin/categoryList`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
@@ -157,5 +172,7 @@ export const {
     useDashboardOverviewQuery,
     useDashboardQuery,
     useDashboardWorkerQuery,
-    useDashboardReviewQuery
+    useDashboardReviewQuery,
+    useSalesReportQuery,
+    useCategoryListQuery,
 } = adminApi;
