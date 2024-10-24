@@ -1,7 +1,5 @@
 
-
-
-const {format} = require('date-fns')
+import {format} from 'date-fns'
 export function revenueCalculation(revenueData:any[]){
     console.log(revenueData)
 
