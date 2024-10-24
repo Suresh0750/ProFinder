@@ -151,12 +151,21 @@ export const adminApi = createApi({
                 method: 'GET',
                 headers: getHeaders('admin') 
             })
+        }),
+        downloadSales : builder.query({
+            query:(data)=>({
+                url: `/admin/download-sales`,
+                method: 'GET',
+                params : data,
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
 
 // * Export hooks for usage in functional components
 export const {
+    useDownloadSalesQuery,
     useAddCategoryFormMutation,
     useAdminVeriyAPIMutation,
     useFetchCategoryDataQuery,

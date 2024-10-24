@@ -13,7 +13,7 @@ import { format, isAfter, isBefore, startOfDay } from "date-fns"
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { useSalesReportQuery, useCategoryListQuery } from '@/lib/features/api/adminApiSlice'
+import { useSalesReportQuery, useCategoryListQuery ,useDownloadSalesQuery} from '@/lib/features/api/adminApiSlice'
 import { salesReport } from '@/types/AdminTypes'
 
 export default function SalesReport() {
@@ -26,9 +26,18 @@ export default function SalesReport() {
   const [categoryList, setCategoryList] = useState<string[]>(["All"])
   const [stopCategoryAPI, setStopCategoryAPI] = useState<boolean>(true)
   const [stopAPI, setStopAPI] = useState(true)
+  const [stopDownloadAPI,setDownloadAPI] = useState(true)
   const [salesReport, setSalesReport] = useState<salesReport[]>([])
+  const [download,setDownload] = useState('')
 
   const { data: category } = useCategoryListQuery({}, { skip: stopCategoryAPI })
+  const {data:downloadSales} = useDownloadSalesQuery({
+    categoryFilter,
+    startDateFilter: startDateFilter ? new Date(startDateFilter).toISOString().split('T')[0] : '',
+    endDateFilter: endDateFilter ? new Date(endDateFilter).toISOString().split('T')[0] : '',
+    currentPage,
+    itemsPerPage
+  },{skip:stopDownloadAPI})
   const { data } = useSalesReportQuery({
     categoryFilter,
     startDateFilter: startDateFilter ? new Date(startDateFilter).toISOString().split('T')[0] : '',
@@ -53,6 +62,43 @@ export default function SalesReport() {
     }
   }, [data])
 
+  useEffect(()=>{
+    if(downloadSales?.result && download=='PDF'){
+      const doc = new jsPDF();
+      doc.text("Sales Report",20,10);
+      (doc as any).autoTable({
+        head : [["#","User Name","Date","Worker","Amount","Status"]],
+        body: (downloadSales?.result)?.map((booking, index) => [
+          index + 1,
+          booking?.user,
+          booking?.preferredDate,
+          booking.worker,
+          `$${booking?.payment}`,
+          booking?.isAccept,
+        ]),
+      })
+      doc.save("booking_report.pdf");
+    }
+  },[downloadSales])
+
+  useEffect(()=>{
+    if(downloadSales?.result && download=='XLSX'){
+      const worksheet = XLSX.utils.json_to_sheet(
+        (downloadSales?.result)?.map((booking, index) => ({
+          "#": index + 1,
+          Username: booking?.user,
+          Date: booking?.preferredDate,
+          "Booked Worker": booking.worker,
+          Amount: `$${booking?.payment}`,
+          Status:  booking?.isAccept,
+        }))
+      );
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Bookings");
+      XLSX.writeFile(workbook, "booking_report.xlsx");
+    }
+  },[downloadSales])
+
   const applyFilters = () => {
     setStopAPI(false)
   }
@@ -65,40 +111,18 @@ export default function SalesReport() {
     setCurrentPage(1)
   }
 
+
   const downloadPDF = () => {
     console.log("Downloading PDF...")
-    const doc = new jsPDF();
-    doc.text("Sales Report",20,10);
-    (doc as any).autoTable({
-      head : [["#","User Name","Date","Worker","Amount","Status"]],
-      body: currentItems?.map((booking, index) => [
-        index + 1,
-        booking?.user,
-        booking?.preferredDate,
-        booking.worker,
-        `$${booking?.payment}`,
-        booking?.isAccept,
-      ]),
-    })
-    doc.save("booking_report.pdf");
+    setDownloadAPI(false)
+    setDownload('PDF')
   }
   
   // Download Excel function
   const downloadExcel = () => {
     console.log("Downloading Excel...")
-    const worksheet = XLSX.utils.json_to_sheet(
-      currentItems?.map((booking, index) => ({
-        "#": index + 1,
-        Username: booking?.user,
-        Date: booking?.preferredDate,
-        "Booked Worker": booking.worker,
-        Amount: `$${booking?.payment}`,
-        Status:  booking?.isAccept,
-      }))
-    );
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Bookings");
-    XLSX.writeFile(workbook, "booking_report.xlsx");
+    setDownloadAPI(false)
+    setDownload('XLSX')
   };
 
   const today = startOfDay(new Date())
