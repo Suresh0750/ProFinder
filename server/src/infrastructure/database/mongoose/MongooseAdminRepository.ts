@@ -259,17 +259,19 @@ export const AdminMongoose = () : IAdminRepository =>({
             throw error
         }
     },
-    getSalesDatas : async(data:filterSales | any)=>{
+    getSalesDatas : async(query:filterSales | any,skip:number,limit:number)=>{
         try{
-            return await RequestModel.find(data?.query,{_id:1,user:1,worker:1,service:1,preferredDate:1,isAccept:1,payment:1}).skip(0).limit(10).lean()
+            console.log('skip ^ limit')
+            console.log(skip,limit)
+            return await RequestModel.find(query,{_id:1,user:1,worker:1,service:1,preferredDate:1,isAccept:1,payment:1}).skip(skip).limit(limit).lean()
         }catch(error){
             console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
             throw error
         }
     },
-    getSalesDatasCount : async(data:filterSales | any)=>{
+    getSalesDatasCount : async(query:filterSales | any)=>{
         try{
-            return await RequestModel.find(data?.query).countDocuments()
+            return await RequestModel.find(query).countDocuments()
         }catch(error){
             console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
             throw error
@@ -282,5 +284,14 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->getAllCategory->\n`,error)
             throw error
         }
-    }
+    },      
+    downloadSalesData : async(query:filterSales)=>{
+        try{
+            return await RequestModel.find(query,{_id:1,user:1,worker:1,service:1,preferredDate:1,isAccept:1,payment:1})
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    
 })

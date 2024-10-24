@@ -36,7 +36,8 @@ import { Result } from "express-validator"
 
 export const salesReport = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        const result = await salesUsecases(req.body)
+        console.log(req.query)
+        const result = await salesUsecases(req.query)
         console.log('sales report')
         console.log(JSON.stringify(result))
         return await res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})

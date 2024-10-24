@@ -26,7 +26,7 @@ import {
 
 const adminRoutes = Router()
 
-
+    
 
 // * ADMIN SALES - REPORT 
 adminRoutes.get('/sales-report',verify,authorizeRoles('admin'),salesReport)

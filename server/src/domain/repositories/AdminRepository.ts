@@ -27,7 +27,8 @@ export interface IAdminRepository{
     getCompletedWorkerCount() : Promise<any[]>
     getTopWorker() : Promise<any[]>
     getRecentReview() : Promise<any[]>
-    getSalesDatas(data:any) : Promise<any[]>
+    getSalesDatas(data:any,skip:number,limit:number) : Promise<any[]>
     getSalesDatasCount(data:any) : Promise<any>
     getAllCategory() : Promise<string[]>
+    downloadSalesData(query:any) : Promise<any[]>
 }
