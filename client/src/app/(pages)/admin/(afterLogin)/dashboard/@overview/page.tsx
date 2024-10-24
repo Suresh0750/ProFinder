@@ -3,21 +3,19 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis, PieChart, Pie, Cell, Tooltip } from "recharts"
+import {useEffect,useState} from 'react'
+import {useDashboardOverviewQuery} from '@/lib/features/api/adminApiSlice'
+
+// * service
+import {revenueCalculation,jobStatusService,getWorkerDistribution} from '@/lib/service/admin/dashboard'
 
 // Mock data (you would fetch this from an API in a real application)
-const revenueData = [
-  { month: "Jan", revenue: 12000,},
-  { month: "Feb", revenue: 15000, },
-  { month: "Mar", revenue: 18000,},
-  { month: "Apr", revenue: 20000,  },
-  { month: "May", revenue: 22000, },  
-  { month: "Jun", revenue: 25000,  },
-]
+
 
 const jobStatusData = [
   { name: "Completed", value: 300 },
   { name: "In Progress", value: 150 },  
-  { name: "Pending", value: 100 },
+  // { name: "Pending", value: 100 },
   { name: "Cancelled", value: 20 },
 ]
 
@@ -35,6 +33,19 @@ const workerDistribution = [
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
 
 export default function OverviewPage() {
+  const [dashboard,setDashboard] = useState()
+  const [revenue,setRevenue] = useState([])
+  const [jobStatus,setJobStatus] = useState([])
+  const [workerData,setWorkerdata] = useState([])
+  const {data} = useDashboardOverviewQuery({})
+  useEffect(()=>{
+    setDashboard(data?.result)
+    // console.log(JSON.stringify(data?.result?.revenueData))
+    setRevenue(revenueCalculation(data?.result?.revenueData))
+    setJobStatus(jobStatusService(data?.result?.jobStatus))
+    setWorkerdata(getWorkerDistribution(data?.result?.workerDistribution))
+   
+  },[data])
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mb-3">
@@ -58,7 +69,7 @@ export default function OverviewPage() {
               className="h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={revenueData}>
+                <LineChart data={revenue}>
                   <XAxis dataKey="month" />
                   <YAxis />
                   <ChartTooltip content={<ChartTooltipContent />} />
@@ -87,7 +98,7 @@ export default function OverviewPage() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={jobStatusData}
+                    data={jobStatus}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -95,7 +106,7 @@ export default function OverviewPage() {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {jobStatusData.map((entry, index) => (
+                    {jobStatus?.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -104,7 +115,7 @@ export default function OverviewPage() {
               </ResponsiveContainer>
             </ChartContainer>
             <div className="mt-4 space-y-2">
-              {jobStatusData.map((entry, index) => (
+              {jobStatus?.map((entry, index) => (
                 <div key={entry.name} className="flex items-center">
                   <div className="w-4 h-4 mr-2" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
                   <span className="flex-1">{entry.name}</span>
@@ -131,7 +142,7 @@ export default function OverviewPage() {
             className="h-[300px]"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={workerDistribution}>
+              <BarChart data={workerData}>
                 <XAxis dataKey="trade" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />

@@ -1,4 +1,4 @@
-import { AddCategory,addCategoryData } from "../entities/Admin";
+import { AddCategory,addCategoryData,filterSales} from "../entities/Admin";
 import {WorkerInformation} from "../entities/Worker"
 import {User} from "../entities/User"
 
@@ -21,4 +21,14 @@ export interface IAdminRepository{
     totalReview() : Promise<number>
     totalWorkers() : Promise<number>
     avgRating() : Promise<any[]>
+    paymentData() : Promise<any[]>
+    workerDistribution() : Promise<any[]>
+    jobStatus() : Promise<any[]>
+    getCompletedWorkerCount() : Promise<any[]>
+    getTopWorker() : Promise<any[]>
+    getRecentReview() : Promise<any[]>
+    getSalesDatas(data:any,skip:number,limit:number) : Promise<any[]>
+    getSalesDatasCount(data:any) : Promise<any>
+    getAllCategory() : Promise<string[]>
+    downloadSalesData(query:any) : Promise<any[]>
 }

@@ -4,28 +4,118 @@ import {AdminVerifyUseCases} from '../../../app/useCases/admin/AdminVerify'
 import Jwt from 'jsonwebtoken'
 // * useCases
 import {uploadImage} from '../../../app/useCases/utils/uploadImage'
-import {AddCategoryUseCases,CheckExistCategory,getAllCategoryUseCases, isListedProductUsecases,deleteProductUsecases,EditCategoryUseCases} from "../../../app/useCases/admin/Category"
 import {getALLWorkerUseCases}  from '../../../app/useCases/admin/AdminwokerSide'
 import {getAllUserUseCase,isBlockUserUseCases} from '../../../app/useCases/admin/AdminUserSide'
 import {AdminWorkerApprovalUseCases,isWorkerApprovalUseCases} from "../../../app/useCases/admin/AdminWorkerApprovalSide"
+import {
+    AddCategoryUseCases,
+    CheckExistCategory,
+    getAllCategoryUseCases, 
+    isListedProductUsecases,
+    deleteProductUsecases,
+    EditCategoryUseCases,
+} from "../../../app/useCases/admin/Category"
+import {
+    reviewUsecases,
+    workerUsecases,
+    adminOverviewUsecases,
+    dashboardUsecases
+} from '../../../app/useCases/admin/adminDashboard'
+import {
+    downloadSalesUsecases,
+    salesUsecases,
+    getCategory,
+} from '../../../app/useCases/admin/salesReport'
 
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
-import { dashboard } from "./WorkerController"
 
 
 
+// * admin in sales Report side
+export const downloadSales = async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const result = await downloadSalesUsecases(req.query)
+        return res.status(StatusCode.Success).json({sucess:true,message:'data has been fetched',result})
+    }catch(error){
+        console.log(`Error from downloadSales\n${error}`)  
+        next(error) 
+    }
+}
+
+export const salesReport = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        console.log(req.query)
+        const result = await salesUsecases(req.query)
+        console.log('sales report')
+        console.log(JSON.stringify(result))
+        return await res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
+    } catch (error) {
+        console.log(`Error from salesReport\n${error}`)  
+        next(error)   
+    }
+}
+
+export const categoryList = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await getCategory()
+        return await res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
+
+    } catch (error) {
+        console.log(`Error from getCategory\n${error}`)  
+        next(error)  
+    }
+}
+
+
+// * --- ADMIN DASHBORD---//
+// * admin in review dashboard data
+
+export const reviewDashboard = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await reviewUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
+    } catch (error) {
+        console.log(`Error from reviewDashboard\n${error}`)  
+        next(error)  
+    }
+}
+
+// * admin worker dashboard side
+
+export const workerDashboard = async(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const result = await workerUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched',result})
+    } catch (error) {
+        console.log(`Error from workerDashboard\n${error}`)  
+        next(error)  
+    }
+}
 
 // * admin Dashboard side
 export const dashboardOverview = async(req:Request,res:Response,next:NextFunction)=>{
     try {
-        
+        const result = await adminOverviewUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data successfully fetched',result})
     } catch (error) {
-         console.log(`Error from isBlcokUser\n${error}`)  
+        console.log(`Error from dashboardOverview\n${error}`)  
         next(error)
     }
 }
+export const dashboard = async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        console.log('req entered dashboard')
+        const result = await dashboardUsecases()
+        return res.status(StatusCode.Success).json({success:true,message:'data has been fetched successfully',result})
+    }catch(error){
+        console.log(`Error from dashboard\n${error}`)  
+        next(error)
+    }
+}
+
+
 // * admin User side
 export const isBlockUserController = async(req:Request,res:Response,next:NextFunction)=>{
     try {

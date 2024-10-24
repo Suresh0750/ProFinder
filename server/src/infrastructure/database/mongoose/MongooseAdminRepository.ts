@@ -1,6 +1,6 @@
 
 // * Object types
-import { AddCategory,addCategoryData } from "../../../domain/entities/Admin"
+import { AddCategory,addCategoryData,filterSales } from "../../../domain/entities/Admin"
 
 // * Repository types
 import {IAdminRepository} from "../../../domain/repositories/AdminRepository"
@@ -11,6 +11,8 @@ import {WorkerModel} from "./models/workerModel"
 import {UserModel} from "./models/UserModel"
 import { ResentActivityModel } from "./models/RecentActivityModel"
 import { ReviewModel } from "./models/ReviewModel"
+import { PaymentModel } from "./models/paymentModel"
+import { RequestModel } from "./models/RequestModel"
 
 
 export const AdminMongoose = () : IAdminRepository =>({
@@ -160,5 +162,136 @@ export const AdminMongoose = () : IAdminRepository =>({
             console.log(`Error from infrastructure->database->mongoose->avgRating->\n`,error)
             throw error
         }
-    }
+    },
+    paymentData : async()=>{
+        try {
+            return await PaymentModel.find()
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->paymentData->\n`,error)
+            throw error
+        }
+    },
+    workerDistribution : async()=>{
+        try {
+            return await WorkerModel.aggregate([
+                {$group:{_id:"$Category",count:{$sum:1}}}
+              ])
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->workerDistribution->\n`,error)
+            throw error
+        }
+    },
+    jobStatus : async()=>{
+        try {
+            return await RequestModel.aggregate([
+                {$group:{_id:"$isAccept",value:{$sum:1}}}
+              ])
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->jobStatus->\n`,error)
+            throw error
+        }
+    },
+    getCompletedWorkerCount :async()=>{
+        try {
+            return await ResentActivityModel.aggregate([
+                {
+                  $group: {
+                    _id: "$workerId",   
+                    count: { $sum: 1 },
+                    earning: { $sum: "$payment" } 
+                  }
+                },
+                {
+                  $lookup: {
+                    from: "workerdetails",
+                    localField: "_id", 
+                    foreignField: "_id",
+                    as: "workerDetails"
+                  }
+                },
+                {
+                  $unwind: "$workerDetails"
+                },
+                {
+                  $project: {
+                    _id: 1, 
+                    count: 1,
+                    earning: 1,
+                    "workerDetails.FirstName": 1, 
+                    "workerDetails.Category": 1, 
+                  }
+                }
+              ]);
+              
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getCompletedWorkerCount->\n`,error)
+            throw error
+        }
+    },
+    getTopWorker : async()=>{   // * filer for get top performance worker
+        try {
+            return await ReviewModel.aggregate([
+                {
+                  $group: {
+                    _id: "$workerId", 
+                    totalRating: { $sum: "$rating" },
+                    reviewCount: { $sum: 1 }
+                  }
+                },
+                {
+                  $sort: { totalRating: -1 } 
+                },
+                {
+                  $limit: 5 
+                }
+              ])
+              
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getTopWorker->\n`,error)
+            throw error
+        }
+    },
+    getRecentReview : async()=>{
+        try {
+            return await ReviewModel.find({}).populate('userId','username').populate('workerId','FirstName Profile').sort({createAt:-1}).limit(6)
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    getSalesDatas : async(query:filterSales | any,skip:number,limit:number)=>{
+        try{
+            console.log('skip ^ limit')
+            console.log(skip,limit)
+            return await RequestModel.find(query,{_id:1,user:1,worker:1,service:1,preferredDate:1,isAccept:1,payment:1}).skip(skip).limit(limit).lean()
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    getSalesDatasCount : async(query:filterSales | any)=>{
+        try{
+            return await RequestModel.find(query).countDocuments()
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    getAllCategory : async()=>{
+        try {
+            return await CategoryModel.distinct('categoryName')
+        } catch (error) {
+            console.log(`Error from infrastructure->database->mongoose->getAllCategory->\n`,error)
+            throw error
+        }
+    },      
+    downloadSalesData : async(query:filterSales)=>{
+        try{
+            return await RequestModel.find(query,{_id:1,user:1,worker:1,service:1,preferredDate:1,isAccept:1,payment:1})
+        }catch(error){
+            console.log(`Error from infrastructure->database->mongoose->getRecentReview->\n`,error)
+            throw error
+        }
+    },
+    
 })

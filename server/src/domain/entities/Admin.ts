@@ -49,3 +49,8 @@ export interface AdminCredentials {
     adminPass : string
 }
 
+
+
+export interface filterSales {
+    [key:string] : any
+}

@@ -115,12 +115,57 @@ export const adminApi = createApi({
                 method: 'GET',
                 headers: getHeaders('admin') 
             })
+        }),
+        dashboard : builder.query({
+            query:()=>({
+                url: `/admin/dashboard`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
+        }),
+        dashboardWorker : builder.query({
+            query:()=>({
+                url: `/admin/dashboardWorker`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
+        }),
+        dashboardReview : builder.query({
+            query:()=>({
+                url: `/admin/dashboard-review`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
+        }),
+        salesReport : builder.query({
+            query:(data)=>({
+                url: `/admin/sales-report`,
+                method: 'GET',
+                params : data,
+                headers: getHeaders('admin') 
+            })
+        }),
+        categoryList : builder.query({
+            query:()=>({
+                url: `/admin/categoryList`,
+                method: 'GET',
+                headers: getHeaders('admin') 
+            })
+        }),
+        downloadSales : builder.query({
+            query:(data)=>({
+                url: `/admin/download-sales`,
+                method: 'GET',
+                params : data,
+                headers: getHeaders('admin') 
+            })
         })
     })
 });
 
 // * Export hooks for usage in functional components
 export const {
+    useDownloadSalesQuery,
     useAddCategoryFormMutation,
     useAdminVeriyAPIMutation,
     useFetchCategoryDataQuery,
@@ -133,4 +178,10 @@ export const {
     useIsUserBlockMutation,
     useGetAllUnApprovalWorkerlistQuery,
     useIsWorkerApprovalMutation,
+    useDashboardOverviewQuery,
+    useDashboardQuery,
+    useDashboardWorkerQuery,
+    useDashboardReviewQuery,
+    useSalesReportQuery,
+    useCategoryListQuery,
 } = adminApi;
