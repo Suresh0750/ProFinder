@@ -64,6 +64,7 @@ export const downloadSalesUsecases = async(data:any)=>{
             query.preferredDate = startDate
         }
        console.log(query)
+       query.isAccept = "Completed"
         return await AdminMongoose().downloadSalesData(query)
      
     } catch (error) {

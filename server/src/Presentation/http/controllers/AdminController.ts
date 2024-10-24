@@ -22,6 +22,7 @@ import {
     dashboardUsecases
 } from '../../../app/useCases/admin/adminDashboard'
 import {
+    downloadSalesUsecases,
     salesUsecases,
     getCategory,
 } from '../../../app/useCases/admin/salesReport'
@@ -29,10 +30,19 @@ import {
 // * types
 import {IMulterFile} from '../../../domain/entities/Admin'
 import { StatusCode } from "../../../domain/entities/commonTypes"
-import { Result } from "express-validator"
+
 
 
 // * admin in sales Report side
+export const downloadSales = async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const result = await downloadSalesUsecases(req.query)
+        return res.status(StatusCode.Success).json({sucess:true,message:'data has been fetched',result})
+    }catch(error){
+        console.log(`Error from downloadSales\n${error}`)  
+        next(error) 
+    }
+}
 
 export const salesReport = async(req:Request,res:Response,next:NextFunction)=>{
     try {
